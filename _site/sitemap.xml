@@ -2,34 +2,38 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://stanleyrazor.github.io/portfolio/about.html</loc>
-    <lastmod>2024-08-04T11:41:30.013Z</lastmod>
+    <lastmod>2024-08-04T17:51:38.095Z</lastmod>
   </url>
   <url>
     <loc>https://stanleyrazor.github.io/portfolio/projects.html</loc>
-    <lastmod>2024-08-04T11:41:29.503Z</lastmod>
+    <lastmod>2024-08-04T17:51:37.309Z</lastmod>
   </url>
   <url>
     <loc>https://stanleyrazor.github.io/portfolio/posts/claims-modelling/index.html</loc>
-    <lastmod>2024-08-04T11:41:27.583Z</lastmod>
-  </url>
-  <url>
-    <loc>https://stanleyrazor.github.io/portfolio/posts/cov-mat-estimation-tangency-ports/index.html</loc>
-    <lastmod>2024-08-04T11:41:26.399Z</lastmod>
-  </url>
-  <url>
-    <loc>https://stanleyrazor.github.io/portfolio/posts/high-dimensional-data/index.html</loc>
-    <lastmod>2024-08-04T11:41:24.898Z</lastmod>
+    <lastmod>2024-08-04T17:51:31.828Z</lastmod>
   </url>
   <url>
     <loc>https://stanleyrazor.github.io/portfolio/posts/DiD UHC Pilot/index.html</loc>
-    <lastmod>2024-08-04T11:41:26.797Z</lastmod>
+    <lastmod>2024-08-04T17:51:28.422Z</lastmod>
+  </url>
+  <url>
+    <loc>https://stanleyrazor.github.io/portfolio/posts/high-dimensional-data/index.html</loc>
+    <lastmod>2024-08-04T17:51:25.433Z</lastmod>
+  </url>
+  <url>
+    <loc>https://stanleyrazor.github.io/portfolio/posts/cov-mat-estimation-tangency-ports/index.html</loc>
+    <lastmod>2024-08-04T17:51:27.763Z</lastmod>
+  </url>
+  <url>
+    <loc>https://stanleyrazor.github.io/portfolio/posts/target-return-portfolio/index.html</loc>
+    <lastmod>2024-08-04T17:51:29.587Z</lastmod>
   </url>
   <url>
     <loc>https://stanleyrazor.github.io/portfolio/posts/glms-scratch/index.html</loc>
-    <lastmod>2024-08-04T11:41:28.666Z</lastmod>
+    <lastmod>2024-08-04T17:51:34.853Z</lastmod>
   </url>
   <url>
     <loc>https://stanleyrazor.github.io/portfolio/index.html</loc>
-    <lastmod>2024-08-04T11:41:29.763Z</lastmod>
+    <lastmod>2024-08-04T17:51:37.715Z</lastmod>
   </url>
 </urlset>
