@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Stanley Sayianka">
+<meta name="dcterms.date" content="2023-03-03">
+
+<title>Stanley Sayianka - A comparison of covariance matrix estimation methods for tangency portfolios.</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script src="../../site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="../../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Stanley Sayianka</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html" rel="" target="">
+ <span class="menu-text">Projects</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">A comparison of covariance matrix estimation methods for tangency portfolios.</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">Investments</div>
+                <div class="quarto-category">Quant-finance</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Stanley Sayianka </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 3, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
+
+
+
+
+<p>This article investigates the problem of covariance matrix estimation for tangency portfolios using data from the Nairobi Securities Exchange (NSE) Specifically, I compare several methods of covariance matrix estimation and evaluate their performance in constructing tangency portfolios. The results provide insights into the most effective methods for estimating the covariance matrix in the context of the NSE, which can be valuable for portfolio managers and investors seeking to optimize their investment portfolios in the NSE.</p>
+<section id="introduction" class="level1 page-columns page-full">
+<h1>Introduction</h1>
+<div class="page-columns page-full"><p>Most investors base their investment decisions on two metrics: the mean(return), and variance(risk)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, where some choose to invest in portfolios giving the highest return for a given level of risk, while others invest in portfolios giving the lowest risk, for a given level of return.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;The use of variance and volatility as a measure of portfolio risk, has a long history. For instance, see Fisher (1906) and Tobin (1958)</p></li></div></div>
+<p>Markowitz (1952), was the first to formalize portfolio risk and asset selection, in what came to be known as <em>Markowitz Portfolio Theory (MPT)</em>. MPT states that the portfolio’s return is given by the weighted average of the expected returns for the individual assets in the portfolio and the portfolio’s risk is equal to the variance of the portfolio returns which is a function of the variances and covariances between securities and their weights in the portfolio.</p>
+<p>This is shown below:</p>
+<p><span class="math display">\[\mu_p = \sum_{i=1}^n w_i\mu_i\]</span> <span class="math display">\[\sigma^2_p = \sum_{i=1}^n w_iw_j*\sigma_{ij}\]</span> Where:</p>
+<p><span class="math inline">\(\mu_p, \sigma^2_p\)</span>: The portfolio’s expected return and variance respectively.</p>
+<p><span class="math inline">\(n\)</span>: The number of assets in the portfolio.</p>
+<p><span class="math inline">\(\mu_i\)</span>: the expected returns for asset <span class="math inline">\(i\)</span>.</p>
+<p><span class="math inline">\(w_i, w_j\)</span>: The weight invested in assets <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span> respectively.</p>
+<p><span class="math inline">\(\sigma^2_{ij}\)</span>: The covariance between asset <span class="math inline">\(i\)</span> and <span class="math inline">\(j\)</span>. If <span class="math inline">\(i = j\)</span>, then <span class="math inline">\(\sigma^2_{ij}\)</span> is the variance of the <span class="math inline">\(i^{th}\)</span> asset in the portfolio.</p>
+<section id="the-efficient-frontier-and-efficient-portfolios" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="the-efficient-frontier-and-efficient-portfolios">The efficient frontier and efficient portfolios</h2>
+<div class="page-columns page-full"><p>The efficient frontier is a concept used in modern portfolio theory that helps investors to identify the optimal portfolio that maximizes returns for a given level of risk. The theory assumes that investors are risk-averse and will choose the portfolio with the highest expected return for a given level of risk. It is usually represented as a graph that plots the expected return and standard deviation<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> of all possible portfolios that can be constructed from a set of assets.</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;as a measure of risk</p></li></div></div>
+<p>The portfolios on the efficient frontier are considered to be <em>efficient</em> because they provide the highest possible expected return for a given level of risk. Thus, investors can choose any portfolio on the efficient frontier that suits their level of risk tolerance. An important aspect to note from the efficient frontier is: investors can only increase their expected return by taking on more risk.</p>
+</section>
+<section id="tangency-portfolio" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="tangency-portfolio">Tangency portfolio</h2>
+<div class="page-columns page-full"><p>A tangency portfolio, is a portfolio that maximizes the risk-adjusted return for a given level of risk aversion. Specifically, a tangency portfolio lies on the efficient frontier, and it is tangent to the capital market line<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a>. It is widely used in portfolio management to construct investment portfolios that offer the highest expected return for a given level of risk or the lowest level of risk for a given expected return.</p><div class="no-row-height column-margin column-container"><li id="fn3"><p><sup>3</sup>&nbsp;Simple a straight line representing the risk/reward profiles of different combinations of a risky portfolio with a riskless asset</p></li></div></div>
+<p>Despite the emergence of alternative portfolio construction techniques, such as risk parity, tangency portfolios remain relevant in investment management due to their ability to provide an optimal balance between risk and return. They are a key component of modern portfolio theory and provide a useful reference point for evaluating portfolio performance. They are constructed based on the efficient frontier - as such, they represent the most efficient way to achieve a particular level of expected return, making them an important tool for portfolio optimization.</p>
+<p>The optimization problem for the tangency portfolio can be expressed follows:</p>
+<p>Suppose we have a universe of <span class="math inline">\(n\)</span> assets with returns <span class="math inline">\(\mathbf{\mu}\)</span> and covariance matrix <span class="math inline">\(\mathbf{\Sigma}\)</span>. We want to construct a portfolio with weights <span class="math inline">\(\mathbf{w}\)</span> that maximizes the Sharpe ratio subject to the constraint that all weights are non-negative, and sum to one:</p>
+<p><span class="math display">\[max_w \hspace{2 mm} h(w) = \frac{\mu^Tw - r_f}{w^T \Sigma w}\]</span> <span class="math display">\[\text{subject to} \quad \mathbf{w} \geq \mathbf{0}, \hspace{2 mm} \sum_{i=1}^n w_i = 1\]</span> The quantity <span class="math inline">\(h(w)\)</span> is precisely the Sharpe ratio.</p>
+<p>Solving for <span class="math inline">\(w\)</span>, gives:</p>
+<p><span class="math display">\[\mathbf{w} = \frac{\mathbf{\Sigma}^{-1} (\mathbf{\mu} - r_f \mathbf{1})}{\mathbf{\mathbf{1^T}  \Sigma}^{-1}(\mathbf{\mu} - r_f \mathbf{1})} \]</span></p>
+<p>From the solution above, the covariance matrix and mean vector are crucial in the solution for the tangency portfolio. The mean vector represents the expected returns for each asset in the portfolio, while the covariance matrix represents the co-movements between the returns of each asset in the portfolio.</p>
+<p>The optimal portfolio is found by balancing the expected returns and risks of the individual assets in the portfolio, which is done using the mean vector and covariance matrix. In the next section, we explore several ways of estimating the expected returns and covariance matrix for the assets in the portfolio</p>
+<p>In the next section, we review covariance matrix estimation methods present in literature, giving their formulations, and using them in computing optimal allocations to the investment universe. We briefly begin with the sample covariance matrix, and proceed to alternative covariance matrix estimation methods.</p>
+</section>
+<section id="the-sample-covariance-matrix-sample" class="level2">
+<h2 class="anchored" data-anchor-id="the-sample-covariance-matrix-sample">The sample covariance matrix (SAMPLE)</h2>
+<p>The sample covariance matrix is among the earliest and commonly used estimator, especially because it arises as the maximum likelihood solution under normality. It is calculated from the historical returns of the assets in the portfolio, with the assumption that the historical returns of the assets are representative of their future returns. This assumption may be violated, especially in dynamic markets.</p>
+<p>The sample location estimate for a portfolio of <span class="math inline">\(n\)</span> observations and <span class="math inline">\(p\)</span> assets is given by:</p>
+<p><span class="math display">\[ E(r_p) = \sum_{i=1}^{n} w_i E(r_i)\]</span> The sample covariance matrix is given by:</p>
+<p><span class="math display">\[\begin{equation}
+\hat{\Sigma} = \frac{1}{n-1} \sum_{i=1}^{n} (\mathbf{x_i} - \boldsymbol{\bar{x}})(\mathbf{x_i} - \boldsymbol{\bar{x}})^T,
+\end{equation}\]</span></p>
+<p>where:</p>
+<p><span class="math inline">\(E(r_p)\)</span> is the expected return of the portfolio</p>
+<p><span class="math inline">\(E(r_i)\)</span> is the expected return of the <span class="math inline">\(i\)</span>th asset</p>
+<p><span class="math inline">\(\mathbf{x_i}\)</span> is the <span class="math inline">\(i\)</span>-th observation vector,</p>
+<p><span class="math inline">\(\boldsymbol{\bar{x}}\)</span> is the sample mean vector, and the superscript <span class="math inline">\(T\)</span> denotes the matrix transpose operation.</p>
+<p>Note that <span class="math inline">\(\hat{\Sigma}\)</span> is a symmetric <span class="math inline">\(p \times p\)</span> matrix.</p>
+<p>One of the main drawbacks of the sample covariance matrix is that it is sensitive to outliers. Additionally, if the number of assets in the portfolio is large, singularity issues may emerge when computing the sample covariance matrix.</p>
+<p>Since, the sample covariance matrix is sensitive to outlying observations, there is need to examine other <em>‘robust’</em> approaches to estimating the covariance matrix of historical stock returns. The robust methods provide alternative approaches to classical methods for location and scale estimates, as they are not affected by slight departures from model assumptions.</p>
+<p>In the next section, we investigate some of the robust covariance estimators:</p>
+</section>
+<section id="minimum-covariance-determinant-estimator-mcd" class="level2">
+<h2 class="anchored" data-anchor-id="minimum-covariance-determinant-estimator-mcd">1. Minimum Covariance Determinant Estimator (MCD)</h2>
+<p>The MCD estimator is based on the concept of finding the subset of data points: <span class="math inline">\(h(&gt;N/2)\)</span> whose classical covariance matrix has the lowest possible determinant, which is a measure of the spread of the data.</p>
+<p>When using the MCD estimator, the location estimate of a portfolio is given by the arithmetic mean of the asset returns in the robust subset, as follows:</p>
+<p><span class="math display">\[\bar{r}_{MCD} = \frac{1}{n_{robust}} \sum_{i=1}^{n_{robust}} r_i\]</span> Where:</p>
+<p><span class="math inline">\(\bar{r}_{MCD}\)</span> is the location estimate using the MCD estimator,</p>
+<p><span class="math inline">\(n_{robust}\)</span> is the number of assets in the robust subset, and</p>
+<p><span class="math inline">\(r_i\)</span> is the return of the <span class="math inline">\(i\)</span>th asset in the robust subset.</p>
+<p>The MCD estimator for the covariance matrix is computed as follows:</p>
+<p><span class="math display">\[\begin{equation}
+\hat{\Sigma}_{MCD} = c_{p,n} \cdot \text{MAD}(\mathbf{X})^{-2} \cdot \sum_{i=1}^{h} w_i (\mathbf{x_i} - \boldsymbol{\bar{x}})(\mathbf{x_i} - \boldsymbol{\bar{x}})^T,
+\end{equation}\]</span></p>
+<p>where:</p>
+<p><span class="math inline">\(\mathbf{X}\)</span> is a <span class="math inline">\(n \times p\)</span> matrix of observations,</p>
+<p><span class="math inline">\(\boldsymbol{\bar{x}}\)</span> is the sample mean vector,</p>
+<p><span class="math inline">\(\text{MAD}(\mathbf{X})\)</span> is the Median Absolute Deviation of the observations,</p>
+<p><span class="math inline">\(h\)</span> is the number of non-outlier observations,</p>
+<p><span class="math inline">\(w_i\)</span> are weights assigned to each non-outlier observation, and</p>
+<p><span class="math inline">\(c_{p,n}\)</span> is a constant that depends on the dimension of the data and the number of observations.</p>
+<p>One of the main strengths of the MCD estimator is its ability to handle both symmetric and asymmetric outliers in the data, making it robust. It is also computationally efficient and can be used with high dimensional datasets, and portfolios with a large number of assets.</p>
+<p>A limitation of the MCD estimator is that it assumes that the data points are multivariate normal, which may not always hold true in practice. The MCD estimator may also produce unreliable estimates of the covariance matrix when the proportion of outliers in the data is very high.</p>
+</section>
+<section id="minimum-volume-ellipsoid-estimator-mve" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="minimum-volume-ellipsoid-estimator-mve">2. Minimum Volume Ellipsoid Estimator (MVE)</h2>
+<div class="page-columns page-full"><p>The MVE is a multivariate location and scale estimator which uses a subset of the data in its computation. It is based on the concept of fitting an ellipsoid to the data points that minimizes its volume, while ensuring that it contains a specified proportion<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a> of the data points. It can be thought of as estimating the mean and covariance of the <em>‘good part’</em> of the data.</p><div class="no-row-height column-margin column-container"><li id="fn4"><p><sup>4</sup>&nbsp;This specified proportion is based on user-supplied quantiles</p></li></div></div>
+<p>When using the MVE estimator, the location estimate of a portfolio is given by the arithmetic mean of the asset returns in the ellipsoid that encloses the robust subset, as follows:</p>
+<p><span class="math display">\[\bar{r}_{MVE} = \frac{1}{n_{robust}} \sum_{i=1}^{n_{robust}} r_i\]</span></p>
+<p>where:</p>
+<p><span class="math inline">\(\bar{r}_{MVE}\)</span> is the location estimate using the MVE estimator,</p>
+<p><span class="math inline">\(n_{robust}\)</span> is the number of assets in the robust subset, and</p>
+<p><span class="math inline">\(r_i\)</span> is the return of the <span class="math inline">\(i\)</span>th asset in the robust subset.</p>
+<p>The MVE estimator for the covariance matrix is computed as follows:</p>
+<p><span class="math display">\[\begin{equation}
+\hat{\Sigma}_{MVE} = \frac{n}{m} \cdot \text{cov}_{\text{MCD}}(\mathbf{X}),
+\end{equation}\]</span></p>
+<p>where:</p>
+<p><span class="math inline">\(\mathbf{X}\)</span> is a <span class="math inline">\(n \times p\)</span> matrix of observations,</p>
+<p><span class="math inline">\(\text{cov}_{\text{MCD}}(\mathbf{X})\)</span> is the covariance matrix computed using the MCD estimator, and</p>
+<p><span class="math inline">\(m\)</span> is the number of observations used to compute the MCD estimator.</p>
+<p>Other than being robust to outliers, the MVE provides a more accurate estimate of the covariance matrix when the distribution of the asset returns is non-normal. In such cases, the MVE estimator can capture the non-linear relationships between the assets and produce more accurate estimates of the covariance matrix.</p>
+<p>However, the MVE estimator can be computationally expensive to calculate, especially when dealing with portfolios with a large number of assets and the assumption that data points are elliptically distributed may not always hold true in some cases.</p>
+</section>
+<section id="orthogonalized-gnanadesikan-kettenring-estimator-ogk" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="orthogonalized-gnanadesikan-kettenring-estimator-ogk">3. Orthogonalized Gnanadesikan-Kettenring Estimator (OGK)</h2>
+<p>This method is based on the concept of orthogonalizing the data matrix to remove any correlations between the variables and then estimating the covariance matrix from the resulting matrix.</p>
+<p>The OGK estimate for the robust location measure is defined as:</p>
+<p><span class="math display">\[\mu(X) = \frac{\sum_i w_ix_i}{\sum_i w_i}\]</span></p>
+<p>Where,</p>
+<p><span class="math inline">\(w_i\)</span> are the robustness weights compute as:</p>
+<p><span class="math display">\[w_i := w_{c1}\frac{(x_i - med(X))}{MAD(X)}\]</span></p>
+<p>The OGK estimator for the covariance matrix can be computed as follows:</p>
+<p><span class="math display">\[\begin{equation}
+\hat{\Sigma}_{OGK} = \frac{1}{n} \cdot \sum_{i=1}^{n} \lambda_i(\mathbf{S}) \cdot \mathbf{V_i} \cdot \mathbf{V_i}^T,
+\end{equation}\]</span></p>
+<p>where</p>
+<p><span class="math inline">\(\mathbf{S}\)</span>: is the sample covariance matrix,</p>
+<p><span class="math inline">\(\lambda_i(\mathbf{S})\)</span> and <span class="math inline">\(\mathbf{V_i}\)</span> are the eigenvalues and eigenvectors of <span class="math inline">\(\mathbf{S}\)</span>, respectively, and <span class="math inline">\(n\)</span> is the number of observations.</p>
+<div class="page-columns page-full"><p>One of the main strengths of the OGK estimator is its ability to handle datasets with high levels of multicollinearity<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>, which can cause instability in the estimates of the covariance matrix. The OGK estimator reduces this instability by orthogonalizing the data matrix</p><div class="no-row-height column-margin column-container"><li id="fn5"><p><sup>5</sup>&nbsp;High correlations between the variables in the data</p></li></div></div>
+<p>The OGK estimator also produces estimates of the covariance matrix that are more accurate than those obtained using the sample covariance matrix when the distribution of the asset returns is non-normal.</p>
+<p>Some limitations to using the OGK estimator include: it can be computationally expensive to calculate, especially when dealing with portfolios with a large number of assets. The OGK estimator may also produce unreliable estimates of the covariance matrix when the proportion of outliers in the data is very high.</p>
+</section>
+<section id="nearest-neighbour-variance-estimator-nnv" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="nearest-neighbour-variance-estimator-nnv">4. Nearest-Neighbour Variance Estimator (NNV)</h2>
+<p>The NNV estimator is based on the concept of using the k-nearest neighbors of each data point to estimate its variance, which is then used to estimate the covariance matrix.</p>
+<p>The location estimate is given by the arithmetic mean of the asset returns in the dataset. The formula for the location estimate using the NNV estimator is:</p>
+<p><span class="math display">\[\bar{r}_{NNV} = \frac{1}{n} \sum_{i=1}^{n} r_i\]</span></p>
+<p>where:</p>
+<p><span class="math inline">\(\bar{r}_{NNV}\)</span> is the location estimate using the NNV estimator,</p>
+<p><span class="math inline">\(n\)</span> is the number of assets in the portfolio,</p>
+<p>and <span class="math inline">\(r_i\)</span> is the return of the <span class="math inline">\(i^{th}\)</span> asset in the portfolio.</p>
+<p>The NNV estimator for the covariance matrix is computed as follows:</p>
+<p><span class="math display">\[\begin{equation}
+\hat{\Sigma}_{NNV} = \frac{2}{n(n-1)h^2} \sum_{i=1}^{n} \sum_{j=1}^{n} w\left(\frac{|\mathbf{x_i} - \mathbf{x_j}|}{h}\right) (\mathbf{x_i} - \mathbf{\bar{x}})(\mathbf{x_j} - \mathbf{\bar{x}})^T,
+\end{equation}\]</span></p>
+<p>where</p>
+<p><span class="math inline">\(\mathbf{x_i}\)</span> and <span class="math inline">\(\mathbf{x_j}\)</span> are the <span class="math inline">\(i^{th}\)</span> and <span class="math inline">\(j^{th}\)</span> observations, respectively,</p>
+<p><span class="math inline">\(\mathbf{\bar{x}}\)</span> is the sample mean,</p>
+<div class="page-columns page-full"><p><span class="math inline">\(h\)</span> is a smoothing parameter, and <span class="math inline">\(w(\cdot)\)</span> is a weighting function<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>.</p><div class="no-row-height column-margin column-container"><li id="fn6"><p><sup>6</sup>&nbsp;A common choice for <span class="math inline">\(w(\cdot)\)</span> is the Epanechnikov kernel.</p></li></div></div>
+<p>One of the main strengths of the NNV estimator is its ability to handle datasets with a large number of assets, and thus, it can produce estimates of the covariance matrix that are less affected by the curse of dimensionality than other methods.</p>
+<p>Limitations to using the NNV estimator include: it assumes that the data points are independent and identically distributed, which may not always hold true in practice. Additionally, the NNV estimator may produce unreliable estimates of the covariance matrix when the dataset contains outliers or when the nearest neighbors parameter <span class="math inline">\(k\)</span> is chosen incorrectly.</p>
+</section>
+<section id="shrinkage-estimator-shrink" class="level2">
+<h2 class="anchored" data-anchor-id="shrinkage-estimator-shrink">5. Shrinkage Estimator (SHRINK)</h2>
+<p>The Shrinkage estimator is based on the concept of shrinking the sample covariance matrix towards a target matrix such as the diagonal matrix or a structured matrix, which can improve the accuracy of the estimated covariance matrix.</p>
+<p>The Shrinkage Estimator of the location parameter is given by the arithmetic mean of the asset returns.</p>
+<p>The Shrinkage Estimator for the covariance matrix is computed as follows:</p>
+<p><span class="math display">\[\begin{equation}
+\hat{\Sigma}_{Shrink} = \alpha \cdot \hat{\Sigma}_{D} + (1-\alpha) \cdot \hat{\Sigma}_{S},
+\end{equation}\]</span></p>
+<p>where:</p>
+<p><span class="math inline">\(\hat{\Sigma}_{D}\)</span> is the diagonal matrix of the sample variances,</p>
+<p><span class="math inline">\(\hat{\Sigma}_{S}\)</span> is the target matrix, and <span class="math inline">\(\alpha\)</span> is the shrinkage intensity parameter that determines the degree of shrinkage towards the target matrix.</p>
+<p>A common choice for the target matrix is the Ledoit-Wolf estimator, which is based on the assumption that the true covariance matrix can be expressed as a linear combination of a diagonal matrix and a low-rank matrix. The Ledoit-Wolf estimator is computed as follows:</p>
+<p><span class="math display">\[\begin{equation}
+\hat{\Sigma}_{LW} = \gamma \cdot \hat{\Sigma}_{D} + (1-\gamma) \cdot \hat{\Sigma}_{L},
+\end{equation}\]</span></p>
+<p>where:</p>
+<p><span class="math inline">\(\hat{\Sigma}_{D}\)</span> is the diagonal matrix of the sample variances,</p>
+<p><span class="math inline">\(\hat{\Sigma}_{L}\)</span> is the low-rank matrix that minimizes the Frobenius norm distance to the sample covariance matrix, and</p>
+<p><span class="math inline">\(\gamma\)</span> is a parameter that determines the degree of shrinkage towards the diagonal matrix.</p>
+<p>The main strengths of the Shrinkage estimator is that it produces reliable estimates of the covariance matrix than the sample covariance matrix when the number of observations or assets is small, as well as when the number of assets is large, and thus, it is less affected by the curse of dimensionality than other methods.</p>
+<p>However, there are also some limitations to using the Shrinkage estimator. The accuracy of the estimated covariance matrix depends on the choice of the target matrix. It is also important to note that, the Shrinkage estimator may produce unreliable estimates of the covariance matrix when the dataset contains outliers or when the amount of shrinkage is too large.</p>
+</section>
+<section id="bagging-estimator-bagged" class="level2">
+<h2 class="anchored" data-anchor-id="bagging-estimator-bagged">6. Bagging Estimator (BAGGED)</h2>
+<p>The bagged estimator is based on the concept of bootstrapping, which involves creating multiple samples of the original dataset and using these samples to estimate the covariance matrix.</p>
+<p>The Bagging Estimator for the location parameter is then given by the average of the sample means:</p>
+<p><span class="math display">\[
+\boldsymbol{\tilde{r}} = \frac{1}{B} \sum_{b=1}^B \boldsymbol{\bar{r}}_b
+\]</span></p>
+<p>where</p>
+<p><span class="math inline">\(\boldsymbol{\bar{r}}_b\)</span> is the sample mean of the <span class="math inline">\(b\)</span>th bootstrap sample, and</p>
+<p><span class="math inline">\(B\)</span> is the number of bootstrap samples.</p>
+<p>The Bagging Estimator for the covariance matrix is computed as follows:</p>
+<p><span class="math display">\[\begin{equation}
+\hat{\Sigma}_{Bagging} = \frac{1}{B} \sum_{b=1}^{B} \hat{\Sigma}_{b},
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\hat{\Sigma}_{b}\)</span> is the sample covariance matrix computed from the <span class="math inline">\(b^{th}\)</span> bootstrap sample, and <span class="math inline">\(B\)</span> is the number of bootstrap samples used.</p>
+<p>To generate each bootstrap sample, we randomly sample <span class="math inline">\(n\)</span> observations with replacement from the original data. Then, we compute the sample covariance matrix from the bootstrap sample.</p>
+<p>An advantage of the bagged estimator is: that it can handle datasets with non-normal distributions or with a high proportion of outliers. By creating multiple samples of the dataset, it can reduce the impact of extreme values on the estimated covariance matrix.</p>
+<p>However, the accuracy of the estimated covariance matrix depends on the number of bootstrap samples (<span class="math inline">\(B\)</span>) and the Bagged estimator may also produce unreliable estimates of the covariance matrix when the dataset contains highly correlated assets.</p>
+</section>
+<section id="multivariate-students-t-estimator-cov-t" class="level2">
+<h2 class="anchored" data-anchor-id="multivariate-students-t-estimator-cov-t">7. Multivariate Student’s t estimator (COV-T)</h2>
+<p>The Multivariate Student’s t estimator is a technique used to estimate the covariance matrix in portfolio optimization based on the assumption that the asset returns follow a multivariate Student’s t distribution, which can better capture the presence of outliers and heavy tails in the data compared to the normal distribution.</p>
+<p>The Multivariate Student’s t Estimator for the location parameter is given by:</p>
+<p><span class="math display">\[
+\boldsymbol{\tilde{r}} = \frac{\sum_{i=1}^n w_i \boldsymbol{r}_i}{\sum_{i=1}^n w_i}
+\]</span></p>
+<p>where:</p>
+<p><span class="math inline">\(\boldsymbol{r}_i\)</span> is the <span class="math inline">\(i^{th}\)</span> asset return vector, and</p>
+<p><span class="math inline">\(w_i\)</span> is the weight assigned to the <span class="math inline">\(i^{th}\)</span> asset, which is determined by the Mahalanobis distance of the <span class="math inline">\(i^{th}\)</span> return vector from the empirical median of the returns, and the degrees of freedom parameter <span class="math inline">\(\nu\)</span> of the Student’s t distribution.</p>
+<p>The Multivariate Student’s t estimator for the covariance matrix is computed as follows:</p>
+<p><span class="math display">\[\begin{equation}
+\hat{\Sigma}_{t} = \frac{\kappa}{\kappa-2} \cdot \frac{\sum_{i=1}^{n}(X_i-\bar{X})(X_i-\bar{X})^T}{n},
+\end{equation}\]</span></p>
+<p>where:</p>
+<p><span class="math inline">\(X_i\)</span> is the <span class="math inline">\(i^{th}\)</span> observation in the data,</p>
+<p><span class="math inline">\(\bar{X}\)</span> is the sample mean,</p>
+<p><span class="math inline">\(n\)</span> is the sample size, and</p>
+<p><span class="math inline">\(\kappa\)</span> is a parameter that controls the degrees of freedom of the Student’s t-distribution.</p>
+<p>The main strength of the Multivariate Student’s t estimator is that it can produce more reliable estimates of the covariance matrix than other methods when the dataset contains extreme values or when the returns are not normally distributed.</p>
+<p>A key limitation to this method is that it assumes that the asset returns follow a multivariate Student’s t distribution, which may not always hold true in practice. Additionally, the Multivariate Student’s t estimator may produce unreliable estimates of the covariance matrix when the dataset contains highly correlated assets.</p>
+</section>
+<section id="adaptive-re-weighted-estimator-arw" class="level2">
+<h2 class="anchored" data-anchor-id="adaptive-re-weighted-estimator-arw">8. Adaptive Re-weighted estimator (ARW)</h2>
+<p>The Adaptive Re-weighted estimator is a technique based on the idea of iteratively re-weighting the observations based on their Mahalanobis distances from the current estimate of the mean and covariance matrix, which can improve the accuracy of the estimated covariance matrix. It is designed to be robust to outliers and heavy-tailed data.</p>
+<p><span class="math display">\[\boldsymbol{\tilde{r}} = \boldsymbol{m}_{AR}^{(K)} = \boldsymbol{m}_{AR}^{(0)} + \sum_{k=1}^K \boldsymbol{\epsilon}^{(k)} \boldsymbol{W}^{(k)}\]</span></p>
+<p>where:</p>
+<p><span class="math inline">\(\boldsymbol{m}_{AR}^{(0)}\)</span> is an initial estimate of the location parameter,</p>
+<p><span class="math inline">\(\boldsymbol{\epsilon}^{(k)}\)</span> is the residual error of the linear regression of the asset returns on the estimate of the location parameter at iteration <span class="math inline">\(k-1\)</span>, and</p>
+<p><span class="math inline">\(\boldsymbol{W}^{(k)}\)</span> is the weight matrix assigned to each asset at iteration <span class="math inline">\(k\)</span>, which is determined by the Mahalanobis distance of the return vector from the estimate of the location parameter at iteration <span class="math inline">\(k-1\)</span>, and a tuning constant <span class="math inline">\(\alpha_k\)</span> that scales the distance threshold.</p>
+<p>The re-weighted estimator for the covariance matrix is given by:</p>
+<p><span class="math display">\[\begin{equation}
+\hat{\Sigma}_{ARW} = \frac{1}{n} \sum_{i=1}^{n} w_i (X_i - \bar{X})(X_i - \bar{X})^T,
+\end{equation}\]</span></p>
+<p>where:</p>
+<p><span class="math inline">\(X_i\)</span> is the <span class="math inline">\(i^{th}\)</span> observation in the data,</p>
+<p><span class="math inline">\(\bar{X}\)</span> is the sample mean,</p>
+<p><span class="math inline">\(n\)</span> is the sample size, and <span class="math inline">\(w_i\)</span> is the weight assigned to the <span class="math inline">\(i^{th}\)</span> observation.</p>
+<p>The weights are computed iteratively using the following update rule:</p>
+<p><span class="math display">\[\begin{equation}
+w_i^{(k+1)} = \frac{1}{\sqrt{(X_i - \bar{X})^T \hat{\Sigma}_{ARW}^{(k)-1} (X_i - \bar{X})}},
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\hat{\Sigma}_{ARW}^{(k)}\)</span> is the estimate of the covariance matrix at iteration <span class="math inline">\(k\)</span>. The iterations continue until the weights converge to a stable value.</p>
+<p>The main advantage of this method is that it can produce estimates of the covariance matrix that are robust to model misspecification, such as when the asset returns do not follow a multivariate normal distribution.</p>
+<p>Some limitations to using the Adaptive Re-weighted estimator include: the accuracy of the estimated covariance matrix depends on the choice of the re-weighting function. The Adaptive Re-weighted estimator may also produce unreliable estimates of the covariance matrix when the dataset contains highly correlated assets.</p>
+<hr>
+</section>
+</section>
+<section id="data" class="level1 page-columns page-full">
+<h1>Data</h1>
+<div class="cell page-columns page-full">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div id="fig-margin" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="index_files/figure-html/fig-margin-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;1: Returns correlation plot. The data do not exhibit high levels of correlation.</figcaption>
+</figure>
+</div>
+</div></div></div>
+<p>The data used for this study are the constituents of the NSE 20 Share Index (NSE 20) from the period 2015-01-01 to 2022-12-31, a total of 8 years. The stocks are listed below:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 59%">
+<col style="width: 9%">
+<col style="width: 31%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Company Name</th>
+<th style="text-align: left;">Ticker</th>
+<th style="text-align: left;">Industry</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Absa Bank Kenya PLC</td>
+<td style="text-align: left;">ABSA</td>
+<td style="text-align: left;">Banking</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Diamond Trust Bank Kenya Ltd Ord 4.00</td>
+<td style="text-align: left;">DTK</td>
+<td style="text-align: left;">Banking</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Equity Group Holdings Plc Ord 0.50</td>
+<td style="text-align: left;">EQTY</td>
+<td style="text-align: left;">Banking</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">KCB Group Plc Ord 1.00</td>
+<td style="text-align: left;">KCB</td>
+<td style="text-align: left;">Banking</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">NIC Group Plc Ord 5.00</td>
+<td style="text-align: left;">NCBA</td>
+<td style="text-align: left;">Banking</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Stanbic Holdings Plc ord.5.00</td>
+<td style="text-align: left;">SBIC</td>
+<td style="text-align: left;">Banking</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Standard Chartered Bank Kenya Ltd Ord 5.00</td>
+<td style="text-align: left;">SCBK</td>
+<td style="text-align: left;">Banking</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">The Co-operative Bank of Kenya Ltd Ord 1.00</td>
+<td style="text-align: left;">COOP</td>
+<td style="text-align: left;">Banking</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Nation Media Group Ltd Ord. 2.50</td>
+<td style="text-align: left;">NMG</td>
+<td style="text-align: left;">Commercial and Services</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">WPP Scangroup Plc Ord 1.00</td>
+<td style="text-align: left;">SCAN</td>
+<td style="text-align: left;">Commercial and Services</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bamburi Cement Ltd Ord 5.00</td>
+<td style="text-align: left;">BAMB</td>
+<td style="text-align: left;">Construction and Allied</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">KenGen Co.&nbsp;Plc Ord. 2.50</td>
+<td style="text-align: left;">KEGN</td>
+<td style="text-align: left;">Energy and Petroleum</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Kenya Power &amp; Lighting Co Ltd Ord 2.50</td>
+<td style="text-align: left;">KPLC</td>
+<td style="text-align: left;">Energy and Petroleum</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Britam Holdings Plc Ord 0.10</td>
+<td style="text-align: left;">BRIT</td>
+<td style="text-align: left;">Insurance</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Kenya Re Insurance Corporation Ltd Ord 2.50</td>
+<td style="text-align: left;">KNRE</td>
+<td style="text-align: left;">Insurance</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Centum Investment Co Plc Ord 0.50</td>
+<td style="text-align: left;">CTUM</td>
+<td style="text-align: left;">Investment</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Nairobi Securities Exchange Plc Ord 4.00</td>
+<td style="text-align: left;">NSE</td>
+<td style="text-align: left;">Investment Services</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">British American Tobacco Kenya Plc Ord 10.00</td>
+<td style="text-align: left;">BAT</td>
+<td style="text-align: left;">Manufacturing &amp; Allied</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">East African Breweries Ltd Ord 2.00</td>
+<td style="text-align: left;">EABL</td>
+<td style="text-align: left;">Manufacturing &amp; Allied</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Safaricom Plc Ord 0.05</td>
+<td style="text-align: left;">SCOM</td>
+<td style="text-align: left;">Telecommunications</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="portfolio-construction" class="level1 page-columns page-full">
+<h1>Portfolio construction</h1>
+<div class="page-columns page-full"><p>The portfolio constrcuted has the Long-Only constraint and is re-balanced yearly, using a rolling walk-forward analysis, with a rolling optimization period of four years, and a validation period of one year as shown below<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>:</p><div class="no-row-height column-margin column-container"><li id="fn7"><p><sup>7</sup>&nbsp;The portfolio is optimized using data from the optimization period, and the weights obtained are used in the validation period.</p></li></div></div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Optimization Period</th>
+<th style="text-align: right;">Validation period</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">2015::2018</td>
+<td style="text-align: right;">2019</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2016::2019</td>
+<td style="text-align: right;">2020</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">2017::2020</td>
+<td style="text-align: right;">2021</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">2018::2021</td>
+<td style="text-align: right;">2022</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>For the portfolio construction, the hyper-parameters are chosen as follows:</p>
+<ul>
+<li><p>For the Multivariate Student’s t estimator, the degree of freedom (<span class="math inline">\(\nu\)</span>) is the only hyper parameter, and it is obtained by first fitting the distribution on the optimization data, and then obtaining the fitted degree of freedom, to use in the portfolio validation phase.</p></li>
+<li><p>For the Bagged estimator, the number of bootstrap samples (<span class="math inline">\(B\)</span>) used, was fixed to 250 as informed by a pre-analysis, where several values of <span class="math inline">\(B\)</span> were tested ranging from 100 to 500, and the results indicated that the estimates from the bagged estimator do not vary as much with different values of <span class="math inline">\(B\)</span>.</p></li>
+<li><p>For the MCD estimator, the hyper-parameter <span class="math inline">\(\alpha\)</span> was fixed to the default value of 0.5 as indicated by a pre-analysis.</p></li>
+<li><p>For the Shrink estimator, the mixing weights <span class="math inline">\(\lambda\)</span> are computed analytically and do not have to be user supplied.</p></li>
+<li><p>The NNV estimator will not be used in the analysis, due to its instability, and the computation time it takes.</p></li>
+<li><p>For the ARW estimator, a pre-analysis shows that fixing the value of the hyper-parameter <span class="math inline">\(\alpha\)</span> to 0.025 (the default) is sufficient.</p></li>
+</ul>
+<section id="benchmarks" class="level2">
+<h2 class="anchored" data-anchor-id="benchmarks">Benchmarks</h2>
+<p>The portfolio constructed using the sample covariance matrix is used as the benchmark against the other estimators.</p>
+</section>
+</section>
+<section id="results" class="level1">
+<h1>Results</h1>
+<p>The portfolio cumulative returns chart is shown below:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption class="figure-caption">The cumulative returns plot assuming an initial investment capital of 10,000 USD. The portfolio returns of the various estimators are benchmarked against the EQW: Equally weighted portfolio over the validation phase. The best portfolio in terms of risk adjusted returns (sharpe ratio) is the adaptively reweighted estimator portfolio.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The benchmarking statistics against the sample covariance matrix estimator are shown below:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="lightable-paper table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">MCD</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">OGK</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">MVE</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">SHRINK</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">BAGGED</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">COV.T</th>
+<th style="text-align: right;" data-quarto-table-cell-role="th">ARW</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Alpha</td>
+<td style="text-align: right;">-0.0008</td>
+<td style="text-align: right;">0.0010</td>
+<td style="text-align: right;">-0.0006</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0005</td>
+<td style="text-align: right;">0.0012</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Beta</td>
+<td style="text-align: right;">0.8593</td>
+<td style="text-align: right;">0.6429</td>
+<td style="text-align: right;">0.9140</td>
+<td style="text-align: right;">0.9720</td>
+<td style="text-align: right;">1.0011</td>
+<td style="text-align: right;">0.8944</td>
+<td style="text-align: right;">0.8973</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Beta+</td>
+<td style="text-align: right;">0.8639</td>
+<td style="text-align: right;">0.7750</td>
+<td style="text-align: right;">0.9073</td>
+<td style="text-align: right;">0.9817</td>
+<td style="text-align: right;">1.0010</td>
+<td style="text-align: right;">0.8633</td>
+<td style="text-align: right;">0.8871</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Beta-</td>
+<td style="text-align: right;">0.9187</td>
+<td style="text-align: right;">0.7975</td>
+<td style="text-align: right;">0.9543</td>
+<td style="text-align: right;">0.9800</td>
+<td style="text-align: right;">1.0004</td>
+<td style="text-align: right;">0.9373</td>
+<td style="text-align: right;">0.9323</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">R-squared</td>
+<td style="text-align: right;">0.9371</td>
+<td style="text-align: right;">0.4268</td>
+<td style="text-align: right;">0.9712</td>
+<td style="text-align: right;">0.9971</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">0.9147</td>
+<td style="text-align: right;">0.8635</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Annualized Alpha</td>
+<td style="text-align: right;">-0.0424</td>
+<td style="text-align: right;">0.0559</td>
+<td style="text-align: right;">-0.0297</td>
+<td style="text-align: right;">0.0001</td>
+<td style="text-align: right;">0.0001</td>
+<td style="text-align: right;">0.0256</td>
+<td style="text-align: right;">0.0657</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Correlation</td>
+<td style="text-align: right;">0.9680</td>
+<td style="text-align: right;">0.6533</td>
+<td style="text-align: right;">0.9855</td>
+<td style="text-align: right;">0.9986</td>
+<td style="text-align: right;">1.0000</td>
+<td style="text-align: right;">0.9564</td>
+<td style="text-align: right;">0.9292</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Correlation p-value</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+<td style="text-align: right;">0.0000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Tracking Error</td>
+<td style="text-align: right;">0.0575</td>
+<td style="text-align: right;">0.1804</td>
+<td style="text-align: right;">0.0392</td>
+<td style="text-align: right;">0.0129</td>
+<td style="text-align: right;">0.0008</td>
+<td style="text-align: right;">0.0639</td>
+<td style="text-align: right;">0.0810</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Active Premium</td>
+<td style="text-align: right;">-0.0503</td>
+<td style="text-align: right;">0.0302</td>
+<td style="text-align: right;">-0.0346</td>
+<td style="text-align: right;">-0.0008</td>
+<td style="text-align: right;">0.0002</td>
+<td style="text-align: right;">0.0214</td>
+<td style="text-align: right;">0.0622</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Information Ratio</td>
+<td style="text-align: right;">-0.8751</td>
+<td style="text-align: right;">0.1675</td>
+<td style="text-align: right;">-0.8828</td>
+<td style="text-align: right;">-0.0653</td>
+<td style="text-align: right;">0.2101</td>
+<td style="text-align: right;">0.3348</td>
+<td style="text-align: right;">0.7675</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Treynor Ratio</td>
+<td style="text-align: right;">0.0030</td>
+<td style="text-align: right;">0.1292</td>
+<td style="text-align: right;">0.0200</td>
+<td style="text-align: right;">0.0535</td>
+<td style="text-align: right;">0.0530</td>
+<td style="text-align: right;">0.0830</td>
+<td style="text-align: right;">0.1282</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+</section>
+<section id="conclusion" class="level1 page-columns page-full">
+<h1>Conclusion</h1>
+<div class="page-columns page-full"><p>From the results above, the best performing portfolio is the ARW<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a> follwed by the OGK<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a> and COV-T<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>. The portfolios constructed using estimators from the Shrink, bagged and sample covariance matrix produce almost the same results. The MCD portfolio performed the worst among all the estimators, probably due to the incorrect assumption that the asset returns are multivariate normal distributed. The poor performance by MVE suggests that the assumption of elliptic distribution of asset returns was not met. The good performance delivered by ARW, OGK and COV-T suggest that the data contained heavy tailed returns, which were better handled using the three methods.</p><div class="no-row-height column-margin column-container"><li id="fn8"><p><sup>8</sup>&nbsp;Adaptive Re-weighted estimator</p></li><li id="fn9"><p><sup>9</sup>&nbsp;Orthogonalized Gnanadesikan-Kettenring estimator</p></li><li id="fn10"><p><sup>10</sup>&nbsp;Multivariate Student’s t estimator</p></li></div></div>
+<p>It is evident that the estimation methods which are suited to handling non-normal returns performed better as compared to those which make the assumption of normally distributed returns.</p>
+<div class="page-columns page-full"><p>All portfolios out-performed the Equally Weighted (1/n) portfolio in the period under consideration. Based on the information ratio<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a>, the ARW portfolio outperformed the SAMPLE portfolio by the largest margin.</p><div class="no-row-height column-margin column-container"><li id="fn11"><p><sup>11</sup>&nbsp;This relates the degree to which an investment has beaten the benchmark to the consistency with which the investment has beaten the benchmark.</p></li></div></div>
+</section>
+<section id="recommendations" class="level1">
+<h1>Recommendations</h1>
+<ol type="1">
+<li><p>Future analysis could include the NNV estimator, and other distribution estimators such as the NIG distribution.</p></li>
+<li><p>Future analysis could include estimators obtained after adjusting data for liquidity, and auto-correlation.</p></li>
+</ol>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<p>Martin Maechler, Peter Rousseeuw, Christophe Croux, Valentin Todorov, Andreas Ruckstuhl, Matias Salibian-Barrera, Tobias Verbeke, Manuel Koller, c(“Eduardo”, “L. T.”) Conceicao and Maria Anna di Palma (2024). robustbase: Basic Robust Statistics R package version 0.99-2. URL http://CRAN.R-project.org/package=robustbase</p>
+<p>Valentin Todorov, Peter Filzmoser (2009). An Object-Oriented Framework for Robust Multivariate Analysis. Journal of Statistical Software, 32(3), 1-47. URL https://www.jstatsoft.org/article/view/v032i03/.</p>
+<p>Wuertz D, Setz T, Chalabi Y, Boshnakov GN (2023). <em>fBasics: Rmetrics - Markets and Basic Statistics</em>. R package version 4032.96, <a href="https://CRAN.R-project.org/package=fBasics" class="uri">https://CRAN.R-project.org/package=fBasics</a>.</p>
+<p>Wuertz D, Setz T, Theussl S (2023). <em>fMultivar: Rmetrics - Modeling of Multivariate Financial Return Distributions</em>. R package version 4031.84, <a href="https://CRAN.R-project.org/package=fMultivar" class="uri">https://CRAN.R-project.org/package=fMultivar</a>.</p>
+<hr>
+<p>Gnanadesikan, R. and John R. Kettenring (1972) Robust estimates, residuals, and outlier detection with multiresponse data. Biometrics 28, 81–124.</p>
+<p>H. Markowitz. Portfolio Selection. The Journal of Finance, 7(1):77–91, 1952.</p>
+<p>H.M. Markowitz. Foundations of portfolio theory. Journal of Finance, pages 469–477, 1991.</p>
+<p>Irving Fisher. The Nature of Capital and Income. Macmillan, 1906.</p>
+<p>J. Tobin. Liquidity preference as behavior towards risk. The Review of Economic Studies, pages 65–86, 1958.</p>
+<p>Maronna, R.A. and Zamar, R.H. (2002) Robust estimates of location and dispersion of high-dimensional datasets; Technometrics 44(4), 307–317.</p>
+<p>Rousseeuw, P. &amp; Van Driessen, K. (1999). A fast algorithm for the minimum covariance determinant estimator. Technometrics, 41, 212–223. 55, 279</p>
+<p>Sharpe, W. F. (1994). The sharpe ratio. Journal of Portfolio Management, 21(1), 49–58. 227</p>
+</section>
+<section id="session-information" class="level1">
+<h1>Session information</h1>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>R version 4.3.2 (2023-10-31)
+Platform: aarch64-apple-darwin20 (64-bit)
+Running under: macOS Ventura 13.6.6
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+time zone: Africa/Nairobi
+tzcode source: internal
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] quantmod_0.4.26            TTR_0.24.4                
+ [3] tidyr_1.3.1                corrplot_0.92             
+ [5] MASS_7.3-60                corpcor_1.6.10            
+ [7] robustbase_0.99-2          fPortfolio_4023.84        
+ [9] lubridate_1.9.3            kableExtra_1.4.0          
+[11] plotly_4.10.4              mvoutlier_2.1.1           
+[13] sgeostat_1.0-27            fAssets_4023.85           
+[15] fBasics_4032.96            timeSeries_4032.109       
+[17] timeDate_4032.109          PortfolioAnalytics_1.1.0  
+[19] PerformanceAnalytics_2.0.4 foreach_1.5.2             
+[21] ggpubr_0.6.0               xts_0.13.2                
+[23] zoo_1.8-12                 stringi_1.8.4             
+[25] tufte_0.13                 gghighlight_0.4.1         
+[27] gridExtra_2.3              purrr_1.0.2               
+[29] stringr_1.5.1              sf_1.0-16                 
+[31] ggplot2_3.5.1              dplyr_1.1.4               
+[33] pacman_0.5.1              
+
+loaded via a namespace (and not attached):
+ [1] rstudioapi_0.16.0   jsonlite_1.8.8      magrittr_2.0.3     
+ [4] farver_2.1.2        rmarkdown_2.27      Rglpk_0.6-5.1      
+ [7] vctrs_0.6.5         RCurl_1.98-1.14     rstatix_0.7.2      
+[10] htmltools_0.5.8.1   energy_1.7-11       curl_5.2.1         
+[13] truncnorm_1.0-9     broom_1.0.5         cellranger_1.1.0   
+[16] KernSmooth_2.23-22  htmlwidgets_1.6.4   plyr_1.8.9         
+[19] ecodist_2.1.3       igraph_2.0.3        lifecycle_1.0.4    
+[22] iterators_1.0.14    pkgconfig_2.0.3     R6_2.5.1           
+[25] fastmap_1.2.0       digest_0.6.35       numDeriv_2016.8-1.1
+[28] colorspace_2.1-0    spatial_7.3-17      mvnormtest_0.1-9-3 
+[31] labeling_0.4.3      fansi_1.0.6         timechange_0.3.0   
+[34] httr_1.4.7          abind_1.4-5         compiler_4.3.2     
+[37] proxy_0.4-27        withr_3.0.0         gsl_2.1-8          
+[40] backports_1.5.0     ggcorrplot_0.1.4.1  carData_3.0-5      
+[43] DBI_1.2.2           highr_0.11          ggsignif_0.6.4     
+[46] classInt_0.4-10     tools_4.3.2         units_0.8-5        
+[49] glue_1.7.0          quadprog_1.5-8      grid_4.3.2         
+[52] reshape2_1.4.4      generics_0.1.3      gtable_0.3.5       
+[55] class_7.3-22        sn_2.1.1            data.table_1.15.4  
+[58] xml2_1.3.6          car_3.1-2           utf8_1.2.4         
+[61] pillar_1.9.0        lattice_0.22-6      tidyselect_1.2.1   
+[64] knitr_1.47          svglite_2.1.3       stats4_4.3.2       
+[67] xfun_0.45           DEoptimR_1.1-3      Rsolnp_1.16        
+[70] lazyeval_0.2.2      yaml_2.3.8          boot_1.3-30        
+[73] fCopulae_4022.85    evaluate_0.24.0     codetools_0.2-20   
+[76] kernlab_0.9-32      tibble_3.2.1        cli_3.6.2          
+[79] systemfonts_1.1.0   munsell_0.5.1       Rcpp_1.0.13        
+[82] readxl_1.4.3        fMultivar_4031.84   XML_3.99-0.16.1    
+[85] parallel_4.3.2      bitops_1.0-7        viridisLite_0.4.2  
+[88] mvtnorm_1.2-4       slam_0.1-52         scales_1.3.0       
+[91] rneos_0.4-0         e1071_1.7-14        rlang_1.1.4        
+[94] cowplot_1.1.3       mnormt_2.1.1       </code></pre>
+</div>
+</div>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

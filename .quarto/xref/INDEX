@@ -1,0 +1,39 @@
+{
+  "posts/post-with-code/index.qmd": {
+    "index.html": "44a4ff3c"
+  },
+  "posts/welcome/index.qmd": {
+    "index.html": "5b686262"
+  },
+  "index.qmd": {
+    "index.html": "da369e78"
+  },
+  "about.qmd": {
+    "about.html": "0bfe37db"
+  },
+  "projects.qmd": {
+    "projects.html": "63015336"
+  },
+  "posts/abm/index.qmd": {
+    "index.html": "5cbfa18e"
+  },
+  "posts/claims-modelling/index.qmd": {
+    "index.html": "8df2f9d4"
+  },
+  "posts/Linear mean reverting strategies/index.qmd": {
+    "index.html": "96fcff30"
+  },
+  "posts/DiD UHC Pilot/index.qmd": {
+    "index.html": "8cc71832",
+    "index.tex": "2c02ae0b"
+  },
+  "posts/glms-scratch/index.qmd": {
+    "index.html": "b28405ea"
+  },
+  "posts/cov-mat-estimation-tangency-ports/index.qmd": {
+    "index.html": "dcf0a256"
+  },
+  "posts/high-dimensional-data/index.qmd": {
+    "index.html": "a1e38a89"
+  }
+}

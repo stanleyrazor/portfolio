@@ -1,0 +1,2160 @@
+---
+title: "Learning representations in high-dimensional data"
+subtitle: "Regression and Classification"
+author: "Stanley Sayianka"
+format:
+  html:
+    grid:
+      margin-width: 400px
+reference-location: margin
+citation-location: margin
+date: "2022-11-12"
+categories: [stats, machine-learning]
+image: "high-dim.jpg"
+---
+
+```{r, echo=F, warning=F, message=F}
+# originally:       margin-width: 350px
+
+knitr::opts_chunk$set(echo=FALSE)
+knitr::opts_chunk$set(warning=FALSE)
+knitr::opts_chunk$set(message=FALSE)
+
+# sourcing for functions and global data
+source("rfiles/Global-1.R")
+source("rfiles/Global-2.R")
+
+library(pacman)
+p_load(dplyr, ggplot2, sf, stringr, purrr, gridExtra, gghighlight, ModelMetrics)
+
+scientific_theme <- theme(
+  # Text elements
+  text = element_text(family = "serif", color = "black"),
+  plot.title = element_text(size = 12, face = "plain", hjust = 0.5),
+  axis.title = element_text(size = 12, face = "plain"),
+  axis.text = element_text(size = 12),
+  axis.text.x = element_text(angle = 0, hjust = 0.5),
+  axis.text.y = element_text(angle = 0, hjust = 1),
+  legend.title = element_text(size = 12),
+  legend.text = element_text(size = 12),
+  
+  # Plot background and grid
+  panel.background = element_rect(fill = "white"),
+  panel.grid = element_blank(),
+  
+  # Axis lines and ticks
+  axis.line = element_line(color = "black"),
+  axis.ticks = element_line(color = "black"),
+  
+  # Remove the right and top axis lines (bty="l" equivalent)
+  axis.line.y.right = element_blank(),
+  axis.line.x.top = element_blank(),
+  
+  # Legend
+  legend.background = element_rect(fill = "white"),
+  legend.key = element_rect(fill = "white", color = NA),
+  
+  # Plot margins (approximating mar = c(5, 5, 3, 5))
+  plot.margin = margin(t = 3, r = 5, b = 5, l = 5, unit = "pt"),
+  
+  # Expand axes to touch the data (xaxs="i", yaxs="i" equivalent)
+  panel.spacing = unit(0, "lines"),
+  plot.title.position = "plot"
+)
+```
+
+
+# Introduction
+
+High-dimensional data is the type of data^[Also known as wide data] which is characterized by the presence of many variables^[potentially where the number of variables(p) is greater than the number of observations in the sample(n) i.e. $p > n$.]. Due to the growing nature of variables of interest and data collection over the past years in diverse domains such as health-care/medicine, marketing, finance etc., there is an increasing need for techniques which are able to thrive in situations where the number of variables is higher, and at times even more than the number of data points available to train the model.^[For most Machine Learning algorithms, data at hand is usually of the form $n >> p$, i.e. the number of data points(n) used in training the model is far higher than the  number of predictors(p) in the data. However for high dimensional Machine Learning, the number of predictors(p) is usually very large, and at times more than the sample size(n), which poses a problem for most Machine Learning models.]
+
+Examples of problems common in high dimensional learning include the following:
+
+Predicting consumer behavior and patterns in online-shopping stores, where the variables of interest, could be all search terms entered by the consumer, the click history, previous purchases and declines, demographic characteristics, and search account history. In such a problem, while the number of predictors for online behavior are many, we typically only have a few customer information.
+
+
+Signal generation, and price prediction in finance. In this domain, the variables of interest are usually: technical indicators of the price series such as the moving averages, volatility, etc, the fundamental indicators such as market capitalization and several accounting ratios, analyst ratings, social media sentiment etc. In this domain too, the number of historical data points used to train models is often limited^[at least not for high-frequency trading domain], however the number of predictors keeps growing.
+
+
+In medicine, a problem of interest is to predict whether given tumors are benign or malignant, where variables would include a number of characteristics of cells e.g. perimeter, concavity, area, smoothness etc and other variables about the patient such as patient's demographic characteristics, lifestyle characteristics etc. The characteristics could be so many, yet the number of patients, for which we have data could be few due to patients leaving studies/treatment.
+
+---
+
+The challenges associated with learning in high dimensions, require specialized techniques suited to such data since common statistical learning methods such as least squares fail in such dimensions. Potential dangers encountered when working with high-dimensional data include:
+
+1. Multi-collinearity: In the presence of a high number of predictors, the possibility of more than one pair of predictors being highly correlated increases, and this poses a challenge termed multi-collinearity in the data.^[Multi-collinearity refers to situations in which there are several predictors which are significantly correlated] Several machine learning models become unstable in the presence of multi-collinearity such as Neural networks, support vector machines etc, while some of them may break down completely such as multiple linear regression. Multi-collinearity introduces redundancy in model fitting, since two or more predictors attempt to explain the same variability in the response.
+
+
+2. False positive discoveries: In high dimension data, the probability of finding one or more predictors which are significantly related to the response due to random chance and not due to a true relationship increases, which leads to the problem of false discoveries. Such false positive findings often decrease a model's performance and hurt model interpretability.
+
+```{r, echo=F}
+#| fig-cap: "An example of a dataset with two predictors, and two observations. (n = p = 2)"
+#| column: margin
+#| message: false
+#| fig-height: 5
+#| fig-width: 5
+#| fig-show: "hold"
+#| cache: true
+
+dd <- data.frame(x = c(2, 5.5), y = c(4, 11))
+plot(dd$x, dd$y, pch = 20, xlim = c(0, 7), ylim = c(0, 15),
+     main = NULL, xlab = "Predictor", ylab = "Response")
+abline(lm(y~x, data = dd), col='blue')
+```
+
+```{r, echo=F}
+#| fig-cap: "An example of a dataset with (n = p = 9) using polynomial regression (degree 9)"
+#| column: margin
+#| message: false
+#| fig-height: 5
+#| fig-width: 5
+#| fig-show: "hold"
+#| cache: true
+
+x <- seq(0,1, length = 10)
+set.seed(226)
+y <- sin(2*pi*x) + rnorm(n = 10, mean = 0, sd = 1)
+plot(x, y, type="p", pch=20, ylim=c(-5, 7),
+     xlab = "Predictor", ylab = "Response")
+pmd = polyreg(x, y, order=9)
+yhat <- plot_poly(pmd, x, c = "red")
+```
+
+
+3. Over-fitting: In high dimensional data, where $n = p$ or $n > p$, then over-fitting is likely to occur. In this scenario, the models fitted have n degrees of freedom. This is illustrated in the following example: Suppose we have a sample of 2 data points, and one variable of interest(together with an intercept) i.e. $n = p$, then fitting a linear regression model results in a perfect fit (all residuals become 0), however such a model may fail to generalize to previously unseen data(test data). This shows that in high dimensional learning, it is possible for models to perfectly fit the training data, and perform poorly in previously unseen data. In such cases, the training error is a poor approximation of test error rate. 
+
+
+4. Common performance metrics for models also fail in the high dimensional case, such as the $R^2, Adjusted-R^2$ etc. This is because, for metrics such as $R^2$, increasing the number of variables (p) in the model, almost always increases the $R^2$ even when the variables have no significant relation to the response^[An example of an illustration showing what happens to a model when more variables which have no significant relationships to the response are added to the model. It is evident how adjusted R-squared almost always increases as the number of predictors increases, the training error always decreases as more predictors are added to a model due to possible over-fitting, but the test error increases, since the increased number of predictors add no predictive power to the model.]. Consequently, possible collinearity among the predictors causes the tests of significance in models to be biased.
+
+```{r f3}
+#| fig-width: 12
+#| fig-height: 5
+#| cache: true
+#| fig-show: "hold"
+
+set.seed(62)
+dd <- matrix(rexp(4000), ncol = 25) |>
+  data.frame()
+train_dd <- dd[1:100, ]
+test_dd <- dd[101:160, ]
+
+train_mse <- test_mse <- adj_rsq <- vector()
+for (i in 2:ncol(dd))
+{
+  temp_train <- data.frame(
+    cbind(train_dd[, 1], train_dd[, 2:i])
+  ) |>
+    setNames(str_c("X", 1:i))
+  
+  temp_model <- lm(X1 ~ ., data = temp_train)
+  sm <- summary.lm(temp_model)
+  train_pred <- predict(temp_model)
+  test_pred <- predict(temp_model, test_dd)
+  
+  train_mse[i] <- mse(train_dd$X1, train_pred)
+  test_mse[i] <- mse(test_dd$X1, test_pred)
+  adj_rsq[i] <- sm$adj.r.squared
+}
+
+par(mfrow = c(1,3))
+plot(adj_rsq, type = 'o', pch = 20, main = "Adjusted R-squared",
+     xlab = "# of predictors", ylab = "")
+plot(train_mse, type = 'o', pch = 20, main = "Train MSE",
+     xlab = "# of predictors", ylab = "")
+plot(test_mse, type = 'o', pch = 20, main = "Test MSE",
+     xlab = "# of predictors", ylab = "")
+```
+
+# Models for high-dimensional data
+
+Due to the above-mentioned challenges, this study seeks to investigate models suitable for high-dimensional learning in the context of regression and classification.
+
+In modelling high-dimensional data, it is of interest to identify variables and interactions which have a significant relationship to the response variable, and discard those which have no significant relationship. This leads to dropping some variables in the analysis in favor of others *(by setting their coefficients in the model to $0$)*, a technique commonly called **feature/variable selection**, or shrinking their coefficients in the model towards $0$, a technique termed **shrinkage.** In this study, the models used for shrinkage and variable selection are the Ridge and LASSO regression respectively. Both ridge and LASSO regression are commonly called *Penalized regression models* and are also referred to as regularization techniques since they control for possible over-fitting in models.
+
+Due to the 'wide' nature of data in high-dimensional settings, it is of interest to an analyst, to find a small subset of predictors, which have the most significance relation to the response. This can be achieved by transformations for reducing the dimensionality of the predictor space into a much smaller dimension, a technique known as: **dimensionality reduction**. The aim of the these methods is to find a subset of predictors, from the original predictor space, in such a manner that the high-dimensional problem is reduced to a low-dimensional one. It is important to note that: since the subset of predictors is constructed in such a way, that there is no correlation among the new subset of predictors, the issue of multi-collinearity is also solved. In this study we investigate the following dimensionality reduction techniques: Principle Components analysis, Kernel Principal Components analysis, Independent component analysis, and Partial least squares.
+
+---  
+
+# Penalized regression methods
+
+## Ridge regression
+
+This is a shrinkage based method for regression (suitable for $p > n$ data), which aims to supplement the Ordinary Least Squares method, especially in the context of high multi-collinearity.
+
+Recall, that for the orindary least squares model of the form:
+
+$$y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_p x_p + \epsilon_t$$
+
+The error function is of the form:
+
+$$Q = \sum{(y_i - \hat{y_i})^2}$$
+$$where: \hat{y_i} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_p x_p$$
+
+In slving for the coefficients of regression, we obtain the following closed-form solution:
+
+$$\beta = (X^T X)^{-1} (X^T Y)$$
+
+However, in the prescence of many predictors, there is the ever-present risk of multi-collinearity, and thus the $(X^T X)$ matrix will not be of full rank, and hence not invertible. This in turn makes the coefficients of the regression model to grow large and unstable.
+
+A work around is to change the error function of the regression model to be:
+
+$$Q_{L2} = \sum{(y_i - \hat{y_i})^2} + \lambda_r \sum{\beta^2_j}$$
+
+This choice of error function, has the advantage that the error function remains a quadratic function of the regression coefficients, and its exact closed-form solution can be obtained by equating the gradient of the error function to $0$, and solving for $\beta$ to obtain:
+
+$$\beta = (X^T X + \lambda I)^{-1} (X^T Y)$$
+
+The $\lambda$ is called a penalty term or regularization coefficient, and this technique is called **ridge regression**. The penalty term must increase when the coefficients grow large, in order to enforce minimization. In result, the penalty causes the regression coefficients to become smaller and shrink towards 0, this makes the model much interpretable.
+
+This particular choice of regularizer is known as *weight decay* in machine learning, or *parameter shrinkage* in statistics, since it has the tendancy to shrink parameter values towards 0
+
+## LASSO regression
+
+A different choice of the regularizer could be obtained using the following error function:
+
+$$Q_{L1} = \sum{(y_i - \hat{y_i})^2} + \lambda_L \sum{|\beta_j|}$$
+
+This method is called: *Least absolute shrinkage and selection operator*: **(LASSO)**. In modifying the error function to include the regularizer, lasso regression forces some regression coefficients to be 0, and in doing so, it practically selects model terms to an optimal number of predictors. This makes it a feature selection model.
+
+The advantage of the LASSO regression over ridge regression is that: although ridge regression shrinks parameter estimates towards 0, it does not lead to any parameter estimates being 0, hence for the ridge regression, all (p) predictors are included in the model *(which might hurt model interpretability)*. However, for the LASSO regression, the nature of its regularizer ensures that some parameter estimates are set to 0, hence effectively eliminating them from the model. Hence the LASSO regression has he advantage of producing simpler interpretable models than ridge regression. It should be noted however that this does not hurt the predictive ability of the ridge regression model.
+
+## Elastic-Net Regression (Combining Ridge and LASSO regression)
+
+Since ridge regression has the advantage of combating multi-collinearity, and the LASSO regression has the advantage of being a feature/variable selection model, the two models can be combined, in order to deal with both multi-collinearity, and feature selection at once. 
+
+The form of the error function of model is shown below:
+
+$$Q = \sum{(y_i - \hat{y_i})^2} + \lambda [ (1 - \alpha)\sum{\beta^2_j} + \alpha \sum{| \beta_j |} ]$$
+
+Here, $\lambda = \lambda_r + \lambda_L$ , and the proportion of $\lambda$ associated with the lasso is denoted $\alpha$. Thus, selecting $\alpha = 1$ would be a full lasso penalty model, selecting $\alpha = 0$ would be a full ridge regression model, whereas $\alpha = 0.5$ is an even  mix of a ridge and lasso model.
+
+## Search for optimal $\lambda$ 
+
+The optimal value of $\lambda$ for the ridge and LASSO regression model is found by means of cross-validation, where several choices of $\lambda$ are used on the training set, and the performance of the models are evaluated on a validation set,so that the value of $\lambda$ which yields the least training error, is preferred. For Elastic-Net regression, a common method of selecting the best regularization coefficient, is to construct a grid of $\alpha$ values, and for each value of $\alpha$, the best regularization coefficient $\lambda$ is found. The fitted models are then compared based on validation error.
+
+---
+
+# Dimensionality Reduction methods
+
+Dimensionality reduction methods are useful in reducing the dimensionality of datasets, from a high-dimensional space to a low dimensional space, for a number of reasons:
+
+- High-dimensional data increases computation time in model fitting
+
+- High-dimensional data is often plagued with highly correlated variables.
+
+These challenges above necessitate, finding only a small subset of predictors which summarize maximal variability in the original predictor space significantly. Such methods include:
+
+1. Principal Components Analysis (PCA)
+
+2. Kernel Principal Components Analysis (K-PCA)
+
+3. Independent Component Analysis (ICA)
+
+4. Partial Least Squares (PLS)
+
+5. Non-negative matrix factorization (NNMF)
+
+All the techniques listed above work by taking an input matrix $X$, which is an $n * p$ matrix, and return a matrix of scores *(often called components)*, which are combinations of the columns of the original data matrix.
+
+It is however important to note that $PCA, K-PCA, ICA, NNMF$ are *unsupervised* techniques, and their aim is to reduce the number of predictors into a subspace of predictors, with the hope that the new subset of predictors will be significant in explaining the variability in the response, although this is not always the case. Their aim is to reduce the predictor space into a smaller subset with the aim of reducing computation time and possible multi-collinearity, but not necessarily improve predictive performance.
+
+The $PLS$ technique is a *supervised* technique, in that it performs dimensionality reduction, while ensuring that the subset of predictors obtained is significantly related to the response variable. Thus, when using PLS, there is some guarantee of improving predictive performance, while reducing computation time in model fitting.
+
+In this article, we will not cover the non-negative matrix factorization method.
+
+## Principal Components Analysis
+
+::: column-margin
+Recall that, for a data matrix A, and an identity matrix I, the eigen values are $\lambda$ such that:
+$$|A - \lambda I| = 0$$
+The corresponding eigen vector $\hat{v}$, of an eigen value $\lambda$ satisfies the equation:
+$$(A - \lambda I) \hat{v} = 0$$
+:::
+
+Principal Components Analysis (PCA) is the most popular dimensionality reduction method. The aim of PCA is to find a subset of predictors, which is esentially a linear combination of the original predictor space, such that the combinations explain maximal variability of the original predictor space.
+
+In PCA, the new features formed^[Often called scores or components], are usually orthogonal to each other^[Implying they're uncorrelated, and thus there is minimal overlap in the information provided by each score].  This makes it a very useful tool in dealing with multi-collinearity.
+
+We consider an $n*p$ centered data matrix $X$, where n is the number of observations, and p is the number of predictors. We then create a $p*p$ matrix, whose columns are eigen vectors of $(X^T X)$. 
+
+The matrix $W$ is the matrix of unit eigen vectors. In constructing $W$, we usually ensure that eigen vectors are ranked by the highest eigen value i.e. components with the highest explanatory power come first. It follows that $W$ is orthogonal, i.e. $W^T = W^{-1}$
+
+The principal components decomposition $P$ of $X$ is then defined as: $P= XW$
+
+A popular application of principal components analysis is *principal components regression*, where the predictor matrix is first reduced into a matrix of scores using PCA, and this matrix of scores is then fed into regression.
+
+## Kernel Principal Components Analysis
+
+Recall that PCA is useful in forming component by extracting linear combinations of predictors from the original predictor space, hence it is useful only when there are linear patterns in the predictor space.
+
+But supposing that, the functional form of the data at hand is given by the following equation below:
+
+$$y = x_1 + x_2 + x_1^2 + x_2^2 + \epsilon_t$$
+
+Then, using PCA will only construct linear combinations of $x_1$ and $x_2$, thus missing out the important quadratic relationships in the data.
+
+Thus in the presence of possible non-linear relationships in the data, Kernel-PCA is better suited.
+
+K-PCA extends PCA using kernel methods, so that for linear combinations of variables, K-PCA captures this using the linear kernel:
+
+$$k(x_1, x_2) = x_1^Tx_2$$
+
+Although the linear kernel could be substituted using any other kernel of choice, such as the polynomial kernel:
+
+$$k(x_1, x_2) = <x_1, x_2>^d$$
+so that for quadratic relationships, we set $d = 2$:
+
+$$k(x_1, x_2) = <x_1, x_2>^2 = (x_{11}x_{12} + ... + x_{n1}x_{n2})^2 $$
+
+
+## Independent Components Analysis
+
+Recall, PCA forms scores using linear combinations of the original predictor space such that the new scores formed are orthogonal with each other, and thus uncorrelated, however this does not mean that the scores are statistically independent of each other.^[This is because in certain cases, the correlation could be 0, however the covariance could be indicating otherwise, except in cases where data comes from the gaussian distribution, where un-correlation implies independence.]
+
+ICA bears some similarity with PCA^[It should however be noted that scores generated by ICA  are different from PCA scores], however in creating the scores, it does so in a way that the scores are statistically independent of each other. Generally, ICA tends to model a broader set of trends than PCA, which is only concerned with orthogonality.
+
+Given a random observed vector $X$,whose elements are mixtures of independent elements of a random vector $S$ given by:^[Both $X$ and $S$ are vectors of length $m$]
+
+$$X = AS$$
+
+Where $A$ denotes a mixing matrix of size $m*m$, the goal of ICA is to find the un-mixing matrix $W$^[An inverse of the mixing matrix $A$], that will give the best approximation of $S$ 
+
+$$WX \approx S$$
+
+ICA makes the following assumptions about data:
+
+1. Statistical independence in the source signal
+
+2. Mixing matrix must be a square matrix of full rank.
+
+3. The only source of randomness is the vector $S$.
+
+4. The data at hand is centered and whitened.^[Centered data is data which has been *demeaned*, and whitening could be achieved by first running PCA on the original data and using the whole set of components as input data to ICA]
+
+5. The source signals must not have a gaussian distribution except for only one source signal.
+
+ICA constructs scores based on two methods:
+
+- Minimization of mutual Information
+
+For a pair of random variables $X, Y$, the mutual information is defined as follows:
+
+$$I(X;Y) = H(X) - H(X|Y)$$
+Where:
+
+$H(X)$: is the entropy of $X$.
+
+$$H(X) = - \sum_x{P(x)\log{P(x)}}$$
+
+$H(X|Y)$: is the conditional entropy.^[The entropy of $X$ conditional on $Y$ taking a certain value $y$]
+
+$$H(X|Y) = H(X, Y) - H(Y)$$
+
+where:
+
+$H(X, Y)$: is the joint entropy given by:
+
+$$H(X, Y) = - \sum_{x, y}{P(x, y) \log{P(x, y)}}$$
+
+From the above equations, entropy can be seen as a measure of uncertainty of information in a random variable, so that the lower the value of entropy, the more information we have about the random variable of interest. Therefore by seeking for a method of maximizing mutual information, we would be seeking for components which are maximally independent.
+
+- Maximization of non-gaussianity.
+
+This is a second method of constructing independent components. Since in the assumptions underlying ICA, is the assumption of non-gaussianity of the source signals, then, one way of extracting components is to maximize non-gaussianity of the components.^[Forcing the components to be as far as possible from the gaussian distribution].
+
+An example of a non-gaussianity measure is the *Negentropy*, given by:
+
+$$N(X) = H(X^N) - H(X)$$
+
+Where:
+
+$X$: is a random non-gaussian vector.
+
+$X^N$: is a gaussian random vector with same covariance matrix as $X$.
+
+$H(.)$: is the entropy.
+
+Sice the gaussian distribution has the highest entropy for any given covariance matrix,then the negentropy: $N(X)$ is a strictly positive measure of non-gaussianity.
+
+## Partial Least Squares
+
+Partial Least Squares (PLS) is a *supervised* dimensionality reduction method, in that the response variable is used in guiding the dimensionality reduction process unlike in the context of PCA. Hence in constructing the components, PLS does so in a way that the components not only summarize maximal variability in the predictor space, but also are related to the response significantly.
+
+Given $p$ predictors: $X_1, X_2, ... , X_p$, and the response variable $Y$, we construct linear combinations of our original predictors: $Z_1, ..., Z_m, \hspace{2 mm} m < p$, components:
+
+$$Z_m = \sum_{j=1}^p {\phi_{jm} X_j}$$
+
+Where: $\phi_{jm}$: are some constants.
+In computing the first PLS direction $Z_1$, PLS sets each $\phi_{j1}$ equal to the coefficient from a simple linear regression of $Y$ onto $X_j$ ^[It can be shown that this coefficient is proportional to the correlation between $X_j$ and $Y$], hence it is evident that PLS places larger weight on variables which are highly correlated to the response variable.
+The second PLS direction is first computed by taking the residuals after regression each variable on $Z_1$^[The residuals are interpreted as: amunt of information that has not been accounted for by the first PLS direction]. The second PLS direction: $Z_2$ is computed using the *orthogonalized* data in the same fashion as $Z_1$, and this procedure is repeated to obtain the $m$ PLS components.
+
+--- 
+
+# Data
+
+The data used in modelling is a financial dataset aimed at using various statistical and financial metrics to predict the return for quarterly returns data for a selected stock price series. The dataset is comprised of 78 numerical predictor variables(statistical and financial metrics), and a response variable^[The return for a particular quarter in the regression setting, and the Direction(i.e. whether there was a rise/drop in the quarterly return), in the classification setting]. The dataset is constructed using the metrics from the package `PerformanceAnalytics` in R, and using the return series of KCB Group from the period 1st January 2001, to 31st January 2021. The financial benchmarking metrics are computed using FTSE NSE 20^[A price weighted portfolio of 20 best performing counters in the Nairobi Securities Exchange as the benchmark] as the benchmark. The nature of the dataset makes it impossible to fit a standard Multiple Linear Regression model, or even a Generalized Linear Model(GLM) to the data (since $p(78) >> n(64)$, in the training dataset). A glimpse of the first 49 variables present in the data are shown below:^[Note that the variable *Direction*, which is the response variable in the classification setting is not included in the glimpse of the data. It is a binary variable constructed from the differenced Annualized Return variable, such that if the change in return is Negative, the Direction is *DOWN* indicating that the stock dropped in terms of quarterly returns, otherwise, the Direction is *UP*, indicating that the stock quarterly return rose, from the previous quarter.]
+
+```{r dataloading}
+gl <- cbind(t(head(fdf, 2)),
+            t(tail(fdf, 1))) |>
+  data.frame()
+gl[, 2] <- '...'
+colnames(gl) <- c(rownames(fdf)[1], '...', rownames(fdf)[ncol(fdf)])
+kable(gl)
+```
+
+A chart of the correlation between the predictor variables is shown below:
+
+```{r corrplot}
+#| fig-width: 15
+#| fig-height: 15
+#| cache: true
+#| 
+# Visualizing the correlation matrix
+corrplot::corrplot(corr = cor(fdf[, -1]),
+                   method = "square",
+                   type = "full",
+                   order = "FPC",
+                   title = NULL,
+                   tl.cex = .7,
+                   tl.col = "black")
+```
+
+It is evident that there exists (both positive and negative) high correlation between the predictors, which poses a challenge if multi-collinearity in the model fitting process. The high positive correlation  is visible in predictors which are related to measures of downside risk, while the high negative correlation is evident between variables which measure tail risk, and those which measure downside risk. There is little to no correlation between variables which measure central tendancy (mean and median returns, and their respective ratios) and the variables which measure the riskiness of the returns series.
+
+For both models, the training and testing sets are constructed from the data using simple random sampling of the original data, so that 80% of the full dataset goes into training the models, while the remaining 20% of the data goes to the testing data. For the classification model, the resulting subsets are analyzed to ensure that there is class balance in the response variable.
+
+The key reason we randomize the data, when splitting into training and testing set, is because, for the purpose of this analysis, we are not interested in the temporal structure of the data.
+
+In the regression setting, the predictor variables are lagged by one time period, so that the financial metrics of of quarter $i-1$ are used in predicting the return for quarter $i$. In the classification setting, since the Direction variable is automatically lagged, we back-shift it, so that, the financial metrics of quarter $i-1$, are used in predicting the Direction of the next quarter $i$. This is necessary since, it helps us in mitigating look-ahead bias.
+
+---- 
+
+# Models 
+
+# Regression model (I)
+
+
+```{r regmodel1}
+# constructing the training and testing set
+set.seed(472)
+train_rows <- sample(.80*nrow(fdf))
+train <- fdf[train_rows, ]
+test <- fdf[-train_rows, ]
+
+# constructing the model matrix
+x <- model.matrix(`Annualized Return` ~ ., data = fdf)[, -1]
+y <- as.matrix(fdf[, "Annualized Return"])
+```
+
+## Ridge Regression
+
+```{r ridge1}
+#| fig-cap: "Cross validation statistics for estimating the regularization parameter of ridge regression, and their error bars. The dotted line represent estimate of lambda which is within its one standard error"
+#| fig-height: 5
+#| fig-width: 5
+#| cache: true
+#| fig-show: "hold"
+#| column: margin
+
+set.seed(37) # to ensure reproducibility
+cv.out <- cv.glmnet(x = x[train_rows, ],
+                    y = y[train_rows, ],
+                    family = "gaussian",
+                    alpha = 0)
+plot(cv.out)
+# cv.out$lambda.min #> 12.75054
+```
+
+We proceed to fit ridge regression on the data, and select the regularization parameter using cross-validation^[The best estimate for $\lambda$ using cross validation was found to be: 12.75054]. The cross validation statistics are shown below:
+
+```{r ridge2}
+#| cache: true
+#| fig-width: 5
+#| fig-height: 5
+
+# fitting best model with cross-validation lambda
+ridge_best_cv <- glmnet(x = x[train_rows, ],
+                        y = y[train_rows, ],
+                        family = "gaussian",
+                        alpha = 0,
+                        lambda = cv.out$lambda.min)
+
+# fitting best model with gradient descent lambda
+# ridge_best_sgd <- glmnet(x = x[train_rows, ],
+#                         y = y[train_rows, ],
+#                         family = "gaussian",
+#                         alpha = 0,
+#                         lambda = 0.000383379039462451)
+
+cf_cv <- as.numeric(coef(ridge_best_cv))
+# cf_sgd <- as.numeric(coef(ridge_best_sgd))
+
+ridge_coef_data <- data.frame(
+  col = c("(Intercept)", colnames(x)),
+  coef_cv = cf_cv
+  #coef_sgd = cf_sgd
+)
+
+r1 <- ridge_coef_data |>
+  select(coef_cv) |>
+  unlist() |> as.numeric() |>
+  quantile(probs = seq(from = 0, to = 1, length = 100)) |>
+  as.numeric() |> data.frame() |>
+  setNames("quantiles") |>
+  mutate(prob = seq(from = 0, to = 1, length = 100)) |>
+  ggplot()+
+    geom_line(aes(x = prob, y = quantiles)) +
+  scale_x_continuous(labels = scales::percent_format())+
+    labs(title = "Distribution of model coefficients: (Ridge-CV)",
+         x = "Quantile Probability", y= "Coefficient value")+
+    theme_minimal() + 
+  scientific_theme
+# Majority (nearly 75%) of coefficients have very very small values
+
+# r2 <- ridge_coef_data |>
+#   select(coef_sgd) |>
+#   unlist() |> as.numeric() |>
+#   quantile(probs = seq(from = 0, to = 1, length = 100)) |>
+#   as.numeric() |> data.frame() |>
+#   setNames("quantiles") |>
+#   mutate(prob = seq(from = 0, to = 1, length = 100)) |>
+#   ggplot()+
+#   geom_line(aes(x = prob, y = quantiles)) +
+#   scale_x_continuous(labels = scales::percent_format())+
+#   labs(title = "Distribution of model coefficients: (Ridge-G)",
+#        x = "Quantile Probability", y= "Coefficient value")+
+#   theme_minimal()
+r1
+#grid.arrange(r1, r2, nrow = 1)
+```
+
+The model fitted using the regularization parameter obtained by cross validation *(Ridge CV)*, has roughly 70% of the model coefficients shrunken to be close to 0, showing how effective ridge regression is in producing interpretable models.
+
+
+## LASSO Regression
+
+We proceed to fit LASSO regression on the data, and select the regularization parameter using cross-validation^[The best estimate for $\lambda$ using cross validation was found to be: 0.1893415.]. The cross validation statistics are shown below:
+
+```{r lasso1}
+#| column: margin
+#| fig-show: "hold"
+#| fig-cap: "Cross validation statistics for estimating the regularization parameter of LASSO regression and their error bars. The dotted line represent estimate of lambda which is within its one standard error"
+#| fig-width: 5
+#| fig-height: 5
+#| cache: true
+
+set.seed(37) # to ensure reproducibility
+cv.out <- cv.glmnet(x = x[train_rows, ],
+                    y = y[train_rows, ],
+                    family = "gaussian",
+                    alpha = 1)
+plot(cv.out)
+# cv.out$lambda.min #> 12.75054
+```
+
+
+```{r lasso2}
+#| cache: true
+#| fig-width: 5
+#| fig-height: 5
+lasso_best_cv <- glmnet(x = x[train_rows, ],
+                     y = y[train_rows, ],
+                     family = "gaussian",
+                     lambda = 0.1893415,
+                     alpha = 1)
+
+# lasso_best_sgd <- glmnet(x = x[train_rows, ],
+#                         y = y[train_rows, ],
+#                         family = "gaussian",
+#                         lambda = 0.00275750934775019,
+#                         alpha = 1)
+
+cf_cv <- as.numeric(coef(lasso_best_cv))
+# cf_sgd <- as.numeric(coef(lasso_best_sgd))
+
+lasso_coef_data <- data.frame(
+  col = c("(Intercept)", colnames(x)),
+  coef_cv = cf_cv
+  #coef_sgd = cf_sgd
+)
+
+l1 <- lasso_coef_data |>
+  select(coef_cv) |>
+  mutate(status = ifelse(coef_cv == 0, "Zero coefficient", "Non-zero coefficient")) |>
+  ggplot()+
+  geom_bar(aes(x = status), col = "black", alpha = .5, width = .4) +
+  labs(title = "Distribution of model coefficients: (LASSO-CV)",
+       x = "Status", y= "Coefficient count")+
+  theme_minimal() +
+  scientific_theme
+
+# l2 <- lasso_coef_data |>
+#   select(coef_sgd) |>
+#   mutate(status = ifelse(coef_sgd == 0, "Zero coefficient", "Non-zero coefficient")) |>
+#   ggplot()+
+#   geom_bar(aes(x = status), col = "black", alpha = .5, width = .4) +
+#   labs(title = "Distribution of model coefficients: (LASSO-g)",
+#        x = "Status", y= "Coefficient count")+
+#   theme_minimal()
+l1
+#grid.arrange(l1, l2, nrow = 1)
+```
+
+
+The model fitted using the regularization parameter obtained from cross validation as shown above has forced majority of the model coefficients to be 0, thereby removing the variables from the model. The LASSO regression technique is therefore important in variable selection, since by setting some model coefficients to 0, it effectively removes them from the model, leaving us with a much smaller and interpretable model.
+
+## Elastic Net Regression
+
+In this section, we fit an Elastic Net model, which is a mixture of both ridge and LASSO regression. We select the mixing-weight based on two methods:
+
+1. We compute the model regularization parameter $\lambda$, as a sum of the cross validation value of $\lambda$ computed in ridge regression, and that computed from LASSO regression. i.e.
+
+$$\lambda = \lambda_R + \lambda_L$$
+We then run a cross validation using this fixed $\lambda$ on several values of $\alpha$, and obtain the statistics as shown in the following chart:
+
+```{r elnet1}
+#| cache: true
+#| fig-height: 5
+#| fig-width: 10
+#| fig-cap: "Using the regularization parameter obtained from cross validation"
+
+# we are using benchmark: the value of lambda as: lambda_ridge + lambda_lasso found from cv.glmnet
+lambda_full <- (12.75054 + 0.1893415)
+alpha_seq_1 <- seq(from = 0, to = .01 + (0.1893415/lambda_full), length = 100)
+deviance_vec <- nvars_vec <- err_vec <- vector()
+for (i in 1:length(alpha_seq_1))
+{
+  mixture_model <- glmnet(x = x[train_rows, ],
+                          y = y[train_rows, ],
+                          family = "gaussian",
+                          alpha = alpha_seq_1[i],
+                          lambda = lambda_full)
+  
+  deviance_vec[i] <- mixture_model$dev.ratio
+  nvars_vec[i] <- mixture_model$df
+  err_vec[i] <- mse(
+    y[train_rows, ],
+    predict(mixture_model,
+            newx = x[train_rows, ])
+  )
+}
+
+m1 <- data.frame(
+  alpha = alpha_seq_1,
+  deviance = deviance_vec,
+  nvars = nvars_vec
+) |>
+  ggplot()+
+  geom_line(aes(x = alpha, y = deviance))+
+  scale_x_continuous(labels = scales::percent_format())+
+  scale_y_continuous(labels = scales::percent_format())+
+  labs(subtitle = "Deviance explained",
+       x = "Alpha", y = "Deviance explained")+
+  theme_minimal()+
+  scientific_theme
+
+m2 <- data.frame(
+  alpha = alpha_seq_1,
+  deviance = deviance_vec,
+  nvars = nvars_vec
+) |>
+  ggplot()+
+  geom_line(aes(x = alpha, y = nvars))+
+  scale_x_continuous(labels = scales::percent_format())+
+  labs(subtitle = "Non-zero coefficients",
+       x = "Alpha", y = "Count")+
+  theme_minimal()+
+  scientific_theme
+
+m3 <- data.frame(
+  alpha = alpha_seq_1,
+  deviance = deviance_vec,
+  nvars = nvars_vec,
+  err = err_vec
+) |>
+  ggplot()+
+  geom_line(aes(x = alpha, y = err_vec))+
+  scale_x_continuous(labels = scales::percent_format())+
+  labs(subtitle = "Training error",
+       x = "Alpha", y = "MSE")+
+  theme_minimal()+
+  scientific_theme
+
+grid.arrange(m1, m2, m3, nrow = 1)
+```
+
+
+2. In this second method, we construct a grid of $\alpha$ values which are equally spaced on the range $[0, 1]$, and for each $\alpha_i$, we perform cross validation on the training set to obtain the most suitable value of the regularization parameter $\lambda_i$.^[This is the most suitable technique to use in Elastic-Net regression.] The result is shown below:^[Cross validation is performed to determine the best value for the regularization coefficient for every value of alpha chosen. The value of alpha = 0.386387387, and the corresponding lambda = 0.1106008, gave the lowest training error(0.4), as well as the highest deviance(37%), using only 19 non-zero model coefficients.]
+
+```{r elnet2}
+#| cache: true
+#| fig-height: 5
+#| fig-width: 10
+
+mixture_grid <- read.csv("data/lm_mixture_grid.csv")
+
+#   alpha       lambda    deviance    nvars mse
+# 	0.386387387 0.1106008 0.36776076  19    0.4072456
+
+# plotting a heatmap
+m3 <- mixture_grid |>
+  data.frame() |>
+  ggplot(aes(x = alpha, y = lambda)) +
+  geom_line(alpha= .1)+
+  geom_smooth(method = "gam")+
+  scale_x_continuous(labels = scales::percent_format())+
+  labs(subtitle = "Regularization parameter",
+       x = "Alpha", y = "Lambda") +
+  theme_minimal()+
+  scientific_theme
+
+m4 <- mixture_grid |>
+  data.frame() |>
+  ggplot(aes(x = alpha, y = deviance)) +
+  geom_line(alpha = .1)+
+  geom_smooth(method = "loess")+
+  scale_x_continuous(labels = scales::percent_format())+
+  scale_y_continuous(labels = scales::percent_format())+
+  labs(subtitle = "Deviance explained",
+       x = "Alpha", y = "Explained(%)") +
+  theme_minimal()+
+  scientific_theme
+
+m5 <- mixture_grid |>
+  data.frame() |>
+  ggplot(aes(x = alpha, y = rmse)) +
+  geom_line(alpha = .1)+
+  geom_smooth(method = "loess")+
+  scale_x_continuous(labels = scales::percent_format())+
+  labs(subtitle = "Training error",
+       x = "ALpha", y = "MSE") +
+  theme_minimal()+
+  scientific_theme
+
+grid.arrange(m3, m4, m5, nrow = 1)
+```
+
+From the above chart, it shows that, as the value of $\alpha$ increases, then the regularization parameter $\lambda$ reduces, which shows that for this model, a very small proportion of $\lambda$ was attributed to the LASSO penalty. The deviance resulting from this is quite low (less than 30%). The training error, as well as the deviance are suitable for small values of alpha chosen. For the Elastic Net regression, we will proceed with this $2^{nd}$ model hyper-parameters, since it gives a lower training error, for few variables, as compared to the rest.
+
+```{r}
+mixture_best <- glmnet(x = x[train_rows, ],
+                       y = y[train_rows, ],
+                       family = "gaussian",
+                       alpha = 0.386387387, # 0.1141151
+                       lambda = 0.1106008)# 0.2832865
+```
+
+
+## Principal Components Regression
+
+```{r pca1}
+#| column: margin
+#| fig-show: "hold"
+#| fig-cap: "It is evident that PCA constructs components in a way that they are orthogonal to each other and hence not correlated. This helps in dealing with the multi-collinearity present in the data."
+#| cache: true
+
+pcr_model <- pcr(`Annualized Return` ~ .,
+                 data = train,
+                 scale = T,
+                 center = T,
+                 validation = 'CV')
+# summary(pcr_model) # Best model is Lowest RMSE: 1 comps, 5 comps
+
+# Visualizing the correlation matrix
+corrplot::corrplot(corr = cor(pcr_model$scores),
+                   method = "square",
+                   type = "full",
+                   order = "FPC",
+                   title = NULL,
+                   tl.cex = .35,
+                   tl.col = "black")
+```
+
+In this section, Principal components analysis model is fitted using only 56 principal components and the results of the Principal Components Regression are displayed. 
+
+```{r pca2}
+#| cache: true
+#| fig-height: 5
+#| fig-width: 10
+
+var_Explained_df <- data.frame(
+  component = 1:56,
+  component_var = pcr_model$Xvar/sum(pcr_model$Xvar)
+) |>
+  mutate(cum_var = cumsum(component_var))
+
+p1 <- var_Explained_df |>
+  ggplot(aes(x = component, y = component_var))+
+  geom_line()+
+  geom_point()+
+  scale_y_continuous(labels = percent_format())+
+  labs(subtitle = "Variance explained",
+       x = "Component", y = "Variance")+
+  theme_minimal() +
+  scientific_theme
+
+p2 <- var_Explained_df |>
+  ggplot(aes(x = component, y = cum_var))+
+  geom_line()+
+  geom_point()+
+  scale_y_continuous(labels = percent_format())+
+  labs(subtitle = "Cumulative variance explained",
+       x = "# of Components", y = "Variance")+
+  theme_minimal() +
+  scientific_theme
+
+grid.arrange(p1, p2, nrow = 1)
+
+```
+
+From the scree-plot above, it is evident that the first two components account for maximal variability in the predictor matrix. In choosing the suitable number of components to run regression with, we examine the plot of cross-validation error below:
+
+```{r pca3}
+#| cache: true
+#| fig-height: 5
+#| fig-width: 10
+validationplot(pcr_model, val.type = 'RMSEP', type = 'o',
+               main = "Cross validation (PCR)",
+               ylab = "RMSE", xlab = "Number of components")
+```
+
+From the validation plot using RMSE as the error metric, the model with the lowest cross validation error is the 2-components model, which we will proceed with.
+
+## Kernel Principal Components Regression
+
+```{r kpca1}
+step_init <- recipe(`Annualized Return` ~ ., data = train)
+
+# determining reasonable values for sigma in radial basis function
+cn_updated <- colnames(fdf)[-1]
+sig_range <- 
+  step_init |>
+  step_center(all_of(cn_updated)) |>
+  step_scale(all_of(cn_updated)) |>
+  prep(training = train, verbose = TRUE) |>
+  juice(all_of(cn_updated)) |>
+  as.matrix() |>
+  sigest(frac = 1) 
+
+kpca_init <- 
+  step_init |>
+  step_center(all_of(cn_updated)) |>
+  step_scale(all_of(cn_updated)) |>
+  step_kpca(
+    cn_updated, 
+    num_comp = 30, 
+    options = list(kernel = "rbfdot", kpar = list(sigma = sig_range[2]))
+  )
+
+kpca_model <- 
+  kpca_init %>%
+  prep(training = train, retain = TRUE, verbose = TRUE)
+```
+
+```{r kpca2}
+#| column: margin
+#| fig-show: "hold"
+#| fig-cap: "It is evident that k-PCA constructs components in a way that they are orthogonal to each other and hence not correlated. This helps in dealing with the multi-collinearity present in the data."
+#| cache: true
+
+kpca_features <- juice(kpca_model, matches("PC"))
+
+# Visualizing the correlation matrix
+corrplot::corrplot(corr = cor(kpca_features),
+                   method = "square",
+                   type = "full",
+                   order = "FPC",
+                   title = NULL,
+                   tl.cex = .35,
+                   tl.col = "black")
+```
+
+In this section, the Kernel-PCA is first performed on the predictor matrix, and then the most optimal subset of the resulting components constructed is used to fit a linear regression model on our training dataset. For the Kernel-PCA, we chose a radial basis kernel, where the hyper-parameter $\sigma$ was chosen automatically based on our data.
+
+::: column-margin
+The estimated value of $\sigma$, is based upon the 10%, and 90% quantile of $||x - x^`||^2$, where we chose $\sigma$ as the median value of: 0.008732801.
+:::
+
+The charts below show the percentage variability in the original predictor matrix explained by the resulting kernel principal components:
+
+```{r kpca3}
+#| cache: true
+#| fig-height: 10
+#| fig-width: 10
+kpca_eigen <- read.csv("data/lm_kpca_eigen.csv")
+
+# plotting
+k1 <- kpca_eigen |>
+  ggplot()+
+  geom_line(aes(x = (component), y = component_contribution))+
+  geom_point(aes(x = (component), y = component_contribution))+
+  scale_y_continuous(labels = percent_format())+
+  labs(title = NULL,
+       subtitle = "Predictor space variance explained",
+       x = "Component",y = "Variance explained")+
+  theme_minimal() + 
+  scientific_theme
+
+k2 <- kpca_eigen |>
+  ggplot()+
+  geom_line(aes(x = (component), y = group_contribution))+
+  geom_point(aes(x = (component), y = group_contribution))+
+  scale_y_continuous(labels = percent_format())+
+  labs(subtitle = "Cumulative variability in predictors explained",
+       x = "# of Components",y = NULL)+
+  theme_minimal() + 
+  scientific_theme
+
+k3 <- kpca_eigen |>
+  ggplot()+
+  geom_line(aes(x = (component), y = train_error))+
+  geom_point(aes(x = (component), y = train_error))+
+  labs(subtitle = "Cross-validation Training error",
+       x = "# of Components",y = "RMSE")+
+  theme_minimal() + 
+  scientific_theme
+
+k4 <- kpca_eigen |>
+  ggplot()+
+  geom_line(aes(x = (component), y = y_explained))+
+  geom_point(aes(x = (component), y = y_explained))+
+  scale_y_continuous(labels = percent_format())+
+  labs(subtitle = "Variability in response explained",
+       x = "# of Components",y = "Adjusted R-squared")+
+  theme_minimal() + 
+  scientific_theme
+
+grid.arrange(k1, k2, k3, k4, nrow = 2)
+```
+
+From the scree plot on chart 1, it is evident that the first 4 kernel principal components explain maximal variability in the original predictor matrix. The cross validation training error increases as more components are added into the model. In selecting the optimal number of principal components to include in the model, we select 10 components, since this gives the highest amount of variability explained in the response variable.
+
+```{r kpca4}
+# Predicting the test data
+prep_test <- bake(kpca_model, test)
+
+# Model fitted to the 16 components
+kpc_df <- cbind(kpca_features[, 1:16], 
+                 train[, "Annualized Return"]) |>
+  setNames(c(colnames(kpca_features)[1:16], "Annualized Return"))
+
+kpc_lm <- lm(`Annualized Return` ~ ., data = kpc_df)
+```
+
+## Partial Least Squares
+
+```{r pls1}
+#| column: margin
+#| fig-show: "hold"
+#| fig-cap: "It is evident that PLS also constructs components in a way that they are orthogonal to each other and hence not correlated. This helps in dealing with the multi-collinearity present in the data."
+#| cache: true
+
+pls_model <- plsr(`Annualized Return` ~ .,
+                  data = train,
+                  scale = T,
+                  center = T,
+                  validation = 'CV')
+
+# Visualizing the correlation matrix
+corrplot::corrplot(corr = cor(pls_model$scores),
+                   method = "square",
+                   type = "full",
+                   order = "FPC",
+                   title = NULL,
+                   tl.cex = .35,
+                   tl.col = "black")
+
+```
+
+This section covers the analysis section for the partial least squares model. The PLS model is fitted using cross-validation, and the data is centered and scaled before the model fitting process.
+
+The scree-plot for the PLS model is shown below
+
+```{r pls2}
+#| cache: true
+#| fig-height: 5
+#| fig-width: 10
+
+var_Explained_df <- data.frame(
+  component = 1:56,
+  component_var = pls_model$Xvar/sum(pls_model$Xvar)
+) |>
+  mutate(cum_var = cumsum(component_var))
+
+p3 <- var_Explained_df |>
+  ggplot(aes(x = component, y = component_var))+
+  geom_line()+
+  geom_point()+
+  scale_y_continuous(labels = percent_format())+
+  labs(subtitle = "Variance explained",
+       x = "Component", y = "Variance")+
+  theme_minimal()+
+  scientific_theme
+
+p4 <- var_Explained_df |>
+  ggplot(aes(x = component, y = cum_var))+
+  geom_line()+
+  geom_point()+
+  scale_y_continuous(labels = percent_format())+
+  labs(subtitle = "Cumulative variance explained",
+       x = "# of Components", y = "Variance")+
+  theme_minimal()+
+  scientific_theme
+
+grid.arrange(p3, p4, nrow = 1)
+```
+
+The above chart shows that the first 4 components explain majority of the variability in the original predictor matrix (roughly 70%). The Training error from cross validation is shown below:
+
+```{r pls3}
+#| cache: true
+#| fig-height: 5
+#| fig-width: 10
+
+validationplot(pls_model, val.type = 'RMSEP', type = 'o',
+               main = "Cross validation training error",
+               xlab = "Number of components", ylab = "Root-MSE")
+```
+
+From this chart, we select only the first component, to include in our final PLS model, since it gives the lowest cross validation error. A comparison of the variability in the response explained by the PCR and PLS model is shown below, in order to capture the difference between PLS and PCR.
+
+To examine the difference between PLS and PCA in explaining the response variable, we examine the (%) variance explained in the response by each component as shown below:
+
+```{r pls4}
+#| cache: true
+#| fig-height: 5
+#| fig-width: 10
+
+comp_pcr_pls <- data.frame(
+  component = 1:56,
+  pcr_y = c(6.371, 9.485, 9.514, 15.52, 18.89, 21.24, 22.73, 22.73, 23.43, 
+23.49, 24.11, 27.96, 29.79, 32.94, 32.95, 40.12, 40.78, 41.33, 
+41.34, 41.35, 41.61, 41.62, 43.01, 44.65, 44.92, 45.03, 45.03, 
+45.21, 46.65, 50.65, 50.95, 50.98, 52.68, 53.37, 53.46, 54.42, 
+55.25, 56.66, 62.93, 64.27, 64.7, 65.41, 69.03, 69.28, 74.77, 
+76.58, 77.39, 77.43, 77.61, 77.61, 82.76, 84.51, 84.69, 84.69, 
+84.94, 88.58),
+pls_y = c(14.04, 25.9, 34.83, 43.67, 46.56, 48.28, 51.06, 53.97, 57.33, 
+59.73, 62.36, 65, 66.39, 68.83, 70.39, 72.24, 73.26, 74.16, 74.63, 
+75.52, 76.62, 77.28, 78.49, 79.24, 79.92, 80.94, 81.45, 81.66, 
+82.19, 83.03, 83.53, 84.46, 84.83, 86.38, 87.09, 87.66, 88.72, 
+89.3, 89.79, 90.1, 90.63, 91.26, 92.39, 93.62, 94.7, 95.38, 95.5, 
+95.75, 96.04, 96.38, 96.64, 96.95, 97.14, 97.34, 97.78, 97.93
+)
+) |>
+  mutate(pcr_y = pcr_y/100,
+         pls_y = pls_y/100)
+
+comp_pcr_pls |>
+  ggplot()+
+  geom_point(aes(x = component, y = pcr_y, col = "PCR"))+
+  geom_line(aes(x = component, y = pcr_y, col = "PCR"))+
+  geom_line(aes(x = component, y = pls_y, col = "PLS"))+
+  geom_point(aes(x = component, y = pls_y, col = "PLS"))+
+  scale_y_continuous(labels = percent_format())+
+  labs(title = "Comparison of PCR AND PLS",
+       x = "# of components",
+       y = "Variance in response explained")+
+  theme_minimal()+
+  scientific_theme
+```
+
+From the chart above, it is evident that for any number of principal components, the PLS explains the highest variability in the response variable, since it is a *supervised* dimensionality reduction technique, where the response variable guides the reduction process, as compared to the PLS which is an unsupervised technique.
+
+## Independent Components Analysis
+
+```{r ica1}
+set.seed(37)
+ica_model <- step_init |>
+  step_ica(
+    all_of(cn_updated),
+    num_comp = 30,
+    options = list(
+      maxit = 1000,
+      tol = 1e-10
+      #alg.type = "deflation"
+    )
+  )
+
+ica_train <- 
+  ica_model %>%
+  prep(training = train, verbose = TRUE)
+```
+
+```{r ica2}
+#| column: margin
+#| fig-show: "hold"
+#| fig-cap: "It is evident that ICA also constructs components in a way that they are STATISTICALLY INDEPENDENT to each other and hence not correlated. This helps in dealing with the multi-collinearity present in the data."
+#| cache: true
+ica_features <- juice(ica_train, matches("IC"))
+
+# Visualizing the correlation matrix
+corrplot::corrplot(corr = cor(ica_features),
+                   method = "square",
+                   type = "full",
+                   order = "FPC",
+                   title = NULL,
+                   tl.cex = .35,
+                   tl.col = "black")
+
+```
+
+This section gives a summary of the analysis performed using Independents Components Analysis. For the ICA, only 30 independent components are constructed. Results from the cross validation analysis performed on ICA features is shown below: 
+
+```{r ica3}
+#| cache: true
+#| fig-height: 5
+#| fig-width: 10
+
+ica_stats <- read.csv("data/lm_ica_stats.csv")
+
+# plotting
+i1 <- ica_stats |>
+  ggplot()+
+  geom_line(aes(x = (component), y = train_error))+
+  geom_point(aes(x = (component), y = train_error))+
+  labs(subtitle = "Training error",
+       x = "# of Components",y = "Root-MSE")+
+  theme_minimal()+
+  scientific_theme
+
+i2 <- ica_stats |>
+  ggplot()+
+  geom_line(aes(x = (component), y = y_explained))+
+  geom_point(aes(x = (component), y = y_explained))+
+  scale_y_continuous(labels = percent_format())+
+  labs(subtitle = "Variability in response explained",
+       x = "# of Components",y = "Adjusted R-squared")+
+  theme_minimal()+
+  scientific_theme
+
+grid.arrange(i1, i2, nrow = 1)
+```
+
+```{r ica4}
+# Predicting the test data
+prep_test <- bake(ica_train, test)
+
+# Model fitted to the 16 components
+ica_df <- cbind(ica_features[, 1], 
+                train[, "Annualized Return"]) |>
+  setNames(c(colnames(ica_features)[1], "Annualized Return"))
+
+ica_lm <- lm(`Annualized Return` ~ ., data = ica_df)
+```
+
+Based on the cross validation plots, we proceed with an regression model fitted with only the first ICA components.
+
+
+## Comparison of models
+
+```{r c1}
+# prediction on the training data
+train_accuracy <- data.frame(
+  ridge_cv_pred = predict(ridge_best_cv, newx = x[train_rows, ]),
+  #ridge_sgd_pred = predict(ridge_best_sgd, newx = x[train_rows, ]),
+  lasso_cv_pred = predict(lasso_best_cv, newx = x[train_rows, ]),
+  #lasso_sgd_pred = predict(ridge_best_sgd, newx = x[train_rows, ]),
+  mixture_pred_train <- predict(mixture_best, x[train_rows, ]),
+  pcr_pred = predict(pcr_model, train, ncomp = 2),
+  pls_pred = predict(pls_model, train, ncomp = 1),
+  kpca_pred = predict(kpc_lm, kpca_features),
+  ica_pred = predict(ica_lm, ica_features),
+  actual = y[train_rows, ]
+)
+
+# test accuracy
+prep_test_ica <- bake(ica_train, test)
+prep_test_kpca <- bake(kpca_model, test)
+
+
+test_accuracy <- data.frame(
+  ridge_cv_pred = predict(ridge_best_cv, newx = x[-train_rows, ]),
+  #ridge_sgd_pred = predict(ridge_best_sgd, newx = x[-train_rows, ]),
+  lasso_cv_pred = predict(lasso_best_cv, newx = x[-train_rows, ]),
+  #lasso_sgd_pred = predict(ridge_best_sgd, newx = x[-train_rows, ]),
+  mixture_pred_train <- predict(mixture_best, x[-train_rows, ]),
+  pcr_pred = predict(pcr_model, test, ncomp = 2),
+  pls_pred = predict(pls_model, test, ncomp = 1),
+  kpca_pred = predict(kpc_lm, prep_test_kpca),
+  ica_pred = predict(ica_lm, prep_test_ica),
+  actual = y[-train_rows, ]
+)
+
+train_err <- test_err <- vector()
+for (i in 1:(ncol(train_accuracy) - 1))
+{
+  train_err[i] <- mse(train_accuracy[, "actual"],
+                      train_accuracy[, i])
+  test_err[i] <- mse(test_accuracy[, "actual"],
+                     test_accuracy[, i])
+}
+
+err_df <- data.frame(
+  model = c("Ridge(CV)", "LASSO(CV)", "Elastic-Net", 
+            "PCR", "PLS", "k-PCA", "ICA"),
+  `Training error` = train_err,
+  `Testing error` = test_err
+)
+```
+
+
+In this section, we compare all models fitted on the testing data. We use the mean squared error to gauge the best models.
+
+```{r c2}
+kable(err_df)
+```
+
+The charts on performance are shown below:
+
+```{r c3}
+#| fig-width: 10
+#| fig-height: 5
+t1 <- err_df |>
+  ggplot()+
+  geom_col(aes(x = fct_reorder(model, train_err), y = train_err))+
+  labs(title = "Training error", x = "Model", y = "MSE")+
+  theme_minimal() +
+  scientific_theme +
+  coord_flip()
+
+
+t2 <- err_df |>
+  ggplot()+
+  geom_col(aes(x = fct_reorder(model, test_err), y = test_err))+
+  labs(title = "Testing error", x = "Model", y = "MSE")+
+  theme_minimal() +
+  scientific_theme +
+  coord_flip()
+
+grid.arrange(t1, t2, nrow = 1)
+```
+
+From the above charts and statistics, it is evident that the Kernel PCA, and Elastic-Net regression model emerge the best, and their performance in both the training set and testing set is consistent. The PCR, PLS and ICA model offer a poor fit to the data in both two sets of data. The Ridge and LASSO regression models have more less the same performance in both sets of data. The performance of Kernel PCA indicates that there exists some non-linear dependencies on the data - which Kernel-PCA is good at uncovering as compared to PCA.
+
+
+# Classification models (II)
+
+```{r cl11}
+fdf <- read.csv("data/glm_fdf.csv")
+rownames(fdf) <- fdf[, 1]
+fdf <- fdf[, -1]
+colnames(fdf) <- c("Annualized Return", "Annualized Std Dev", "Annualized Sharpe (Rf=30.48%)", 
+"rho1", "rho2", "rho3", "rho4", "rho5", "rho6", "Q(6) p-value", 
+"daily  Std Dev", "Skewness", "Kurtosis", "Excess kurtosis", 
+"Sample skewness", "Sample excess kurtosis", "Semi Deviation", 
+"Gain Deviation", "Loss Deviation", "Downside Deviation (MAR=40%)", 
+"Downside Deviation (Rf=30.48%)", "Downside Deviation (0%)", 
+"Maximum Drawdown", "Historical VaR (95%)", "Historical ES (95%)", 
+"Modified VaR (95%)", "Modified ES (95%)", "daily downside risk", 
+"Annualised downside risk", "Downside potential", "Omega", "Sortino ratio", 
+"Upside potential", "Upside potential ratio", "Omega-sharpe ratio", 
+"Sterling ratio", "Calmar ratio", "Burke ratio", "Pain index", 
+"Ulcer index", "Pain ratio", "Martin ratio", "Minimum", "Quartile 1", 
+"Median", "Arithmetic Mean", "Geometric Mean", "Quartile 3", 
+"Maximum", "SE Mean", "LCL Mean (0.95)", "UCL Mean (0.95)", "StdDev Sharpe (Rf=0.1%, p=95%):", 
+"VaR Sharpe (Rf=0.1%, p=95%):", "ES Sharpe (Rf=0.1%, p=95%):", 
+"Alpha", "Beta", "Beta+", "Beta-", "R-squared", "Annualized Alpha", 
+"Correlation", "Correlation p-value", "Tracking Error", "Active Premium", 
+"Information Ratio", "Treynor Ratio", "Beta CoVariance", "Beta CoSkewness", 
+"Beta CoKurtosis", "Specific Risk", "Systematic Risk", "Total Risk", 
+"Up Capture", "Down Capture", "Up Number", "Down Number", "Up Percent", 
+"Down Percent", "Direction")
+
+# constructing the training and testing set
+set.seed(472)
+train_rows <- sample(.80*nrow(fdf))
+train <- fdf[train_rows, ]
+test <- fdf[-train_rows, ]
+
+# constructing the model matrix
+x <- model.matrix(Direction ~ ., data = fdf)[, -1]
+y <- as.matrix(fdf[, "Direction"])
+```
+
+## Ridge Regression
+
+```{r clr1}
+#| column: margin
+#| fig-show: "hold"
+#| fig-cap: "Cross validation statistics for estimating the regularization parameter of ridge regression, and their error bars. The dotted line represent estimate of lambda which is within its one standard error"
+#| fig-width: 5
+#| fig-height: 5
+#| cache: true
+# cross vaidating to find best lambda
+set.seed(37) # to ensure reproducibility
+cv.out <- cv.glmnet(x = x[train_rows, ],
+                    y = y[train_rows, ],
+                    family = "binomial",
+                    alpha = 0)
+plot(cv.out)
+```
+
+In this section, we analyze a ridge regression model for classification A suitable regularization parameter was obtained using cross-validation^[The best estimate for $\lambda$ using cross validation was found to be: 2.610173]. The model fit statistics are shown below:
+
+```{r clr2}
+#| cache: true
+#| fig-width: 10
+#| fig-height: 5
+# fitting the model with the best lambda
+ridge_best_cv <- glmnet(x = x[train_rows, ],
+                        y = y[train_rows, ],
+                        family = "binomial",
+                        alpha = 0,
+                        lambda = cv.out$lambda.min)
+
+# predicting the train and test data
+ridge_prob_test <- predict(ridge_best_cv, x[-train_rows, ], type = "response")
+ridge_prob_train <- predict(ridge_best_cv, x[train_rows, ], , type = "response")
+ridge_pred_train <- ifelse(ridge_prob_train > 0.4892546, "Up", "Down")
+ridge_pred_test <- ifelse(ridge_prob_test > 0.4892546, "Up", "Down")
+
+cf_cv <- as.numeric(coef(ridge_best_cv))
+
+r1 <- data.frame(
+  col = c("(Intercept)", colnames(x)),
+  coef_cv = cf_cv
+) |>
+  select(coef_cv) |>
+  unlist() |> as.numeric() |>
+  quantile(probs = seq(from = 0, to = 1, length = 100)) |>
+  as.numeric() |> data.frame() |>
+  setNames("quantiles") |>
+  mutate(prob = seq(from = 0, to = 1, length = 100)) |>
+  ggplot()+
+  geom_line(aes(x = prob, y = quantiles)) +
+  scale_x_continuous(labels = scales::percent_format())+
+  labs(title = "Distribution of model coefficients: (Ridge-CV)",
+       x = "Quantile Probability", y= "Coefficient value")+
+  theme_minimal()+
+  scientific_theme
+
+ridge_glm_prob <- predict(ridge_best_cv, type = "response", newx = x[train_rows, ]) |>
+  as.numeric()
+r2 <- roc(response = train[,"Direction"], predictor = ridge_glm_prob) |>
+  ggroc()+
+  theme_minimal()+
+  labs(title = "ROC: Ridge regression",
+       x = "Specificity", y = "Sensitivity")+
+  scientific_theme
+
+grid.arrange(r1, r2, nrow = 1)
+```
+
+In the chart above, it is evident that about 60% of the model coefficients have shrunk to be close to 0, showing how effective ridge regression is in producing interpretable models. The performance of the ridge regression model on the training dataset is shown in the Receiver Operating Characteristic Curve, with an AUC of: 0.85435.
+
+## LASSO Regression
+
+```{r cl1}
+#| column: margin
+#| fig-show: "hold"
+#| fig-cap: "Cross validation statistics for estimating the regularization parameter of LASSO regression, and their error bars. The dotted line represent estimate of lambda which is within its one standard error"
+#| fig-width: 5
+#| fig-height: 5
+#| cache: true
+# cross vaidating to find best lambda
+set.seed(37) # to ensure reproducibility
+cv.out <- cv.glmnet(x = x[train_rows, ],
+                    y = y[train_rows, ],
+                    family = "binomial",
+                    alpha = 1)
+plot(cv.out)
+```
+
+In this section, we analyze the LASSO regression model fitted. A suitable regularization parameter was obtained using cross-validation^[The best estimate for $\lambda$ using cross validation was found to be: 0.07095985]. The model fit is displayed below:
+
+```{r cl2}
+#| cache: true
+#| fig-width: 10
+#| fig-height: 5
+# fitting the model with the best lambda
+lasso_best_cv <- glmnet(x = x[train_rows, ],
+                        y = y[train_rows, ],
+                        family = "binomial",
+                        alpha = 1,
+                        lambda = cv.out$lambda.min)
+
+#predictions
+lasso_prob_test <- predict(lasso_best_cv, x[-train_rows, ], type = "response")
+lasso_prob_train <- predict(lasso_best_cv, x[train_rows, ], type = "response")
+lasso_pred_train <- ifelse(lasso_prob_train > 0.4854385, "Up", "Down")
+lasso_pred_test <- ifelse(lasso_prob_test > 0.4854385, "Up", "Down")
+
+cf_cv <- as.numeric(coef(lasso_best_cv))
+
+l1 <- data.frame(
+  col = c("(Intercept)", colnames(x)),
+  coef_cv = cf_cv
+) |>
+  select(coef_cv) |>
+  mutate(status = ifelse(coef_cv == 0, "Zero coefficient", "Non-zero coefficient")) |>
+  ggplot()+
+  geom_bar(aes(x = status), col = "black", alpha = .5, width = .4) +
+  labs(title = "Distribution of model coefficients: (LASSO-CV)",
+       x = "Status", y= "Coefficient count")+
+  theme_minimal()+
+  scientific_theme
+
+lasso_glm_prob <- predict(lasso_best_cv, type = "response", newx = x[train_rows, ]) |>
+  as.numeric()
+l2 <- roc(response = train[,"Direction"], predictor = lasso_glm_prob) |>
+  ggroc()+
+  theme_minimal()+
+  labs(title = "ROC: LASSO regression",
+       x = "Specificity", y = "Sensitivity")+
+  scientific_theme
+
+grid.arrange(l1, l2, nrow = 1)
+```
+
+In the chart above, it is evident that about 87% of the model coefficients have set to 0, showing how effective LASSO regression is in feature selection. The performance of the LASSO regression model on the training dataset is shown in the Receiver Operating Characteristic Curve, with an AUC of: 0.8592.
+
+## Elastic-net Regression
+
+```{r cel1}
+#| column: margin
+#| fig-show: "hold"
+#| fig-cap: "The Receiver Operating Characteristic curve for the ElasticNet model using an alpha = 0.062063062, and lambda = 0.62452991. The Area Under Curve (AUC) is: 0.8641"
+#| fig-width: 5
+#| fig-height: 5
+mixture_best <- glmnet(x = x[train_rows, ],
+                       y = y[train_rows, ],
+                       family = "binomial",
+                       alpha = 0.062063062, 
+                       lambda = 0.62452991)
+
+# predictions
+elnet_prob_test <- predict(mixture_best, x[-train_rows, ], type = "response")
+elnet_prob_train <- predict(mixture_best, x[train_rows, ], type = "response")
+elnet_pred_train <- ifelse(elnet_prob_train > 0.50138058, "Up", "Down")
+elnet_pred_test <- ifelse(elnet_prob_test > 0.50138058, "Up", "Down")
+
+elnet_glm_prob <- predict(mixture_best, type = "response", newx = x[train_rows, ]) |>
+  as.numeric()
+roc(response = train[,"Direction"], predictor = elnet_glm_prob) |>
+  ggroc()+
+  theme_minimal()+
+  labs(title = "ROC: Elastic-Net regression",
+       x = "Specificity", y = "Sensitivity")+
+  scientific_theme
+
+```
+
+In this section, the fit of the mixture of LASSO and Ridge regression on the data is shown. Suitable values for the mixing weight $\alpha$, and the redularization parameter, $\lambda$ are found using cross validation, where for a fixed value of $\alpha$, the best $\lambda$ is searched for, and several accuracy metrics are computed.
+
+```{r cel2}
+#| cache: true
+#| fig-width: 10
+#| fig-height: 10
+mixture_grid <- read.csv("data/glm_mixture_grid_stock.csv")
+
+# plotting the charts
+m1 <- mixture_grid |>
+  data.frame() |>
+  ggplot(aes(x = alpha, y = lambda)) +
+  geom_line(alpha= .1)+
+  geom_smooth(method = "gam")+
+  scale_x_continuous(labels = scales::percent_format())+
+  labs(subtitle = "Regularization parameter",
+       x = "Alpha", y = "Lambda") +
+  theme_minimal()+
+  scientific_theme
+
+m2 <- mixture_grid |>
+  data.frame() |>
+  ggplot(aes(x = alpha, y = deviance)) +
+  geom_line(alpha = .1)+
+  geom_smooth(method = "loess")+
+  scale_x_continuous(labels = scales::percent_format())+
+  scale_y_continuous(labels = scales::percent_format())+
+  labs(subtitle = "Deviance explained",
+       x = "Alpha", y = "Explained(%)") +
+  theme_minimal()+
+  scientific_theme
+
+m3 <- mixture_grid |>
+  data.frame() |>
+  ggplot(aes(x = alpha, y = accuracy)) +
+  geom_line(alpha = .1)+
+  geom_smooth(method = "loess")+
+  scale_x_continuous(labels = scales::percent_format())+
+  labs(subtitle = "Training error",
+       x = "ALpha", y = "MSE") +
+  theme_minimal()+
+  scientific_theme
+
+m4 <- mixture_grid |>
+  data.frame() |>
+  ggplot(aes(x = alpha, y = nvars)) +
+  geom_line(alpha = .1)+
+  geom_smooth(method = "loess")+
+  scale_x_continuous(labels = scales::percent_format())+
+  labs(subtitle = "Model sparsity",
+       x = "Alpha", y = "Non-zero coefficients") +
+  theme_minimal()+
+  scientific_theme
+
+grid.arrange(m1, m2, m3, m4, 
+             nrow = 2)
+# we proceed with: alpha: 0.062063062 lambda: 0.62452991
+```
+
+
+From the charts above, it is evident that as the $\alpha$ increases, then the model tends to be more sparse, the deviance explained decreases while the training error rate decreases. The best combination of the $\alpha$, and $\lambda$ parameter are chosen to minimize the cross validation error.
+
+## Principal Components Analysis
+
+```{r cp1}
+step_init <- recipe(Direction ~ ., data = train)
+
+# determining reasonable values for sigma in radial basis function
+cn_updated <- colnames(fdf)[-ncol(fdf)]
+
+pca_init <- 
+  step_init |>
+  step_center(all_of(cn_updated)) |>
+  step_scale(all_of(cn_updated)) |>
+  step_pca(
+    all_of(cn_updated), 
+    num_comp = 30,
+    id = 'pca')
+
+pca_model <- 
+  pca_init %>%
+  prep(training = train, retain = TRUE, verbose = TRUE)
+pca_features <- juice(pca_model, matches("PC"))
+
+# Predicting the test data
+prep_test <- bake(pca_model, test)
+
+# Model fitted to the 2 components
+pca_df <- cbind(pca_features[, 1:3], 
+                train[, "Direction"]) |>
+  setNames(c(colnames(pca_features)[1:3], "Direction"))
+pca_glm <- glm(factor(Direction) ~ ., data = pca_df, family = "binomial")
+pca_glm_prob <- predict(pca_glm, type = "response")
+
+# predictions
+pca_prob_test <- predict(pca_glm, prep_test, type = "response")
+pca_prob_train <- predict(pca_glm, pca_features, type = "response")
+pca_pred_train <- ifelse(pca_prob_train > 0.500132338, "Up", "Down")
+pca_pred_test <- ifelse(pca_prob_test > 0.500132338, "Up", "Down")
+```
+
+In this section, we ran the principal components analysis model using 30 principal components and the results of cross validation on the principal components are displayed.
+
+```{r cp2}
+#| cache: true
+#| fig-width: 10
+#| fig-height: 10
+var_pca <- recipes::tidy(pca_model, id = "pca", type = "variance") |>
+  create_var_explained() |>
+  select(component, `percent variance`, `cumulative percent variance`) |>
+  mutate(`percent variance` = (`percent variance`)/100,
+         `cumulative percent variance` = (`cumulative percent variance`)/100)
+
+pca_acc <- read.csv("data/glm_pca_eigen_stock.csv")
+
+# plotting
+p1 <- var_pca |>
+  ggplot()+
+  geom_line(aes(x = (component), y = `percent variance`))+
+  geom_point(aes(x = (component), y = `percent variance`))+
+  scale_y_continuous(labels = percent_format())+
+  labs(title = NULL,
+       subtitle = "Predictor space variance explained",
+       x = "Component",y = "Variance explained")+
+  theme_minimal()+
+  scientific_theme
+
+p2 <- var_pca |>
+  ggplot()+
+  geom_line(aes(x = (component), y = `cumulative percent variance`))+
+  geom_point(aes(x = (component), y = `cumulative percent variance`))+
+  scale_y_continuous(labels = percent_format())+
+  labs(subtitle = "Cumulative variability in predictors explained",
+       x = "# of Components",y = NULL)+
+  theme_minimal()+
+  scientific_theme
+
+p3 <- pca_acc |>
+  ggplot()+
+  geom_line(aes(x = (component), y = train_acc))+
+  geom_point(aes(x = (component), y = train_acc))+
+  scale_y_continuous(labels = percent_format())+
+  labs(subtitle = "Cross-validation accuracy",
+       x = "# of Components",y = "Overall Accuracy")+
+  theme_minimal()+
+  scientific_theme
+
+p4 <- pca_acc |>
+  ggplot()+
+  geom_line(aes(x = (component), y = train_kappa))+
+  geom_point(aes(x = (component), y = train_kappa))+
+  scale_y_continuous(labels = percent_format())+
+  labs(subtitle = "Cross-validation accuracy",
+       x = "# of Components",y = "Cohen's Kappa")+
+  theme_minimal()+
+  scientific_theme
+
+grid.arrange(p1, p2, p3, p4, nrow = 2)
+```
+
+```{r cp3}
+#| column: margin
+#| fig-show: "hold"
+#| fig-cap: "PCA is applied to the dataset, and the first two principal components are plotted, and coloured by the Direction variable. For the Receiver Operating Characteristic, the AUC is: 0.8084"
+#| fig-height: 10
+#| fig-width: 5
+#| cache: true
+# plotting the seperation of the class by PC1, and 2
+pp1 <- pca_model$template |>
+  ggplot()+
+  geom_point(aes(x = PC01, y = PC02, col = Direction))+
+  labs(title = "Principal Components Analysis",
+       x = "PC-01", y = "PC-02")+
+  theme_minimal() + 
+  scientific_theme
+
+pp2 <- roc(response = train[,"Direction"], predictor = pca_glm_prob) |>
+  ggroc()+
+  theme_minimal()+
+  labs(title = "ROC: PCA",
+       x = "Specificity", y = "Sensitivity") + 
+  scientific_theme
+
+grid.arrange(pp1, pp2, nrow = 2)
+```
+
+From the above charts, the first three principal components explain maximal variability in the predictor space. Cross validation on the training set indicates that, the first three principal components give the best model in terms of Overall accuracy and Kappa. Hence for the purpose of model fitting, we will only use three principal components.
+
+## Kernel Principal Components Analysis
+
+```{r ckpca1}
+step_init <- recipe(Direction ~ ., data = train)
+
+# determining reasonable values for sigma in radial basis function
+cn_updated <- colnames(fdf)[-ncol(fdf)]
+sig_range <- 
+  step_init |>
+  step_center(all_of(cn_updated)) |>
+  step_scale(all_of(cn_updated)) |>
+  prep(training = train, verbose = TRUE) |>
+  juice(all_of(cn_updated)) |>
+  as.matrix() |>
+  sigest(frac = 1) 
+
+kpca_init <- 
+  step_init |>
+  step_center(all_of(cn_updated)) |>
+  step_scale(all_of(cn_updated)) |>
+  step_kpca(
+    all_of(cn_updated), 
+    num_comp = 30, 
+    options = list(kernel = "rbfdot", kpar = list(sigma = sig_range[2]))
+  )
+
+kpca_model <- 
+  kpca_init %>%
+  prep(training = train, retain = TRUE, verbose = TRUE)
+kpca_features <- juice(kpca_model, matches("PC"))
+
+## Predicting the test data
+prep_test <- bake(kpca_model, test)
+
+# Model fitted to the 2 components
+kpc_df <- cbind(kpca_features[, 1:2], 
+                train[, "Direction"]) |>
+  setNames(c(colnames(kpca_features)[1:2], "Direction"))
+
+kpc_glm <- glm(factor(Direction) ~ ., data = kpc_df, family = "binomial")
+kpca_glm_prob <- predict(kpc_glm, type = "response")
+
+# predictions
+kpca_prob_test <- predict(kpc_glm, prep_test, type = "response")
+kpca_prob_train <- predict(kpc_glm, kpca_features, type = "response")
+kpca_pred_train <- ifelse(kpca_prob_train > 0.49820248, "Up", "Down")
+kpca_pred_test <- ifelse(kpca_prob_test > 0.49820248, "Up", "Down")
+```
+
+In this section, the Kernel principal components analysis model is fitted using 30 components and the cross validation results are shown below:
+
+```{r ckpca2}
+#| cache: true
+#| fig-width: 10
+#| fig-height: 10
+kpca_eigen <- read.csv("data/glm_kpca_eigen_stock.csv")
+
+# plotting
+k1 <- kpca_eigen |>
+  ggplot()+
+  geom_line(aes(x = (component), y = component_contribution))+
+  geom_point(aes(x = (component), y = component_contribution))+
+  scale_y_continuous(labels = percent_format())+
+  labs(title = NULL,
+       subtitle = "Predictor space variance explained",
+       x = "Component",y = "Variance explained")+
+  theme_minimal()+
+  scientific_theme
+
+k2 <- kpca_eigen |>
+  ggplot()+
+  geom_line(aes(x = (component), y = group_contribution))+
+  geom_point(aes(x = (component), y = group_contribution))+
+  scale_y_continuous(labels = percent_format())+
+  labs(subtitle = "Cumulative variability in predictors explained",
+       x = "# of Components",y = NULL)+
+  theme_minimal()+
+  scientific_theme
+
+k3 <- kpca_eigen |>
+  ggplot()+
+  geom_line(aes(x = (component), y = train_acc))+
+  geom_point(aes(x = (component), y = train_acc))+
+  labs(subtitle = "Cross-validation accuracy",
+       x = "# of Components",y = "Overall Accuracy")+
+  theme_minimal()+
+  scientific_theme
+
+k4 <- kpca_eigen |>
+  ggplot()+
+  geom_line(aes(x = (component), y = train_kappa))+
+  geom_point(aes(x = (component), y = train_kappa))+
+  scale_y_continuous(labels = percent_format())+
+  labs(subtitle = "Cross-validation accuracy",
+       x = "# of Components",y = "Cohen's Kappa")+
+  theme_minimal()+
+  scientific_theme
+
+grid.arrange(k1, k2, k3, k4, nrow = 2)
+```
+
+```{r ckpca3}
+#| column: margin
+#| fig-show: "hold"
+#| fig-cap: "Kernel PCA is applied to the dataset, and the first two principal components are plotted, and coloured by the Direction variable. For the Receiver Operating Characteristic, the AUC is: 0.7908"
+#| fig-width: 5
+#| fig-height: 10
+#| cache: true
+# plotting the seperation of the class by PC1, and 2
+pp1 <- kpca_model$template |>
+  ggplot()+
+  geom_point(aes(x = kPC01, y = kPC02, col = Direction))+
+  labs(title = "Kernel Principal Components Analysis",
+       x = "kPC-01", y = "kPC-02")+
+  theme_minimal()+
+  scientific_theme
+
+pp2 <- roc(response = train[,"Direction"], predictor = kpca_glm_prob) |>
+  ggroc()+
+  theme_minimal()+
+  labs(title = "ROC: kPCA",
+       x = "Specificity", y = "Sensitivity")+
+  scientific_theme
+
+grid.arrange(pp1, pp2, nrow = 2)
+```
+
+From the above charts, the first four components explain maximal variability in the predictor space. Cross validation on the training set indicate that, only the first two or five components give the best model in terms of Overall accuracy and Kappa. Hence for the purpose of model fitting, we will only use two components^[This is because for the 5-component and 2-component model,there is no big difference, hence we fit a model using 2 components only to ensure parsimonity].
+
+
+## Independent Components Analysis
+
+```{r cica1}
+step_init <- recipe(Direction ~ ., data = train)
+
+# determining reasonable values for sigma in radial basis function
+cn_updated <- colnames(fdf)[-ncol(fdf)]
+
+ica_init <- 
+  step_init |>
+  step_center(all_of(cn_updated)) |>
+  step_scale(all_of(cn_updated)) |>
+  step_ica(
+    all_of(cn_updated), 
+    num_comp = 30,
+    id = 'ica')
+
+ica_model <- 
+  ica_init %>%
+  prep(training = train, retain = TRUE, verbose = TRUE)
+ica_features <- juice(ica_model, matches("IC"))
+
+# Predicting the test data
+prep_test <- bake(ica_model, test)
+
+# Model fitted to the 2 components
+ica_df <- cbind(ica_features[, 1:15], 
+                train[, "Direction"]) |>
+  setNames(c(colnames(ica_features)[1:15], "Direction"))
+
+ica_glm <- glm(factor(Direction) ~ ., data = ica_df, family = "binomial")
+ica_glm_prob <- predict(ica_glm, type = "response")
+
+# predictions
+ica_prob_test <- predict(ica_glm, prep_test, type = "response")
+ica_prob_train <- predict(ica_glm, ica_features, type = "response")
+ica_pred_train <- ifelse(ica_prob_train > 3.813941e-01, "Up", "Down")
+ica_pred_test <- ifelse(ica_prob_test > 3.813941e-01, "Up", "Down")
+```
+
+
+This section covers the application of Independent Components Analysis to the classification dataset. We restrict the number of independent Components to 30 components. 
+
+```{r cica2}
+#| cache: true
+#| fig-width: 10
+#| fig-height: 5
+ica_train_res <- read.csv("data/glm_ica_eigen_stock.csv")
+# plotting
+i1 <- ica_train_res |>
+  ggplot()+
+  geom_line(aes(x = (component), y = train_acc))+
+  geom_point(aes(x = (component), y = train_acc))+
+  scale_y_continuous(labels = percent_format())+
+  labs(subtitle = "Cross-validation accuracy",
+       x = "# of Components",y = "Overall Accuracy")+
+  theme_minimal()+
+  scientific_theme
+
+i2 <- ica_train_res |>
+  ggplot()+
+  geom_line(aes(x = (component), y = train_kappa))+
+  geom_point(aes(x = (component), y = train_kappa))+
+  scale_y_continuous(labels = percent_format())+
+  labs(subtitle = "Cross-validation accuracy",
+       x = "# of Components",y = "Cohen's Kappa")+
+  theme_minimal()+
+  scientific_theme
+
+grid.arrange(i1, i2, nrow = 1)
+```
+
+```{r cica3}
+#| column: margin
+#| fig-show: "hold"
+#| fig-cap: "ICA is applied to the dataset, and the first two Independent components are plotted, and coloured by the Direction variable. For the Receiver Operating Characteristic, the AUC is: 0.7898"
+#| fig-height: 10
+#| fig-width: 5
+#| cache: true
+# plotting the seperation of the class by PC1, and 2
+i1 <- ica_model$template |>
+  ggplot()+
+  geom_point(aes(x = IC01, y = IC02, col = Direction))+
+  labs(title = "Independent Components Analysis",
+       x = "IC-01", y = "IC-02")+
+  theme_minimal()+
+  scientific_theme
+
+i2 <- roc(response = train[,"Direction"], predictor = ica_glm_prob) |>
+  ggroc()+
+  theme_minimal()+
+  labs(title = "ROC: ICA",
+       x = "Specificity", y = "Sensitivity")+
+  scientific_theme
+
+grid.arrange(i1, i2, nrow = 2)
+```
+
+
+From the charts above, the highest overall accuracy and Kappa are obtained when using 15 independent components, although as compared to the cross validation performance of the other models above, the ICA under-performs all models. We proceed to fit a GLM using the first 15 components.
+
+---
+
+## Comparison of Models
+
+In this section, we compare all fitted models, on the test dataset. For comparison, we use the Overall Accuracy, although other metrics of classification models are quoted. For the cutoff probability, we select the cutoff which gave the highest Youden statistic on the training data.
+
+```{r comp1}
+#| cache: true
+#| column: margin
+#| fig-width: 5
+#| fig-height: 5
+#| fig-cap: "The Receiver Operating characteristics for the models fitted on the training dataset"
+
+# multiple ROCs
+sens_fun <- function(actual, predicted, cutoff)
+{
+  s <- vector()
+  for (i in 1:length(cutoff))
+  {
+    s[i] <- ModelMetrics::sensitivity(actual = actual,
+                                      predicted = predicted,
+                                      cutoff = cutoff[i])
+  }
+  return(s)
+}
+
+spec_fun <- function(actual, predicted, cutoff)
+{
+  s <- vector()
+  for (i in 1:length(cutoff))
+  {
+    pred_class <- ifelse(predicted > cutoff[i], "Up", "Down") |>
+      factor(levels = levels(actual))
+    s[i] <- spec_vec(actual,
+                     pred_class)
+  }
+  return(s)
+}
+
+roc_df <- data.frame(
+  thresh = seq(from = 0, to = 1, length = 200)) |>
+  mutate(
+    ridge_sensitivity = sens_fun(actual = factor(y[train_rows,]),
+                                 predicted = as.numeric(ridge_prob_train),
+                                 cutoff = thresh),
+    lasso_sensitivity = sens_fun(actual = factor(y[train_rows,]),
+                                 predicted = as.numeric(lasso_prob_train),
+                                 cutoff = thresh),
+    elnet_sensitivity = sens_fun(actual = factor(y[train_rows,]),
+                                 predicted = as.numeric(elnet_prob_train),
+                                 cutoff = thresh),
+    pca_sensitivity = sens_fun(actual = factor(y[train_rows,]),
+                                 predicted = as.numeric(pca_prob_train),
+                                 cutoff = thresh),
+    kpca_sensitivity = sens_fun(actual = factor(y[train_rows,]),
+                                 predicted = as.numeric(kpca_prob_train),
+                                 cutoff = thresh),
+    ica_sensitivity = sens_fun(actual = factor(y[train_rows,]),
+                                 predicted = as.numeric(ica_prob_train),
+                                 cutoff = thresh)
+  ) |>
+  mutate(
+    ridge_specificity = spec_fun(actual = factor(y[train_rows,]),
+                                 predicted = as.numeric(ridge_prob_train),
+                                 cutoff = thresh),
+    lasso_specificity = spec_fun(actual = factor(y[train_rows,]),
+                                 predicted = as.numeric(lasso_prob_train),
+                                 cutoff = thresh),
+    elnet_specificity = spec_fun(actual = factor(y[train_rows,]),
+                                 predicted = as.numeric(elnet_prob_train),
+                                 cutoff = thresh),
+    pca_specificity = spec_fun(actual = factor(y[train_rows,]),
+                               predicted = as.numeric(pca_prob_train),
+                               cutoff = thresh),
+    kpca_specificity = spec_fun(actual = factor(y[train_rows,]),
+                                predicted = as.numeric(kpca_prob_train),
+                                cutoff = thresh),
+    ica_specificity = spec_fun(actual = factor(y[train_rows,]),
+                               predicted = as.numeric(ica_prob_train),
+                               cutoff = thresh)
+  )
+
+View(roc_df)
+
+roc_df |>
+  ggplot()+
+  geom_line(aes(x = ridge_specificity, y = ridge_sensitivity, colour = "Ridge"))+
+  geom_line(aes(x = lasso_specificity, y = lasso_sensitivity, colour = "LASSO"))+
+  geom_line(aes(x = elnet_specificity, y = elnet_sensitivity, colour = "Elastic-Net"))+
+  geom_line(aes(x = pca_specificity, y = pca_sensitivity, colour = "PCA"))+
+  geom_line(aes(x = kpca_specificity, y = kpca_sensitivity, colour = "k-PCA"))+
+  geom_line(aes(x = ica_specificity, y = ica_sensitivity, colour = "ICA"))+
+  scale_x_reverse()+
+  scale_y_reverse()+
+  labs(title = "ROC Comparison", x = "Specificity", y = "Sensitivity")+
+  theme_minimal()+
+  scientific_theme
+```
+
+```{r comp2}
+# prediction on the training data
+train_accuracy <- data.frame(
+  ridge_cv_pred = ridge_pred_train,
+  lasso_cv_pred = lasso_pred_train,
+  mixture_pred_train <- elnet_pred_train,
+  pcr_pred = pca_pred_train,
+  kpca_pred = kpca_pred_train,
+  ica_pred = ica_pred_train,
+  actual = y[train_rows, ]
+) |>
+  mutate(
+    across(
+      .cols = where(is.character),
+      .fns = factor
+    )
+  )
+
+test_accuracy <- data.frame(
+  ridge_cv_pred = ridge_pred_test,
+  lasso_cv_pred = lasso_pred_test,
+  mixture_pred_train <- elnet_pred_test,
+  pcr_pred = pca_pred_test,
+  kpca_pred = kpca_pred_test,
+  ica_pred = ica_pred_test,
+  actual = y[-train_rows, ]
+) |>
+  mutate(
+    across(
+      .cols = where(is.character),
+      .fns = factor,
+      levels = c("Down", "Up")
+    )
+  )
+
+train_metric_df <- test_metric_df <- matrix(NA, nrow = 6, ncol = 14)
+for (i in 1:(ncol(test_accuracy) - 1))
+{
+  cc_train <- caret::confusionMatrix(data = train_accuracy[, i],
+                                     reference = train_accuracy[, 7])
+  
+  train_metric_df[i, 2:14] <- c(as.numeric(cc_train$overall)[1:2],
+                                as.numeric(cc_train$byClass))
+  
+  cc_test <- caret::confusionMatrix(data = test_accuracy[, i],
+                                     reference = test_accuracy[, 7])
+  
+  test_metric_df[i, 2:14] <- c(as.numeric(cc_test$overall)[1:2],
+                               as.numeric(cc_test$byClass))
+}
+
+train_metric_df <- train_metric_df[, 1:10]
+test_metric_df <- test_metric_df[, 1:10]
+
+train_metric_df <- train_metric_df |>
+  data.frame() |>
+  setNames(c("Model", "Accuracy", "Kappa", "Sensitivity", "Specificity", "PPV", "NPV", "Precision", "Recall", "F1"))
+
+test_metric_df <- test_metric_df |>
+  data.frame() |>
+  setNames(c("Model", "Accuracy", "Kappa", "Sensitivity", "Specificity", "PPV", "NPV", "Precision", "Recall", "F1"))
+
+test_metric_df$Model <- c("Ridge", "LASSO", "Elastic-Net", "PCA", "k-PCA", "ICA")
+train_metric_df$Model <- c("Ridge", "LASSO", "Elastic-Net", "PCA", "k-PCA", "ICA")
+
+train_metric_df <- train_metric_df[, c(1:7, 10)]
+test_metric_df <- test_metric_df[, c(1:7, 10)]
+```
+
+```{r comp3}
+#| cache: true
+t1 <- train_metric_df |>
+  ggplot()+
+  geom_col(aes(x = fct_reorder(Model, Accuracy), y = Accuracy))+
+  scale_y_continuous(labels = percent_format())+
+  labs(x = "Model", y="Overall Accuracy",
+       subtitle = "Training set performance")+
+  theme_minimal() +
+  scientific_theme +
+  coord_flip()
+
+
+t2 <- test_metric_df |>
+  ggplot()+
+  geom_col(aes(x = fct_reorder(Model, Accuracy), y = Accuracy))+
+  scale_y_continuous(labels = percent_format())+
+  labs(subtitle = "Test set performance", x = "Model", y = "Overall Accuracy")+
+  theme_minimal() +
+  scientific_theme +
+  coord_flip()
+
+grid.arrange(t1, t2, nrow = 1)
+```
+
+The training set performance metrics are displayed below:
+
+```{r comp4}
+#| fig-width: 12
+#| fig-height: 6
+#| cache: true
+#| fig-cap: "Performance of Models on the training set"
+
+kk_train <- knitr::kable(train_metric_df)
+kable_classic(
+  kable_input = kk_train,
+  full_width=F,
+  position="left")
+
+```
+
+---
+
+The testing set performance metrics are displayed below:
+
+```{r comp5}
+#| fig-width: 12
+#| fig-height: 6
+#| cache: true
+#| fig-cap: "Performance of Models on the testing set"
+kk_test <- knitr::kable(test_metric_df)
+kable_classic(
+  kable_input = kk_test,
+  full_width=F,
+  position="left")
+
+```
+
+---
+
+From the statistics and charts above, it is evident that Kernel PCA outperforms all other models on the testing set, with an overall accuracy of 81.25%, with all other models having accuracy below 80%.
+
+The good performance exhibited by Kernel PCA over PCA, shows that there were some non-linear relationships within the predictors.
+
+
+# Conclusion
+
+This study compares models for high dimensional data both in the regression and classification setting. The results show that, for regression: The elastic-net regression model, and Kernel-PCA outperform the rest in terms of Mean Squared Error. For the classification models fitted, the Kernel-PCA and PCA outperform the rest of the models. The consistency of the Kernel PCA in both settings shows that the dataset contained non-linear dependencies in the predictor space - which Kernel-PCA is good at uncovering.
+
+For both settings, the dimensionality reduction models used including: PCA, k-PCA, and ICA, performed well in reducing the multi-collinearity inherent in the original dataset,and all the dimensionality reduction models show optimal performance with relatively few components used in the model - which helps in pointing out how important the dimensionality reduction models are at combating multi-collinearity in the data.
+
+In both settings, the hyper-parameters for the final models fitted, such as: $\alpha, \lambda$ for the ridge, LASSO and Elastic-Net models, and $p$, the number of components to use for the dimensionality reduction models, were obtained through cross-validation on the training set. Since most models maintained consistency in both training and testing performance, then it shows that cross-validation is useful in determining good hyper-parameter estimates, for model fitting.
+
+# Recommendations
+
+This article only focuses on a single dataset from Financial domain, where we are interested in predicting the returns, or direction a portfolio of assets would generate at a future time, using historical data of technical, fundamental, and statistical metrics.
+
+Future research could look into utilizing these models for high-dimensional data from other domains such as health-care, marketing, etc.
+
+Future research could look into other dimensionality reduction models not utilized in this article, such as Non-Negative Matrix Factorization.^[This research did not cover NNMF, due to computational constraints]
+
+Future research could look into the importance of these dimensionality reduction models, in the context of clustering, and other Machine Learning models not utilized in this study.
+
+# References
+
+Bishop, C. (2011). Pattern Recognition and Machine Learning. Springer.
+
+G. James et al. (2013). An Introduction to Statistical Learning: with Applications in R. Springer Texts in Statistics.
+
+Hyvärinen, A., & Oja, E. (2000). Independent component analysis: Algorithms and applications. Neural Networks, 13(4-5), 411-430.
+
+Kuhn, M., & Johnson, K. (2013). Applied Predictive Modeling. Springer.
+
+MacKay, D. (2003). Information Theory, Inference and Learning Algorithms. Cambridge University Press.
+
+Wickham, H., & Grolemund, G. (2016). R for Data Science: Import, Tidy, Transform, Visualize, and Model Data. O’Reilly Media, Inc.
+
+---
+
+Abdi, H., & Williams, L. (2010). Principal component analysis. Wiley Interdisciplinary Reviews: Computational Statistics, 2(4), 433-459.
+
+Altman, D., & Bland, J. (1994). Diagnostic tests 3: Receiver operating characteristic plots. BMJ: British Medical Journal, 309(6948), 188.
+
+Barker, M., & Rayens, W. (2003). Partial least squares for discrimination. Journal of Chemometrics, 17(3), 166-173.
+
+Caputo, B., Sim, K., Furesjo, F., & Smola, A. (2002). Appearance-based object recognition using SVMs: Which kernel should I use? In Proceedings of NIPS Workshop on Statistical Methods for Computational Experiments in Visual Processing and Computer Vision, volume 2002.
+
+Friedman, J., Tibshirani, R., & Hastie, T. (2010). Regularization paths for generalized linear models via coordinate descent. Journal of Statistical Software, 33(1), 1-22. doi:10.18637/jss.v033.i01 https://doi.org/10.18637/jss.v033.i01.
+
+Kuhn, M. (2008). Building predictive models in R using the caret package. Journal of Statistical Software, 28(5), 1-26. doi:10.18637/jss.v028.i05 https://doi.org/10.18637/jss.v028.i05.
+
+Tay, J. K., Narasimhan, B., & Hastie, T. (2023). Elastic net regularization paths for all generalized linear models. Journal of Statistical Software, 106(1), 1-31. doi:10.18637/jss.v106.i01 https://doi.org/10.18637/jss.v106.i01.
+
+---
+
+Karatzoglou, A., Smola, A., & Hornik, K. (2023). kernlab: Kernel-Based Machine Learning Lab. R package version 0.9-32, https://CRAN.R-project.org/package=kernlab.
+
+Karatzoglou, A., Smola, A., Hornik, K., & Zeileis, A. (2004). kernlab - An S4 package for kernel methods in R. Journal of Statistical Software, 11(9), 1-20. doi:10.18637/jss.v011.i09 https://doi.org/10.18637/jss.v011.i09.
+
+Liland, K., Mevik, B., & Wehrens, R. (2023). pls: Partial Least Squares and Principal Component Regression. R package version 2.8-3, https://CRAN.R-project.org/package=pls.
+
+Kuhn, M. (2008). The caret package. Journal of Statistical Software, 28(5), 1-26. doi:10.18637/jss.v028.i05 https://doi.org/10.18637/jss.v028.i05.
+
+Kuhn, M., Wickham, H., & Hvitfeldt, E. (2024). recipes: Preprocessing and Feature Engineering Steps for Modeling. R package version 1.0.10, https://CRAN.R-project.org/package=recipes.
+
+Marchini, J. L., Heaton, C., & Ripley, B. D. (2023). fastICA: FastICA Algorithms to Perform ICA and Projection Pursuit. R package version 1.2-4, https://CRAN.R-project.org/package=fastICA.
+
+Peterson, B. G., & Carl, P. (2020). PerformanceAnalytics: Econometric Tools for Performance and Risk Analysis. R package version 2.0.4, https://CRAN.R-project.org/package=PerformanceAnalytics.
+
+R Core Team (2023). R: A Language and Environment for Statistical Computing. R Foundation for Statistical Computing, Vienna, Austria. https://www.R-project.org/.

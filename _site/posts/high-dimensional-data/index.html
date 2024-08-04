@@ -1,0 +1,1964 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Stanley Sayianka">
+<meta name="dcterms.date" content="2022-11-12">
+
+<title>Stanley Sayianka - Learning representations in high-dimensional data</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+<script src="../../site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="../../site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Stanley Sayianka</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html" rel="" target="">
+ <span class="menu-text">Projects</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Learning representations in high-dimensional data</h1>
+            <p class="subtitle lead">Regression and Classification</p>
+                                <div class="quarto-categories">
+                <div class="quarto-category">code</div>
+                <div class="quarto-category">stats</div>
+                <div class="quarto-category">machine-learning</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Stanley Sayianka </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">November 12, 2022</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
+
+
+
+
+<section id="introduction" class="level1 page-columns page-full">
+<h1>Introduction</h1>
+<div class="page-columns page-full"><p>High-dimensional data is the type of data<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> which is characterized by the presence of many variables<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. Due to the growing nature of variables of interest and data collection over the past years in diverse domains such as health-care/medicine, marketing, finance etc., there is an increasing need for techniques which are able to thrive in situations where the number of variables is higher, and at times even more than the number of data points available to train the model.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;Also known as wide data</p></li><li id="fn2"><p><sup>2</sup>&nbsp;potentially where the number of variables(p) is greater than the number of observations in the sample(n) i.e.&nbsp;<span class="math inline">\(p &gt; n\)</span>.</p></li><li id="fn3"><p><sup>3</sup>&nbsp;For most Machine Learning algorithms, data at hand is usually of the form <span class="math inline">\(n &gt;&gt; p\)</span>, i.e.&nbsp;the number of data points(n) used in training the model is far higher than the number of predictors(p) in the data. However for high dimensional Machine Learning, the number of predictors(p) is usually very large, and at times more than the sample size(n), which poses a problem for most Machine Learning models.</p></li></div></div>
+<p>Examples of problems common in high dimensional learning include the following:</p>
+<p>Predicting consumer behavior and patterns in online-shopping stores, where the variables of interest, could be all search terms entered by the consumer, the click history, previous purchases and declines, demographic characteristics, and search account history. In such a problem, while the number of predictors for online behavior are many, we typically only have a few customer information.</p>
+<div class="page-columns page-full"><p>Signal generation, and price prediction in finance. In this domain, the variables of interest are usually: technical indicators of the price series such as the moving averages, volatility, etc, the fundamental indicators such as market capitalization and several accounting ratios, analyst ratings, social media sentiment etc. In this domain too, the number of historical data points used to train models is often limited<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>, however the number of predictors keeps growing.</p><div class="no-row-height column-margin column-container"><li id="fn4"><p><sup>4</sup>&nbsp;at least not for high-frequency trading domain</p></li></div></div>
+<p>In medicine, a problem of interest is to predict whether given tumors are benign or malignant, where variables would include a number of characteristics of cells e.g.&nbsp;perimeter, concavity, area, smoothness etc and other variables about the patient such as patient’s demographic characteristics, lifestyle characteristics etc. The characteristics could be so many, yet the number of patients, for which we have data could be few due to patients leaving studies/treatment.</p>
+<hr>
+<p>The challenges associated with learning in high dimensions, require specialized techniques suited to such data since common statistical learning methods such as least squares fail in such dimensions. Potential dangers encountered when working with high-dimensional data include:</p>
+<ol type="1">
+<li><p>Multi-collinearity: In the presence of a high number of predictors, the possibility of more than one pair of predictors being highly correlated increases, and this poses a challenge termed multi-collinearity in the data.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a> Several machine learning models become unstable in the presence of multi-collinearity such as Neural networks, support vector machines etc, while some of them may break down completely such as multiple linear regression. Multi-collinearity introduces redundancy in model fitting, since two or more predictors attempt to explain the same variability in the response.</p></li>
+<li><p>False positive discoveries: In high dimension data, the probability of finding one or more predictors which are significantly related to the response due to random chance and not due to a true relationship increases, which leads to the problem of false discoveries. Such false positive findings often decrease a model’s performance and hurt model interpretability.</p></li>
+</ol>
+<div class="no-row-height column-margin column-container"><li id="fn5"><p><sup>5</sup>&nbsp;Multi-collinearity refers to situations in which there are several predictors which are significantly correlated</p></li></div><div class="cell page-columns page-full" data-hash="index_cache/html/unnamed-chunk-2_84a881b42a315a2bac944bb281b05144">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="480"></p>
+<figcaption class="figure-caption">An example of a dataset with two predictors, and two observations. (n = p = 2)</figcaption>
+</figure>
+</div>
+</div></div></div>
+<div class="cell page-columns page-full" data-hash="index_cache/html/unnamed-chunk-3_cab5fa18dc4993077d8f044d03b58a27">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="480"></p>
+<figcaption class="figure-caption">An example of a dataset with (n = p = 9) using polynomial regression (degree 9)</figcaption>
+</figure>
+</div>
+</div></div></div>
+<ol start="3" type="1">
+<li><p>Over-fitting: In high dimensional data, where <span class="math inline">\(n = p\)</span> or <span class="math inline">\(n &gt; p\)</span>, then over-fitting is likely to occur. In this scenario, the models fitted have n degrees of freedom. This is illustrated in the following example: Suppose we have a sample of 2 data points, and one variable of interest(together with an intercept) i.e.&nbsp;<span class="math inline">\(n = p\)</span>, then fitting a linear regression model results in a perfect fit (all residuals become 0), however such a model may fail to generalize to previously unseen data(test data). This shows that in high dimensional learning, it is possible for models to perfectly fit the training data, and perform poorly in previously unseen data. In such cases, the training error is a poor approximation of test error rate.</p></li>
+<li><p>Common performance metrics for models also fail in the high dimensional case, such as the <span class="math inline">\(R^2, Adjusted-R^2\)</span> etc. This is because, for metrics such as <span class="math inline">\(R^2\)</span>, increasing the number of variables (p) in the model, almost always increases the <span class="math inline">\(R^2\)</span> even when the variables have no significant relation to the response<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. Consequently, possible collinearity among the predictors causes the tests of significance in models to be biased.</p></li>
+</ol>
+<div class="no-row-height column-margin column-container"><li id="fn6"><p><sup>6</sup>&nbsp;An example of an illustration showing what happens to a model when more variables which have no significant relationships to the response are added to the model. It is evident how adjusted R-squared almost always increases as the number of predictors increases, the training error always decreases as more predictors are added to a model due to possible over-fitting, but the test error increases, since the increased number of predictors add no predictive power to the model.</p></li></div><div class="cell" data-hash="index_cache/html/f3_0bf6996053a50fe2f4ce631845c7dc86">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/f3-1.png" class="img-fluid" width="1152"></p>
+</div>
+</div>
+</section>
+<section id="models-for-high-dimensional-data" class="level1">
+<h1>Models for high-dimensional data</h1>
+<p>Due to the above-mentioned challenges, this study seeks to investigate models suitable for high-dimensional learning in the context of regression and classification.</p>
+<p>In modelling high-dimensional data, it is of interest to identify variables and interactions which have a significant relationship to the response variable, and discard those which have no significant relationship. This leads to dropping some variables in the analysis in favor of others <em>(by setting their coefficients in the model to <span class="math inline">\(0\)</span>)</em>, a technique commonly called <strong>feature/variable selection</strong>, or shrinking their coefficients in the model towards <span class="math inline">\(0\)</span>, a technique termed <strong>shrinkage.</strong> In this study, the models used for shrinkage and variable selection are the Ridge and LASSO regression respectively. Both ridge and LASSO regression are commonly called <em>Penalized regression models</em> and are also referred to as regularization techniques since they control for possible over-fitting in models.</p>
+<p>Due to the ‘wide’ nature of data in high-dimensional settings, it is of interest to an analyst, to find a small subset of predictors, which have the most significance relation to the response. This can be achieved by transformations for reducing the dimensionality of the predictor space into a much smaller dimension, a technique known as: <strong>dimensionality reduction</strong>. The aim of the these methods is to find a subset of predictors, from the original predictor space, in such a manner that the high-dimensional problem is reduced to a low-dimensional one. It is important to note that: since the subset of predictors is constructed in such a way, that there is no correlation among the new subset of predictors, the issue of multi-collinearity is also solved. In this study we investigate the following dimensionality reduction techniques: Principle Components analysis, Kernel Principal Components analysis, Independent component analysis, and Partial least squares.</p>
+<hr>
+</section>
+<section id="penalized-regression-methods" class="level1">
+<h1>Penalized regression methods</h1>
+<section id="ridge-regression" class="level2">
+<h2 class="anchored" data-anchor-id="ridge-regression">Ridge regression</h2>
+<p>This is a shrinkage based method for regression (suitable for <span class="math inline">\(p &gt; n\)</span> data), which aims to supplement the Ordinary Least Squares method, especially in the context of high multi-collinearity.</p>
+<p>Recall, that for the orindary least squares model of the form:</p>
+<p><span class="math display">\[y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_p x_p + \epsilon_t\]</span></p>
+<p>The error function is of the form:</p>
+<p><span class="math display">\[Q = \sum{(y_i - \hat{y_i})^2}\]</span> <span class="math display">\[where: \hat{y_i} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + ... + \beta_p x_p\]</span></p>
+<p>In slving for the coefficients of regression, we obtain the following closed-form solution:</p>
+<p><span class="math display">\[\beta = (X^T X)^{-1} (X^T Y)\]</span></p>
+<p>However, in the prescence of many predictors, there is the ever-present risk of multi-collinearity, and thus the <span class="math inline">\((X^T X)\)</span> matrix will not be of full rank, and hence not invertible. This in turn makes the coefficients of the regression model to grow large and unstable.</p>
+<p>A work around is to change the error function of the regression model to be:</p>
+<p><span class="math display">\[Q_{L2} = \sum{(y_i - \hat{y_i})^2} + \lambda_r \sum{\beta^2_j}\]</span></p>
+<p>This choice of error function, has the advantage that the error function remains a quadratic function of the regression coefficients, and its exact closed-form solution can be obtained by equating the gradient of the error function to <span class="math inline">\(0\)</span>, and solving for <span class="math inline">\(\beta\)</span> to obtain:</p>
+<p><span class="math display">\[\beta = (X^T X + \lambda I)^{-1} (X^T Y)\]</span></p>
+<p>The <span class="math inline">\(\lambda\)</span> is called a penalty term or regularization coefficient, and this technique is called <strong>ridge regression</strong>. The penalty term must increase when the coefficients grow large, in order to enforce minimization. In result, the penalty causes the regression coefficients to become smaller and shrink towards 0, this makes the model much interpretable.</p>
+<p>This particular choice of regularizer is known as <em>weight decay</em> in machine learning, or <em>parameter shrinkage</em> in statistics, since it has the tendancy to shrink parameter values towards 0</p>
+</section>
+<section id="lasso-regression" class="level2">
+<h2 class="anchored" data-anchor-id="lasso-regression">LASSO regression</h2>
+<p>A different choice of the regularizer could be obtained using the following error function:</p>
+<p><span class="math display">\[Q_{L1} = \sum{(y_i - \hat{y_i})^2} + \lambda_L \sum{|\beta_j|}\]</span></p>
+<p>This method is called: <em>Least absolute shrinkage and selection operator</em>: <strong>(LASSO)</strong>. In modifying the error function to include the regularizer, lasso regression forces some regression coefficients to be 0, and in doing so, it practically selects model terms to an optimal number of predictors. This makes it a feature selection model.</p>
+<p>The advantage of the LASSO regression over ridge regression is that: although ridge regression shrinks parameter estimates towards 0, it does not lead to any parameter estimates being 0, hence for the ridge regression, all (p) predictors are included in the model <em>(which might hurt model interpretability)</em>. However, for the LASSO regression, the nature of its regularizer ensures that some parameter estimates are set to 0, hence effectively eliminating them from the model. Hence the LASSO regression has he advantage of producing simpler interpretable models than ridge regression. It should be noted however that this does not hurt the predictive ability of the ridge regression model.</p>
+</section>
+<section id="elastic-net-regression-combining-ridge-and-lasso-regression" class="level2">
+<h2 class="anchored" data-anchor-id="elastic-net-regression-combining-ridge-and-lasso-regression">Elastic-Net Regression (Combining Ridge and LASSO regression)</h2>
+<p>Since ridge regression has the advantage of combating multi-collinearity, and the LASSO regression has the advantage of being a feature/variable selection model, the two models can be combined, in order to deal with both multi-collinearity, and feature selection at once.</p>
+<p>The form of the error function of model is shown below:</p>
+<p><span class="math display">\[Q = \sum{(y_i - \hat{y_i})^2} + \lambda [ (1 - \alpha)\sum{\beta^2_j} + \alpha \sum{| \beta_j |} ]\]</span></p>
+<p>Here, <span class="math inline">\(\lambda = \lambda_r + \lambda_L\)</span> , and the proportion of <span class="math inline">\(\lambda\)</span> associated with the lasso is denoted <span class="math inline">\(\alpha\)</span>. Thus, selecting <span class="math inline">\(\alpha = 1\)</span> would be a full lasso penalty model, selecting <span class="math inline">\(\alpha = 0\)</span> would be a full ridge regression model, whereas <span class="math inline">\(\alpha = 0.5\)</span> is an even mix of a ridge and lasso model.</p>
+</section>
+<section id="search-for-optimal-lambda" class="level2">
+<h2 class="anchored" data-anchor-id="search-for-optimal-lambda">Search for optimal <span class="math inline">\(\lambda\)</span></h2>
+<p>The optimal value of <span class="math inline">\(\lambda\)</span> for the ridge and LASSO regression model is found by means of cross-validation, where several choices of <span class="math inline">\(\lambda\)</span> are used on the training set, and the performance of the models are evaluated on a validation set,so that the value of <span class="math inline">\(\lambda\)</span> which yields the least training error, is preferred. For Elastic-Net regression, a common method of selecting the best regularization coefficient, is to construct a grid of <span class="math inline">\(\alpha\)</span> values, and for each value of <span class="math inline">\(\alpha\)</span>, the best regularization coefficient <span class="math inline">\(\lambda\)</span> is found. The fitted models are then compared based on validation error.</p>
+<hr>
+</section>
+</section>
+<section id="dimensionality-reduction-methods" class="level1 page-columns page-full">
+<h1>Dimensionality Reduction methods</h1>
+<p>Dimensionality reduction methods are useful in reducing the dimensionality of datasets, from a high-dimensional space to a low dimensional space, for a number of reasons:</p>
+<ul>
+<li><p>High-dimensional data increases computation time in model fitting</p></li>
+<li><p>High-dimensional data is often plagued with highly correlated variables.</p></li>
+</ul>
+<p>These challenges above necessitate, finding only a small subset of predictors which summarize maximal variability in the original predictor space significantly. Such methods include:</p>
+<ol type="1">
+<li><p>Principal Components Analysis (PCA)</p></li>
+<li><p>Kernel Principal Components Analysis (K-PCA)</p></li>
+<li><p>Independent Component Analysis (ICA)</p></li>
+<li><p>Partial Least Squares (PLS)</p></li>
+<li><p>Non-negative matrix factorization (NNMF)</p></li>
+</ol>
+<p>All the techniques listed above work by taking an input matrix <span class="math inline">\(X\)</span>, which is an <span class="math inline">\(n * p\)</span> matrix, and return a matrix of scores <em>(often called components)</em>, which are combinations of the columns of the original data matrix.</p>
+<p>It is however important to note that <span class="math inline">\(PCA, K-PCA, ICA, NNMF\)</span> are <em>unsupervised</em> techniques, and their aim is to reduce the number of predictors into a subspace of predictors, with the hope that the new subset of predictors will be significant in explaining the variability in the response, although this is not always the case. Their aim is to reduce the predictor space into a smaller subset with the aim of reducing computation time and possible multi-collinearity, but not necessarily improve predictive performance.</p>
+<p>The <span class="math inline">\(PLS\)</span> technique is a <em>supervised</em> technique, in that it performs dimensionality reduction, while ensuring that the subset of predictors obtained is significantly related to the response variable. Thus, when using PLS, there is some guarantee of improving predictive performance, while reducing computation time in model fitting.</p>
+<p>In this article, we will not cover the non-negative matrix factorization method.</p>
+<section id="principal-components-analysis" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="principal-components-analysis">Principal Components Analysis</h2>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>Recall that, for a data matrix A, and an identity matrix I, the eigen values are <span class="math inline">\(\lambda\)</span> such that: <span class="math display">\[|A - \lambda I| = 0\]</span> The corresponding eigen vector <span class="math inline">\(\hat{v}\)</span>, of an eigen value <span class="math inline">\(\lambda\)</span> satisfies the equation: <span class="math display">\[(A - \lambda I) \hat{v} = 0\]</span></p>
+</div></div><p>Principal Components Analysis (PCA) is the most popular dimensionality reduction method. The aim of PCA is to find a subset of predictors, which is esentially a linear combination of the original predictor space, such that the combinations explain maximal variability of the original predictor space.</p>
+<div class="page-columns page-full"><p>In PCA, the new features formed<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>, are usually orthogonal to each other<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>. This makes it a very useful tool in dealing with multi-collinearity.</p><div class="no-row-height column-margin column-container"><li id="fn7"><p><sup>7</sup>&nbsp;Often called scores or components</p></li><li id="fn8"><p><sup>8</sup>&nbsp;Implying they’re uncorrelated, and thus there is minimal overlap in the information provided by each score</p></li></div></div>
+<p>We consider an <span class="math inline">\(n*p\)</span> centered data matrix <span class="math inline">\(X\)</span>, where n is the number of observations, and p is the number of predictors. We then create a <span class="math inline">\(p*p\)</span> matrix, whose columns are eigen vectors of <span class="math inline">\((X^T X)\)</span>.</p>
+<p>The matrix <span class="math inline">\(W\)</span> is the matrix of unit eigen vectors. In constructing <span class="math inline">\(W\)</span>, we usually ensure that eigen vectors are ranked by the highest eigen value i.e.&nbsp;components with the highest explanatory power come first. It follows that <span class="math inline">\(W\)</span> is orthogonal, i.e.&nbsp;<span class="math inline">\(W^T = W^{-1}\)</span></p>
+<p>The principal components decomposition <span class="math inline">\(P\)</span> of <span class="math inline">\(X\)</span> is then defined as: <span class="math inline">\(P= XW\)</span></p>
+<p>A popular application of principal components analysis is <em>principal components regression</em>, where the predictor matrix is first reduced into a matrix of scores using PCA, and this matrix of scores is then fed into regression.</p>
+</section>
+<section id="kernel-principal-components-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="kernel-principal-components-analysis">Kernel Principal Components Analysis</h2>
+<p>Recall that PCA is useful in forming component by extracting linear combinations of predictors from the original predictor space, hence it is useful only when there are linear patterns in the predictor space.</p>
+<p>But supposing that, the functional form of the data at hand is given by the following equation below:</p>
+<p><span class="math display">\[y = x_1 + x_2 + x_1^2 + x_2^2 + \epsilon_t\]</span></p>
+<p>Then, using PCA will only construct linear combinations of <span class="math inline">\(x_1\)</span> and <span class="math inline">\(x_2\)</span>, thus missing out the important quadratic relationships in the data.</p>
+<p>Thus in the presence of possible non-linear relationships in the data, Kernel-PCA is better suited.</p>
+<p>K-PCA extends PCA using kernel methods, so that for linear combinations of variables, K-PCA captures this using the linear kernel:</p>
+<p><span class="math display">\[k(x_1, x_2) = x_1^Tx_2\]</span></p>
+<p>Although the linear kernel could be substituted using any other kernel of choice, such as the polynomial kernel:</p>
+<p><span class="math display">\[k(x_1, x_2) = &lt;x_1, x_2&gt;^d\]</span> so that for quadratic relationships, we set <span class="math inline">\(d = 2\)</span>:</p>
+<p><span class="math display">\[k(x_1, x_2) = &lt;x_1, x_2&gt;^2 = (x_{11}x_{12} + ... + x_{n1}x_{n2})^2 \]</span></p>
+</section>
+<section id="independent-components-analysis" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="independent-components-analysis">Independent Components Analysis</h2>
+<div class="page-columns page-full"><p>Recall, PCA forms scores using linear combinations of the original predictor space such that the new scores formed are orthogonal with each other, and thus uncorrelated, however this does not mean that the scores are statistically independent of each other.<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn9"><p><sup>9</sup>&nbsp;This is because in certain cases, the correlation could be 0, however the covariance could be indicating otherwise, except in cases where data comes from the gaussian distribution, where un-correlation implies independence.</p></li></div></div>
+<div class="page-columns page-full"><p>ICA bears some similarity with PCA<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>, however in creating the scores, it does so in a way that the scores are statistically independent of each other. Generally, ICA tends to model a broader set of trends than PCA, which is only concerned with orthogonality.</p><div class="no-row-height column-margin column-container"><li id="fn10"><p><sup>10</sup>&nbsp;It should however be noted that scores generated by ICA are different from PCA scores</p></li></div></div>
+<div class="page-columns page-full"><p>Given a random observed vector <span class="math inline">\(X\)</span>,whose elements are mixtures of independent elements of a random vector <span class="math inline">\(S\)</span> given by:<a href="#fn11" class="footnote-ref" id="fnref11" role="doc-noteref"><sup>11</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn11"><p><sup>11</sup>&nbsp;Both <span class="math inline">\(X\)</span> and <span class="math inline">\(S\)</span> are vectors of length <span class="math inline">\(m\)</span></p></li></div></div>
+<p><span class="math display">\[X = AS\]</span></p>
+<div class="page-columns page-full"><p>Where <span class="math inline">\(A\)</span> denotes a mixing matrix of size <span class="math inline">\(m*m\)</span>, the goal of ICA is to find the un-mixing matrix <span class="math inline">\(W\)</span><a href="#fn12" class="footnote-ref" id="fnref12" role="doc-noteref"><sup>12</sup></a>, that will give the best approximation of <span class="math inline">\(S\)</span></p><div class="no-row-height column-margin column-container"><li id="fn12"><p><sup>12</sup>&nbsp;An inverse of the mixing matrix <span class="math inline">\(A\)</span></p></li></div></div>
+<p><span class="math display">\[WX \approx S\]</span></p>
+<p>ICA makes the following assumptions about data:</p>
+<ol type="1">
+<li><p>Statistical independence in the source signal</p></li>
+<li><p>Mixing matrix must be a square matrix of full rank.</p></li>
+<li><p>The only source of randomness is the vector <span class="math inline">\(S\)</span>.</p></li>
+<li><p>The data at hand is centered and whitened.<a href="#fn13" class="footnote-ref" id="fnref13" role="doc-noteref"><sup>13</sup></a></p></li>
+<li><p>The source signals must not have a gaussian distribution except for only one source signal.</p></li>
+</ol>
+<div class="no-row-height column-margin column-container"><li id="fn13"><p><sup>13</sup>&nbsp;Centered data is data which has been <em>demeaned</em>, and whitening could be achieved by first running PCA on the original data and using the whole set of components as input data to ICA</p></li></div><p>ICA constructs scores based on two methods:</p>
+<ul>
+<li>Minimization of mutual Information</li>
+</ul>
+<p>For a pair of random variables <span class="math inline">\(X, Y\)</span>, the mutual information is defined as follows:</p>
+<p><span class="math display">\[I(X;Y) = H(X) - H(X|Y)\]</span> Where:</p>
+<p><span class="math inline">\(H(X)\)</span>: is the entropy of <span class="math inline">\(X\)</span>.</p>
+<p><span class="math display">\[H(X) = - \sum_x{P(x)\log{P(x)}}\]</span></p>
+<div class="page-columns page-full"><p><span class="math inline">\(H(X|Y)\)</span>: is the conditional entropy.<a href="#fn14" class="footnote-ref" id="fnref14" role="doc-noteref"><sup>14</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn14"><p><sup>14</sup>&nbsp;The entropy of <span class="math inline">\(X\)</span> conditional on <span class="math inline">\(Y\)</span> taking a certain value <span class="math inline">\(y\)</span></p></li></div></div>
+<p><span class="math display">\[H(X|Y) = H(X, Y) - H(Y)\]</span></p>
+<p>where:</p>
+<p><span class="math inline">\(H(X, Y)\)</span>: is the joint entropy given by:</p>
+<p><span class="math display">\[H(X, Y) = - \sum_{x, y}{P(x, y) \log{P(x, y)}}\]</span></p>
+<p>From the above equations, entropy can be seen as a measure of uncertainty of information in a random variable, so that the lower the value of entropy, the more information we have about the random variable of interest. Therefore by seeking for a method of maximizing mutual information, we would be seeking for components which are maximally independent.</p>
+<ul>
+<li>Maximization of non-gaussianity.</li>
+</ul>
+<div class="page-columns page-full"><p>This is a second method of constructing independent components. Since in the assumptions underlying ICA, is the assumption of non-gaussianity of the source signals, then, one way of extracting components is to maximize non-gaussianity of the components.<a href="#fn15" class="footnote-ref" id="fnref15" role="doc-noteref"><sup>15</sup></a>.</p><div class="no-row-height column-margin column-container"><li id="fn15"><p><sup>15</sup>&nbsp;Forcing the components to be as far as possible from the gaussian distribution</p></li></div></div>
+<p>An example of a non-gaussianity measure is the <em>Negentropy</em>, given by:</p>
+<p><span class="math display">\[N(X) = H(X^N) - H(X)\]</span></p>
+<p>Where:</p>
+<p><span class="math inline">\(X\)</span>: is a random non-gaussian vector.</p>
+<p><span class="math inline">\(X^N\)</span>: is a gaussian random vector with same covariance matrix as <span class="math inline">\(X\)</span>.</p>
+<p><span class="math inline">\(H(.)\)</span>: is the entropy.</p>
+<p>Sice the gaussian distribution has the highest entropy for any given covariance matrix,then the negentropy: <span class="math inline">\(N(X)\)</span> is a strictly positive measure of non-gaussianity.</p>
+</section>
+<section id="partial-least-squares" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="partial-least-squares">Partial Least Squares</h2>
+<p>Partial Least Squares (PLS) is a <em>supervised</em> dimensionality reduction method, in that the response variable is used in guiding the dimensionality reduction process unlike in the context of PCA. Hence in constructing the components, PLS does so in a way that the components not only summarize maximal variability in the predictor space, but also are related to the response significantly.</p>
+<p>Given <span class="math inline">\(p\)</span> predictors: <span class="math inline">\(X_1, X_2, ... , X_p\)</span>, and the response variable <span class="math inline">\(Y\)</span>, we construct linear combinations of our original predictors: <span class="math inline">\(Z_1, ..., Z_m, \hspace{2 mm} m &lt; p\)</span>, components:</p>
+<p><span class="math display">\[Z_m = \sum_{j=1}^p {\phi_{jm} X_j}\]</span></p>
+<div class="page-columns page-full"><p>Where: <span class="math inline">\(\phi_{jm}\)</span>: are some constants. In computing the first PLS direction <span class="math inline">\(Z_1\)</span>, PLS sets each <span class="math inline">\(\phi_{j1}\)</span> equal to the coefficient from a simple linear regression of <span class="math inline">\(Y\)</span> onto <span class="math inline">\(X_j\)</span> <a href="#fn16" class="footnote-ref" id="fnref16" role="doc-noteref"><sup>16</sup></a>, hence it is evident that PLS places larger weight on variables which are highly correlated to the response variable. The second PLS direction is first computed by taking the residuals after regression each variable on <span class="math inline">\(Z_1\)</span><a href="#fn17" class="footnote-ref" id="fnref17" role="doc-noteref"><sup>17</sup></a>. The second PLS direction: <span class="math inline">\(Z_2\)</span> is computed using the <em>orthogonalized</em> data in the same fashion as <span class="math inline">\(Z_1\)</span>, and this procedure is repeated to obtain the <span class="math inline">\(m\)</span> PLS components.</p><div class="no-row-height column-margin column-container"><li id="fn16"><p><sup>16</sup>&nbsp;It can be shown that this coefficient is proportional to the correlation between <span class="math inline">\(X_j\)</span> and <span class="math inline">\(Y\)</span></p></li><li id="fn17"><p><sup>17</sup>&nbsp;The residuals are interpreted as: amunt of information that has not been accounted for by the first PLS direction</p></li></div></div>
+<hr>
+</section>
+</section>
+<section id="data" class="level1 page-columns page-full">
+<h1>Data</h1>
+<div class="page-columns page-full"><p>The data used in modelling is a financial dataset aimed at using various statistical and financial metrics to predict the return for quarterly returns data for a selected stock price series. The dataset is comprised of 78 numerical predictor variables(statistical and financial metrics), and a response variable<a href="#fn18" class="footnote-ref" id="fnref18" role="doc-noteref"><sup>18</sup></a>. The dataset is constructed using the metrics from the package <code>PerformanceAnalytics</code> in R, and using the return series of KCB Group from the period 1st January 2001, to 31st January 2021. The financial benchmarking metrics are computed using FTSE NSE 20<a href="#fn19" class="footnote-ref" id="fnref19" role="doc-noteref"><sup>19</sup></a> as the benchmark. The nature of the dataset makes it impossible to fit a standard Multiple Linear Regression model, or even a Generalized Linear Model(GLM) to the data (since <span class="math inline">\(p(78) &gt;&gt; n(64)\)</span>, in the training dataset). A glimpse of the first 49 variables present in the data are shown below:<a href="#fn20" class="footnote-ref" id="fnref20" role="doc-noteref"><sup>20</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn18"><p><sup>18</sup>&nbsp;The return for a particular quarter in the regression setting, and the Direction(i.e.&nbsp;whether there was a rise/drop in the quarterly return), in the classification setting</p></li><li id="fn19"><p><sup>19</sup>&nbsp;A price weighted portfolio of 20 best performing counters in the Nairobi Securities Exchange as the benchmark</p></li><li id="fn20"><p><sup>20</sup>&nbsp;Note that the variable <em>Direction</em>, which is the response variable in the classification setting is not included in the glimpse of the data. It is a binary variable constructed from the differenced Annualized Return variable, such that if the change in return is Negative, the Direction is <em>DOWN</em> indicating that the stock dropped in terms of quarterly returns, otherwise, the Direction is <em>UP</em>, indicating that the stock quarterly return rose, from the previous quarter.</p></li></div></div>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;"></th>
+<th style="text-align: right;">2001//2</th>
+<th style="text-align: left;">…</th>
+<th style="text-align: right;">2020//4</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Annualized Return</td>
+<td style="text-align: right;">0.0294000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.7567000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Annualized Std Dev</td>
+<td style="text-align: right;">0.6393000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.1417000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Annualized Sharpe (Rf=30.48%)</td>
+<td style="text-align: right;">-0.2063000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-2.8019000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rho1</td>
+<td style="text-align: right;">0.0151000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.3624000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rho2</td>
+<td style="text-align: right;">0.2120000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0839000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rho3</td>
+<td style="text-align: right;">-0.0593000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.1306000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rho4</td>
+<td style="text-align: right;">0.0193000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.1439000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">rho5</td>
+<td style="text-align: right;">0.0444000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.1711000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rho6</td>
+<td style="text-align: right;">-0.0601000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.2266000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Q(6) p-value</td>
+<td style="text-align: right;">0.7102000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0069000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">daily Std Dev</td>
+<td style="text-align: right;">0.0403000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0089000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Skewness</td>
+<td style="text-align: right;">1.2874000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.2103000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Kurtosis</td>
+<td style="text-align: right;">12.6280000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">3.8876000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Excess kurtosis</td>
+<td style="text-align: right;">9.6280000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.8876000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sample skewness</td>
+<td style="text-align: right;">1.3500000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.2205000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sample excess kurtosis</td>
+<td style="text-align: right;">10.5247000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">1.0610000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Semi Deviation</td>
+<td style="text-align: right;">0.0263000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0061000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Gain Deviation</td>
+<td style="text-align: right;">0.0382000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0065000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Loss Deviation</td>
+<td style="text-align: right;">0.0298000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0059000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Downside Deviation (MAR=40%)</td>
+<td style="text-align: right;">0.0267000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0072000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Downside Deviation (Rf=30.48%)</td>
+<td style="text-align: right;">0.0265000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0070000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Downside Deviation (0%)</td>
+<td style="text-align: right;">0.0260000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0063000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Maximum Drawdown</td>
+<td style="text-align: right;">0.2796000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0946000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Historical VaR (95%)</td>
+<td style="text-align: right;">-0.0482000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.0151000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Historical ES (95%)</td>
+<td style="text-align: right;">-0.0849000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.0186000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Modified VaR (95%)</td>
+<td style="text-align: right;">-0.0414000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.0142000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Modified ES (95%)</td>
+<td style="text-align: right;">-0.0414000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.0182000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">daily downside risk</td>
+<td style="text-align: right;">0.0267000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0072000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Annualised downside risk</td>
+<td style="text-align: right;">0.4235000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.1145000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Downside potential</td>
+<td style="text-align: right;">0.0120000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0043000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Omega</td>
+<td style="text-align: right;">0.9251000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.5485000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sortino ratio</td>
+<td style="text-align: right;">-0.0338000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.2707000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Upside potential</td>
+<td style="text-align: right;">0.0111000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0024000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Upside potential ratio</td>
+<td style="text-align: right;">0.7519000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.7749000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Omega-sharpe ratio</td>
+<td style="text-align: right;">-0.0749000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.4515000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sterling ratio</td>
+<td style="text-align: right;">-0.0598000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.4983000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Calmar ratio</td>
+<td style="text-align: right;">-0.0812000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-1.0249000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Burke ratio</td>
+<td style="text-align: right;">-0.0842000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-1.2829000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pain index</td>
+<td style="text-align: right;">0.1874000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0511000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Ulcer index</td>
+<td style="text-align: right;">0.2195000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0548000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Pain ratio</td>
+<td style="text-align: right;">-0.1296000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-1.9282000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Martin ratio</td>
+<td style="text-align: right;">-0.1107000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-1.7996000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Minimum</td>
+<td style="text-align: right;">-0.1264000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.0231000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Quartile 1</td>
+<td style="text-align: right;">-0.0149000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.0054000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Median</td>
+<td style="text-align: right;">0.0000000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0000000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Arithmetic Mean</td>
+<td style="text-align: right;">0.0007000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.0004000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Geometric Mean</td>
+<td style="text-align: right;">-0.0001000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.0004000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Quartile 3</td>
+<td style="text-align: right;">0.0146000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0041000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Maximum</td>
+<td style="text-align: right;">0.2015000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0243000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SE Mean</td>
+<td style="text-align: right;">0.0050000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0011000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">LCL Mean (0.95)</td>
+<td style="text-align: right;">-0.0094000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.0026000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">UCL Mean (0.95)</td>
+<td style="text-align: right;">0.0107000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0019000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">StdDev Sharpe (Rf=0.1%, p=95%):</td>
+<td style="text-align: right;">-0.0129949</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.1765017</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">VaR Sharpe (Rf=0.1%, p=95%):</td>
+<td style="text-align: right;">-0.0126389</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.1106584</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ES Sharpe (Rf=0.1%, p=95%):</td>
+<td style="text-align: right;">-0.0126389</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.0865619</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Alpha</td>
+<td style="text-align: right;">0.0073000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.0010000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Beta</td>
+<td style="text-align: right;">4.0468000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.5569000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Beta+</td>
+<td style="text-align: right;">11.4929000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.6488000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Beta-</td>
+<td style="text-align: right;">2.4824000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.5098000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">R-squared</td>
+<td style="text-align: right;">0.1222000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0964000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Annualized Alpha</td>
+<td style="text-align: right;">5.2407000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.2196000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Correlation</td>
+<td style="text-align: right;">0.3495000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.3104000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Correlation p-value</td>
+<td style="text-align: right;">0.0046000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0125000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Tracking Error</td>
+<td style="text-align: right;">0.6221000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.1391000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Active Premium</td>
+<td style="text-align: right;">0.1449000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.1316000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Information Ratio</td>
+<td style="text-align: right;">0.2330000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.9462000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Treynor Ratio</td>
+<td style="text-align: right;">-0.0691000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">-0.6005000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Beta CoVariance</td>
+<td style="text-align: right;">4.0468000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.5569000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Beta CoSkewness</td>
+<td style="text-align: right;">-14.5580000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.5195000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Beta CoKurtosis</td>
+<td style="text-align: right;">3.8377000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.8864000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Specific Risk</td>
+<td style="text-align: right;">0.5943000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.1336000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Systematic Risk</td>
+<td style="text-align: right;">0.2234000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.0440000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Total Risk</td>
+<td style="text-align: right;">0.6349000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.1407000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Up Capture</td>
+<td style="text-align: right;">6.2220000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.2129000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Down Capture</td>
+<td style="text-align: right;">3.2021000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.4310000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Up Number</td>
+<td style="text-align: right;">0.6538000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.3824000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Down Number</td>
+<td style="text-align: right;">0.4118000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.5333000</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Up Percent</td>
+<td style="text-align: right;">0.6538000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.2353000</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Down Percent</td>
+<td style="text-align: right;">0.5882000</td>
+<td style="text-align: left;">…</td>
+<td style="text-align: right;">0.6333000</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>A chart of the correlation between the predictor variables is shown below:</p>
+<div class="cell" data-hash="index_cache/html/corrplot_830df22f4bf066583a5d73c410ce88d8">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/corrplot-1.png" class="img-fluid" width="1440"></p>
+</div>
+</div>
+<p>It is evident that there exists (both positive and negative) high correlation between the predictors, which poses a challenge if multi-collinearity in the model fitting process. The high positive correlation is visible in predictors which are related to measures of downside risk, while the high negative correlation is evident between variables which measure tail risk, and those which measure downside risk. There is little to no correlation between variables which measure central tendancy (mean and median returns, and their respective ratios) and the variables which measure the riskiness of the returns series.</p>
+<p>For both models, the training and testing sets are constructed from the data using simple random sampling of the original data, so that 80% of the full dataset goes into training the models, while the remaining 20% of the data goes to the testing data. For the classification model, the resulting subsets are analyzed to ensure that there is class balance in the response variable.</p>
+<p>The key reason we randomize the data, when splitting into training and testing set, is because, for the purpose of this analysis, we are not interested in the temporal structure of the data.</p>
+<p>In the regression setting, the predictor variables are lagged by one time period, so that the financial metrics of of quarter <span class="math inline">\(i-1\)</span> are used in predicting the return for quarter <span class="math inline">\(i\)</span>. In the classification setting, since the Direction variable is automatically lagged, we back-shift it, so that, the financial metrics of quarter <span class="math inline">\(i-1\)</span>, are used in predicting the Direction of the next quarter <span class="math inline">\(i\)</span>. This is necessary since, it helps us in mitigating look-ahead bias.</p>
+<hr>
+</section>
+<section id="models" class="level1">
+<h1>Models</h1>
+</section>
+<section id="regression-model-i" class="level1 page-columns page-full">
+<h1>Regression model (I)</h1>
+<section id="ridge-regression-1" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="ridge-regression-1">Ridge Regression</h2>
+<div class="cell page-columns page-full" data-hash="index_cache/html/ridge1_04048fb1cd68532e168c45e638268823">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/ridge1-1.png" class="img-fluid figure-img" width="480"></p>
+<figcaption class="figure-caption">Cross validation statistics for estimating the regularization parameter of ridge regression, and their error bars. The dotted line represent estimate of lambda which is within its one standard error</figcaption>
+</figure>
+</div>
+</div></div></div>
+<div class="page-columns page-full"><p>We proceed to fit ridge regression on the data, and select the regularization parameter using cross-validation<a href="#fn21" class="footnote-ref" id="fnref21" role="doc-noteref"><sup>21</sup></a>. The cross validation statistics are shown below:</p><div class="no-row-height column-margin column-container"><li id="fn21"><p><sup>21</sup>&nbsp;The best estimate for <span class="math inline">\(\lambda\)</span> using cross validation was found to be: 12.75054</p></li></div></div>
+<div class="cell" data-hash="index_cache/html/ridge2_1aeeb9130134b5a316126c5ce2ac0773">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/ridge2-1.png" class="img-fluid" width="480"></p>
+</div>
+</div>
+<p>The model fitted using the regularization parameter obtained by cross validation <em>(Ridge CV)</em>, has roughly 70% of the model coefficients shrunken to be close to 0, showing how effective ridge regression is in producing interpretable models.</p>
+</section>
+<section id="lasso-regression-1" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="lasso-regression-1">LASSO Regression</h2>
+<div class="page-columns page-full"><p>We proceed to fit LASSO regression on the data, and select the regularization parameter using cross-validation<a href="#fn22" class="footnote-ref" id="fnref22" role="doc-noteref"><sup>22</sup></a>. The cross validation statistics are shown below:</p><div class="no-row-height column-margin column-container"><li id="fn22"><p><sup>22</sup>&nbsp;The best estimate for <span class="math inline">\(\lambda\)</span> using cross validation was found to be: 0.1893415.</p></li></div></div>
+<div class="cell page-columns page-full" data-hash="index_cache/html/lasso1_4a9bd7597f5f321555ff0cdcb677ba48">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/lasso1-1.png" class="img-fluid figure-img" width="480"></p>
+<figcaption class="figure-caption">Cross validation statistics for estimating the regularization parameter of LASSO regression and their error bars. The dotted line represent estimate of lambda which is within its one standard error</figcaption>
+</figure>
+</div>
+</div></div></div>
+<div class="cell" data-hash="index_cache/html/lasso2_1687158ebd98beb082d225c330eb1b38">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/lasso2-1.png" class="img-fluid" width="480"></p>
+</div>
+</div>
+<p>The model fitted using the regularization parameter obtained from cross validation as shown above has forced majority of the model coefficients to be 0, thereby removing the variables from the model. The LASSO regression technique is therefore important in variable selection, since by setting some model coefficients to 0, it effectively removes them from the model, leaving us with a much smaller and interpretable model.</p>
+</section>
+<section id="elastic-net-regression" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="elastic-net-regression">Elastic Net Regression</h2>
+<p>In this section, we fit an Elastic Net model, which is a mixture of both ridge and LASSO regression. We select the mixing-weight based on two methods:</p>
+<ol type="1">
+<li>We compute the model regularization parameter <span class="math inline">\(\lambda\)</span>, as a sum of the cross validation value of <span class="math inline">\(\lambda\)</span> computed in ridge regression, and that computed from LASSO regression. i.e.</li>
+</ol>
+<p><span class="math display">\[\lambda = \lambda_R + \lambda_L\]</span> We then run a cross validation using this fixed <span class="math inline">\(\lambda\)</span> on several values of <span class="math inline">\(\alpha\)</span>, and obtain the statistics as shown in the following chart:</p>
+<div class="cell" data-hash="index_cache/html/elnet1_1b9ee44eb1e3d9515540c1b9e2fd6a4a">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/elnet1-1.png" class="img-fluid figure-img" width="960"></p>
+<figcaption class="figure-caption">Using the regularization parameter obtained from cross validation</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<ol start="2" type="1">
+<li>In this second method, we construct a grid of <span class="math inline">\(\alpha\)</span> values which are equally spaced on the range <span class="math inline">\([0, 1]\)</span>, and for each <span class="math inline">\(\alpha_i\)</span>, we perform cross validation on the training set to obtain the most suitable value of the regularization parameter <span class="math inline">\(\lambda_i\)</span>.<a href="#fn23" class="footnote-ref" id="fnref23" role="doc-noteref"><sup>23</sup></a> The result is shown below:<a href="#fn24" class="footnote-ref" id="fnref24" role="doc-noteref"><sup>24</sup></a></li>
+</ol>
+<div class="no-row-height column-margin column-container"><li id="fn23"><p><sup>23</sup>&nbsp;This is the most suitable technique to use in Elastic-Net regression.</p></li><li id="fn24"><p><sup>24</sup>&nbsp;Cross validation is performed to determine the best value for the regularization coefficient for every value of alpha chosen. The value of alpha = 0.386387387, and the corresponding lambda = 0.1106008, gave the lowest training error(0.4), as well as the highest deviance(37%), using only 19 non-zero model coefficients.</p></li></div><div class="cell" data-hash="index_cache/html/elnet2_27e18e2a9c575a646b09352201f89fdb">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/elnet2-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>From the above chart, it shows that, as the value of <span class="math inline">\(\alpha\)</span> increases, then the regularization parameter <span class="math inline">\(\lambda\)</span> reduces, which shows that for this model, a very small proportion of <span class="math inline">\(\lambda\)</span> was attributed to the LASSO penalty. The deviance resulting from this is quite low (less than 30%). The training error, as well as the deviance are suitable for small values of alpha chosen. For the Elastic Net regression, we will proceed with this <span class="math inline">\(2^{nd}\)</span> model hyper-parameters, since it gives a lower training error, for few variables, as compared to the rest.</p>
+</section>
+<section id="principal-components-regression" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="principal-components-regression">Principal Components Regression</h2>
+<div class="cell page-columns page-full" data-hash="index_cache/html/pca1_2201de4c6f5ce476e7a040799d011abf">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/pca1-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">It is evident that PCA constructs components in a way that they are orthogonal to each other and hence not correlated. This helps in dealing with the multi-collinearity present in the data.</figcaption>
+</figure>
+</div>
+</div></div></div>
+<p>In this section, Principal components analysis model is fitted using only 56 principal components and the results of the Principal Components Regression are displayed.</p>
+<div class="cell" data-hash="index_cache/html/pca2_effc8f39a23542b712cc51be8f2be21f">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/pca2-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>From the scree-plot above, it is evident that the first two components account for maximal variability in the predictor matrix. In choosing the suitable number of components to run regression with, we examine the plot of cross-validation error below:</p>
+<div class="cell" data-hash="index_cache/html/pca3_8e6eef29ff076d4428eaa38bd44f2380">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/pca3-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>From the validation plot using RMSE as the error metric, the model with the lowest cross validation error is the 2-components model, which we will proceed with.</p>
+</section>
+<section id="kernel-principal-components-regression" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="kernel-principal-components-regression">Kernel Principal Components Regression</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>oper 1 step center [training] 
+oper 2 step scale [training] 
+The retained training set is ~ 0.05 Mb  in memory.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>oper 1 step center [training] 
+oper 2 step scale [training] 
+oper 3 step kpca [training] 
+The retained training set is ~ 0.02 Mb  in memory.</code></pre>
+</div>
+</div>
+<div class="cell page-columns page-full" data-hash="index_cache/html/kpca2_167598a9b8c7e4b1d4eeb92e2f3e3ac2">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/kpca2-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">It is evident that k-PCA constructs components in a way that they are orthogonal to each other and hence not correlated. This helps in dealing with the multi-collinearity present in the data.</figcaption>
+</figure>
+</div>
+</div></div></div>
+<p>In this section, the Kernel-PCA is first performed on the predictor matrix, and then the most optimal subset of the resulting components constructed is used to fit a linear regression model on our training dataset. For the Kernel-PCA, we chose a radial basis kernel, where the hyper-parameter <span class="math inline">\(\sigma\)</span> was chosen automatically based on our data.</p>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p>The estimated value of <span class="math inline">\(\sigma\)</span>, is based upon the 10%, and 90% quantile of <span class="math inline">\(||x - x^`||^2\)</span>, where we chose <span class="math inline">\(\sigma\)</span> as the median value of: 0.008732801.</p>
+</div></div><p>The charts below show the percentage variability in the original predictor matrix explained by the resulting kernel principal components:</p>
+<div class="cell" data-hash="index_cache/html/kpca3_a5ab16edc5b20f9a2fa788d08e3feff9">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/kpca3-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>From the scree plot on chart 1, it is evident that the first 4 kernel principal components explain maximal variability in the original predictor matrix. The cross validation training error increases as more components are added into the model. In selecting the optimal number of principal components to include in the model, we select 10 components, since this gives the highest amount of variability explained in the response variable.</p>
+</section>
+<section id="partial-least-squares-1" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="partial-least-squares-1">Partial Least Squares</h2>
+<div class="cell page-columns page-full" data-hash="index_cache/html/pls1_3bca20873ba8e35668d8095cb3a14487">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/pls1-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">It is evident that PLS also constructs components in a way that they are orthogonal to each other and hence not correlated. This helps in dealing with the multi-collinearity present in the data.</figcaption>
+</figure>
+</div>
+</div></div></div>
+<p>This section covers the analysis section for the partial least squares model. The PLS model is fitted using cross-validation, and the data is centered and scaled before the model fitting process.</p>
+<p>The scree-plot for the PLS model is shown below</p>
+<div class="cell" data-hash="index_cache/html/pls2_e50d4a2326f19416c3719e51c98baa86">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/pls2-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>The above chart shows that the first 4 components explain majority of the variability in the original predictor matrix (roughly 70%). The Training error from cross validation is shown below:</p>
+<div class="cell" data-hash="index_cache/html/pls3_053b81e4085880e2a527dc165c3844d5">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/pls3-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>From this chart, we select only the first component, to include in our final PLS model, since it gives the lowest cross validation error. A comparison of the variability in the response explained by the PCR and PLS model is shown below, in order to capture the difference between PLS and PCR.</p>
+<p>To examine the difference between PLS and PCA in explaining the response variable, we examine the (%) variance explained in the response by each component as shown below:</p>
+<div class="cell" data-hash="index_cache/html/pls4_0a10590035b831fb6ed87fde67fd50f7">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/pls4-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>From the chart above, it is evident that for any number of principal components, the PLS explains the highest variability in the response variable, since it is a <em>supervised</em> dimensionality reduction technique, where the response variable guides the reduction process, as compared to the PLS which is an unsupervised technique.</p>
+</section>
+<section id="independent-components-analysis-1" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="independent-components-analysis-1">Independent Components Analysis</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>oper 1 step ica [training] 
+The retained training set is ~ 0.02 Mb  in memory.</code></pre>
+</div>
+</div>
+<div class="cell page-columns page-full" data-hash="index_cache/html/ica2_485a01fd8f288904d17961a5ac8c947d">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/ica2-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">It is evident that ICA also constructs components in a way that they are STATISTICALLY INDEPENDENT to each other and hence not correlated. This helps in dealing with the multi-collinearity present in the data.</figcaption>
+</figure>
+</div>
+</div></div></div>
+<p>This section gives a summary of the analysis performed using Independents Components Analysis. For the ICA, only 30 independent components are constructed. Results from the cross validation analysis performed on ICA features is shown below:</p>
+<div class="cell" data-hash="index_cache/html/ica3_4c456994c0703ecfae61f16a4dcdbfa3">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/ica3-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>Based on the cross validation plots, we proceed with an regression model fitted with only the first ICA components.</p>
+</section>
+<section id="comparison-of-models" class="level2">
+<h2 class="anchored" data-anchor-id="comparison-of-models">Comparison of models</h2>
+<p>In this section, we compare all models fitted on the testing data. We use the mean squared error to gauge the best models.</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">model</th>
+<th style="text-align: right;">Training.error</th>
+<th style="text-align: right;">Testing.error</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Ridge(CV)</td>
+<td style="text-align: right;">0.5524857</td>
+<td style="text-align: right;">0.4890077</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">LASSO(CV)</td>
+<td style="text-align: right;">0.5690525</td>
+<td style="text-align: right;">0.4767853</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Elastic-Net</td>
+<td style="text-align: right;">0.4072456</td>
+<td style="text-align: right;">0.4338640</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PCR</td>
+<td style="text-align: right;">0.5830379</td>
+<td style="text-align: right;">0.5439550</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PLS</td>
+<td style="text-align: right;">0.5536653</td>
+<td style="text-align: right;">0.5070605</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">k-PCA</td>
+<td style="text-align: right;">0.3623230</td>
+<td style="text-align: right;">0.4342610</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ICA</td>
+<td style="text-align: right;">0.6424859</td>
+<td style="text-align: right;">0.4966551</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>The charts on performance are shown below:</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/c3-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>From the above charts and statistics, it is evident that the Kernel PCA, and Elastic-Net regression model emerge the best, and their performance in both the training set and testing set is consistent. The PCR, PLS and ICA model offer a poor fit to the data in both two sets of data. The Ridge and LASSO regression models have more less the same performance in both sets of data. The performance of Kernel PCA indicates that there exists some non-linear dependencies on the data - which Kernel-PCA is good at uncovering as compared to PCA.</p>
+</section>
+</section>
+<section id="classification-models-ii" class="level1 page-columns page-full">
+<h1>Classification models (II)</h1>
+<section id="ridge-regression-2" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="ridge-regression-2">Ridge Regression</h2>
+<div class="cell page-columns page-full" data-hash="index_cache/html/clr1_f9896ed3e2283e9e897626c3ccebeafc">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/clr1-1.png" class="img-fluid figure-img" width="480"></p>
+<figcaption class="figure-caption">Cross validation statistics for estimating the regularization parameter of ridge regression, and their error bars. The dotted line represent estimate of lambda which is within its one standard error</figcaption>
+</figure>
+</div>
+</div></div></div>
+<div class="page-columns page-full"><p>In this section, we analyze a ridge regression model for classification A suitable regularization parameter was obtained using cross-validation<a href="#fn25" class="footnote-ref" id="fnref25" role="doc-noteref"><sup>25</sup></a>. The model fit statistics are shown below:</p><div class="no-row-height column-margin column-container"><li id="fn25"><p><sup>25</sup>&nbsp;The best estimate for <span class="math inline">\(\lambda\)</span> using cross validation was found to be: 2.610173</p></li></div></div>
+<div class="cell" data-hash="index_cache/html/clr2_4a1043efbf815d133e20a93d70be4312">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/clr2-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>In the chart above, it is evident that about 60% of the model coefficients have shrunk to be close to 0, showing how effective ridge regression is in producing interpretable models. The performance of the ridge regression model on the training dataset is shown in the Receiver Operating Characteristic Curve, with an AUC of: 0.85435.</p>
+</section>
+<section id="lasso-regression-2" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="lasso-regression-2">LASSO Regression</h2>
+<div class="cell page-columns page-full" data-hash="index_cache/html/cl1_843a2ce4d0c4a0b5235f1f02e927a3d0">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/cl1-1.png" class="img-fluid figure-img" width="480"></p>
+<figcaption class="figure-caption">Cross validation statistics for estimating the regularization parameter of LASSO regression, and their error bars. The dotted line represent estimate of lambda which is within its one standard error</figcaption>
+</figure>
+</div>
+</div></div></div>
+<div class="page-columns page-full"><p>In this section, we analyze the LASSO regression model fitted. A suitable regularization parameter was obtained using cross-validation<a href="#fn26" class="footnote-ref" id="fnref26" role="doc-noteref"><sup>26</sup></a>. The model fit is displayed below:</p><div class="no-row-height column-margin column-container"><li id="fn26"><p><sup>26</sup>&nbsp;The best estimate for <span class="math inline">\(\lambda\)</span> using cross validation was found to be: 0.07095985</p></li></div></div>
+<div class="cell" data-hash="index_cache/html/cl2_72fa5465056a1dc5dc370f0d5918cf4f">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/cl2-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>In the chart above, it is evident that about 87% of the model coefficients have set to 0, showing how effective LASSO regression is in feature selection. The performance of the LASSO regression model on the training dataset is shown in the Receiver Operating Characteristic Curve, with an AUC of: 0.8592.</p>
+</section>
+<section id="elastic-net-regression-1" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="elastic-net-regression-1">Elastic-net Regression</h2>
+<div class="cell page-columns page-full">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/cel1-1.png" class="img-fluid figure-img" width="480"></p>
+<figcaption class="figure-caption">The Receiver Operating Characteristic curve for the ElasticNet model using an alpha = 0.062063062, and lambda = 0.62452991. The Area Under Curve (AUC) is: 0.8641</figcaption>
+</figure>
+</div>
+</div></div></div>
+<p>In this section, the fit of the mixture of LASSO and Ridge regression on the data is shown. Suitable values for the mixing weight <span class="math inline">\(\alpha\)</span>, and the redularization parameter, <span class="math inline">\(\lambda\)</span> are found using cross validation, where for a fixed value of <span class="math inline">\(\alpha\)</span>, the best <span class="math inline">\(\lambda\)</span> is searched for, and several accuracy metrics are computed.</p>
+<div class="cell" data-hash="index_cache/html/cel2_626472e74939abf02bae252eb346f6fb">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/cel2-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<p>From the charts above, it is evident that as the <span class="math inline">\(\alpha\)</span> increases, then the model tends to be more sparse, the deviance explained decreases while the training error rate decreases. The best combination of the <span class="math inline">\(\alpha\)</span>, and <span class="math inline">\(\lambda\)</span> parameter are chosen to minimize the cross validation error.</p>
+</section>
+<section id="principal-components-analysis-1" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="principal-components-analysis-1">Principal Components Analysis</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>oper 1 step center [training] 
+oper 2 step scale [training] 
+oper 3 step pca [training] 
+The retained training set is ~ 0.02 Mb  in memory.</code></pre>
+</div>
+</div>
+<p>In this section, we ran the principal components analysis model using 30 principal components and the results of cross validation on the principal components are displayed.</p>
+<div class="cell" data-hash="index_cache/html/cp2_cb47380cb3cb33803b996c77a9919e32">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/cp2-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<div class="cell page-columns page-full" data-hash="index_cache/html/cp3_f2950b61bf4062a7c1513064d7a8466f">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/cp3-1.png" class="img-fluid figure-img" width="480"></p>
+<figcaption class="figure-caption">PCA is applied to the dataset, and the first two principal components are plotted, and coloured by the Direction variable. For the Receiver Operating Characteristic, the AUC is: 0.8084</figcaption>
+</figure>
+</div>
+</div></div></div>
+<p>From the above charts, the first three principal components explain maximal variability in the predictor space. Cross validation on the training set indicates that, the first three principal components give the best model in terms of Overall accuracy and Kappa. Hence for the purpose of model fitting, we will only use three principal components.</p>
+</section>
+<section id="kernel-principal-components-analysis-1" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="kernel-principal-components-analysis-1">Kernel Principal Components Analysis</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>oper 1 step center [training] 
+oper 2 step scale [training] 
+The retained training set is ~ 0.05 Mb  in memory.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>oper 1 step center [training] 
+oper 2 step scale [training] 
+oper 3 step kpca [training] 
+The retained training set is ~ 0.02 Mb  in memory.</code></pre>
+</div>
+</div>
+<p>In this section, the Kernel principal components analysis model is fitted using 30 components and the cross validation results are shown below:</p>
+<div class="cell" data-hash="index_cache/html/ckpca2_a3aa6d51d0504d9b208b70ee2af5f645">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/ckpca2-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<div class="cell page-columns page-full" data-hash="index_cache/html/ckpca3_2a5270efbded0dfff6b48f8e1bed4d49">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/ckpca3-1.png" class="img-fluid figure-img" width="480"></p>
+<figcaption class="figure-caption">Kernel PCA is applied to the dataset, and the first two principal components are plotted, and coloured by the Direction variable. For the Receiver Operating Characteristic, the AUC is: 0.7908</figcaption>
+</figure>
+</div>
+</div></div></div>
+<div class="page-columns page-full"><p>From the above charts, the first four components explain maximal variability in the predictor space. Cross validation on the training set indicate that, only the first two or five components give the best model in terms of Overall accuracy and Kappa. Hence for the purpose of model fitting, we will only use two components<a href="#fn27" class="footnote-ref" id="fnref27" role="doc-noteref"><sup>27</sup></a>.</p><div class="no-row-height column-margin column-container"><li id="fn27"><p><sup>27</sup>&nbsp;This is because for the 5-component and 2-component model,there is no big difference, hence we fit a model using 2 components only to ensure parsimonity</p></li></div></div>
+</section>
+<section id="independent-components-analysis-2" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="independent-components-analysis-2">Independent Components Analysis</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>oper 1 step center [training] 
+oper 2 step scale [training] 
+oper 3 step ica [training] 
+The retained training set is ~ 0.02 Mb  in memory.</code></pre>
+</div>
+</div>
+<p>This section covers the application of Independent Components Analysis to the classification dataset. We restrict the number of independent Components to 30 components.</p>
+<div class="cell" data-hash="index_cache/html/cica2_51bc10d097cd3f1c6f5692cd108a1717">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/cica2-1.png" class="img-fluid" width="960"></p>
+</div>
+</div>
+<div class="cell page-columns page-full" data-hash="index_cache/html/cica3_87ec45af27c88e2c3c77767ee94dcd24">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/cica3-1.png" class="img-fluid figure-img" width="480"></p>
+<figcaption class="figure-caption">ICA is applied to the dataset, and the first two Independent components are plotted, and coloured by the Direction variable. For the Receiver Operating Characteristic, the AUC is: 0.7898</figcaption>
+</figure>
+</div>
+</div></div></div>
+<p>From the charts above, the highest overall accuracy and Kappa are obtained when using 15 independent components, although as compared to the cross validation performance of the other models above, the ICA under-performs all models. We proceed to fit a GLM using the first 15 components.</p>
+<hr>
+</section>
+<section id="comparison-of-models-1" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="comparison-of-models-1">Comparison of Models</h2>
+<p>In this section, we compare all fitted models, on the test dataset. For comparison, we use the Overall Accuracy, although other metrics of classification models are quoted. For the cutoff probability, we select the cutoff which gave the highest Youden statistic on the training data.</p>
+<div class="cell page-columns page-full" data-hash="index_cache/html/comp1_bbb48f2691fa6e6aa9352eb60e1ca268">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/comp1-1.png" class="img-fluid figure-img" width="480"></p>
+<figcaption class="figure-caption">The Receiver Operating characteristics for the models fitted on the training dataset</figcaption>
+</figure>
+</div>
+</div></div></div>
+<div class="cell" data-hash="index_cache/html/comp3_bc275b8580d2ea48287cba04e5b4d244">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/comp3-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The training set performance metrics are displayed below:</p>
+<div class="cell" data-hash="index_cache/html/comp4_e199e5a29736cc02bd4ccdadda63c41a">
+<div class="cell-output-display">
+
+<table class=" lightable-classic" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; ">
+<thead>
+<tr>
+<th style="text-align:left;">
+Model
+</th>
+<th style="text-align:right;">
+Accuracy
+</th>
+<th style="text-align:right;">
+Kappa
+</th>
+<th style="text-align:right;">
+Sensitivity
+</th>
+<th style="text-align:right;">
+Specificity
+</th>
+<th style="text-align:right;">
+PPV
+</th>
+<th style="text-align:right;">
+NPV
+</th>
+<th style="text-align:right;">
+F1
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Ridge
+</td>
+<td style="text-align:right;">
+0.812500
+</td>
+<td style="text-align:right;">
+0.6238981
+</td>
+<td style="text-align:right;">
+0.7741935
+</td>
+<td style="text-align:right;">
+0.8484848
+</td>
+<td style="text-align:right;">
+0.8275862
+</td>
+<td style="text-align:right;">
+0.8000000
+</td>
+<td style="text-align:right;">
+0.8000000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LASSO
+</td>
+<td style="text-align:right;">
+0.812500
+</td>
+<td style="text-align:right;">
+0.6231600
+</td>
+<td style="text-align:right;">
+0.7419355
+</td>
+<td style="text-align:right;">
+0.8787879
+</td>
+<td style="text-align:right;">
+0.8518519
+</td>
+<td style="text-align:right;">
+0.7837838
+</td>
+<td style="text-align:right;">
+0.7931034
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Elastic-Net
+</td>
+<td style="text-align:right;">
+0.812500
+</td>
+<td style="text-align:right;">
+0.6238981
+</td>
+<td style="text-align:right;">
+0.7741935
+</td>
+<td style="text-align:right;">
+0.8484848
+</td>
+<td style="text-align:right;">
+0.8275862
+</td>
+<td style="text-align:right;">
+0.8000000
+</td>
+<td style="text-align:right;">
+0.8000000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PCA
+</td>
+<td style="text-align:right;">
+0.781250
+</td>
+<td style="text-align:right;">
+0.5620723
+</td>
+<td style="text-align:right;">
+0.7741935
+</td>
+<td style="text-align:right;">
+0.7878788
+</td>
+<td style="text-align:right;">
+0.7741935
+</td>
+<td style="text-align:right;">
+0.7878788
+</td>
+<td style="text-align:right;">
+0.7741935
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+k-PCA
+</td>
+<td style="text-align:right;">
+0.718750
+</td>
+<td style="text-align:right;">
+0.4347399
+</td>
+<td style="text-align:right;">
+0.6451613
+</td>
+<td style="text-align:right;">
+0.7878788
+</td>
+<td style="text-align:right;">
+0.7407407
+</td>
+<td style="text-align:right;">
+0.7027027
+</td>
+<td style="text-align:right;">
+0.6896552
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ICA
+</td>
+<td style="text-align:right;">
+0.765625
+</td>
+<td style="text-align:right;">
+0.5275591
+</td>
+<td style="text-align:right;">
+0.6451613
+</td>
+<td style="text-align:right;">
+0.8787879
+</td>
+<td style="text-align:right;">
+0.8333333
+</td>
+<td style="text-align:right;">
+0.7250000
+</td>
+<td style="text-align:right;">
+0.7272727
+</td>
+</tr>
+</tbody>
+
+</table>
+<p>Performance of Models on the training set</p>
+</div>
+</div>
+<hr>
+<p>The testing set performance metrics are displayed below:</p>
+<div class="cell" data-hash="index_cache/html/comp5_452a4031bf91a105b2abf65edcba1dc6">
+<div class="cell-output-display">
+
+<table class=" lightable-classic" style="font-family: &quot;Arial Narrow&quot;, &quot;Source Sans Pro&quot;, sans-serif; width: auto !important; ">
+<thead>
+<tr>
+<th style="text-align:left;">
+Model
+</th>
+<th style="text-align:right;">
+Accuracy
+</th>
+<th style="text-align:right;">
+Kappa
+</th>
+<th style="text-align:right;">
+Sensitivity
+</th>
+<th style="text-align:right;">
+Specificity
+</th>
+<th style="text-align:right;">
+PPV
+</th>
+<th style="text-align:right;">
+NPV
+</th>
+<th style="text-align:right;">
+F1
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Ridge
+</td>
+<td style="text-align:right;">
+0.6250
+</td>
+<td style="text-align:right;">
+0.2835821
+</td>
+<td style="text-align:right;">
+0.4444444
+</td>
+<td style="text-align:right;">
+0.8571429
+</td>
+<td style="text-align:right;">
+0.8000000
+</td>
+<td style="text-align:right;">
+0.5454545
+</td>
+<td style="text-align:right;">
+0.5714286
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+LASSO
+</td>
+<td style="text-align:right;">
+0.5625
+</td>
+<td style="text-align:right;">
+0.1515152
+</td>
+<td style="text-align:right;">
+0.4444444
+</td>
+<td style="text-align:right;">
+0.7142857
+</td>
+<td style="text-align:right;">
+0.6666667
+</td>
+<td style="text-align:right;">
+0.5000000
+</td>
+<td style="text-align:right;">
+0.5333333
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Elastic-Net
+</td>
+<td style="text-align:right;">
+0.5625
+</td>
+<td style="text-align:right;">
+0.1515152
+</td>
+<td style="text-align:right;">
+0.4444444
+</td>
+<td style="text-align:right;">
+0.7142857
+</td>
+<td style="text-align:right;">
+0.6666667
+</td>
+<td style="text-align:right;">
+0.5000000
+</td>
+<td style="text-align:right;">
+0.5333333
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+PCA
+</td>
+<td style="text-align:right;">
+0.7500
+</td>
+<td style="text-align:right;">
+0.4920635
+</td>
+<td style="text-align:right;">
+0.7777778
+</td>
+<td style="text-align:right;">
+0.7142857
+</td>
+<td style="text-align:right;">
+0.7777778
+</td>
+<td style="text-align:right;">
+0.7142857
+</td>
+<td style="text-align:right;">
+0.7777778
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+k-PCA
+</td>
+<td style="text-align:right;">
+0.8125
+</td>
+<td style="text-align:right;">
+0.6250000
+</td>
+<td style="text-align:right;">
+0.7777778
+</td>
+<td style="text-align:right;">
+0.8571429
+</td>
+<td style="text-align:right;">
+0.8750000
+</td>
+<td style="text-align:right;">
+0.7500000
+</td>
+<td style="text-align:right;">
+0.8235294
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ICA
+</td>
+<td style="text-align:right;">
+0.6250
+</td>
+<td style="text-align:right;">
+0.2615385
+</td>
+<td style="text-align:right;">
+0.5555556
+</td>
+<td style="text-align:right;">
+0.7142857
+</td>
+<td style="text-align:right;">
+0.7142857
+</td>
+<td style="text-align:right;">
+0.5555556
+</td>
+<td style="text-align:right;">
+0.6250000
+</td>
+</tr>
+</tbody>
+
+</table>
+<p>Performance of Models on the testing set</p>
+</div>
+</div>
+<hr>
+<p>From the statistics and charts above, it is evident that Kernel PCA outperforms all other models on the testing set, with an overall accuracy of 81.25%, with all other models having accuracy below 80%.</p>
+<p>The good performance exhibited by Kernel PCA over PCA, shows that there were some non-linear relationships within the predictors.</p>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>This study compares models for high dimensional data both in the regression and classification setting. The results show that, for regression: The elastic-net regression model, and Kernel-PCA outperform the rest in terms of Mean Squared Error. For the classification models fitted, the Kernel-PCA and PCA outperform the rest of the models. The consistency of the Kernel PCA in both settings shows that the dataset contained non-linear dependencies in the predictor space - which Kernel-PCA is good at uncovering.</p>
+<p>For both settings, the dimensionality reduction models used including: PCA, k-PCA, and ICA, performed well in reducing the multi-collinearity inherent in the original dataset,and all the dimensionality reduction models show optimal performance with relatively few components used in the model - which helps in pointing out how important the dimensionality reduction models are at combating multi-collinearity in the data.</p>
+<p>In both settings, the hyper-parameters for the final models fitted, such as: <span class="math inline">\(\alpha, \lambda\)</span> for the ridge, LASSO and Elastic-Net models, and <span class="math inline">\(p\)</span>, the number of components to use for the dimensionality reduction models, were obtained through cross-validation on the training set. Since most models maintained consistency in both training and testing performance, then it shows that cross-validation is useful in determining good hyper-parameter estimates, for model fitting.</p>
+</section>
+<section id="recommendations" class="level1 page-columns page-full">
+<h1>Recommendations</h1>
+<p>This article only focuses on a single dataset from Financial domain, where we are interested in predicting the returns, or direction a portfolio of assets would generate at a future time, using historical data of technical, fundamental, and statistical metrics.</p>
+<p>Future research could look into utilizing these models for high-dimensional data from other domains such as health-care, marketing, etc.</p>
+<div class="page-columns page-full"><p>Future research could look into other dimensionality reduction models not utilized in this article, such as Non-Negative Matrix Factorization.<a href="#fn28" class="footnote-ref" id="fnref28" role="doc-noteref"><sup>28</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn28"><p><sup>28</sup>&nbsp;This research did not cover NNMF, due to computational constraints</p></li></div></div>
+<p>Future research could look into the importance of these dimensionality reduction models, in the context of clustering, and other Machine Learning models not utilized in this study.</p>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<p>Bishop, C. (2011). Pattern Recognition and Machine Learning. Springer.</p>
+<p>G. James et al.&nbsp;(2013). An Introduction to Statistical Learning: with Applications in R. Springer Texts in Statistics.</p>
+<p>Hyvärinen, A., &amp; Oja, E. (2000). Independent component analysis: Algorithms and applications. Neural Networks, 13(4-5), 411-430.</p>
+<p>Kuhn, M., &amp; Johnson, K. (2013). Applied Predictive Modeling. Springer.</p>
+<p>MacKay, D. (2003). Information Theory, Inference and Learning Algorithms. Cambridge University Press.</p>
+<p>Wickham, H., &amp; Grolemund, G. (2016). R for Data Science: Import, Tidy, Transform, Visualize, and Model Data. O’Reilly Media, Inc.</p>
+<hr>
+<p>Abdi, H., &amp; Williams, L. (2010). Principal component analysis. Wiley Interdisciplinary Reviews: Computational Statistics, 2(4), 433-459.</p>
+<p>Altman, D., &amp; Bland, J. (1994). Diagnostic tests 3: Receiver operating characteristic plots. BMJ: British Medical Journal, 309(6948), 188.</p>
+<p>Barker, M., &amp; Rayens, W. (2003). Partial least squares for discrimination. Journal of Chemometrics, 17(3), 166-173.</p>
+<p>Caputo, B., Sim, K., Furesjo, F., &amp; Smola, A. (2002). Appearance-based object recognition using SVMs: Which kernel should I use? In Proceedings of NIPS Workshop on Statistical Methods for Computational Experiments in Visual Processing and Computer Vision, volume 2002.</p>
+<p>Friedman, J., Tibshirani, R., &amp; Hastie, T. (2010). Regularization paths for generalized linear models via coordinate descent. Journal of Statistical Software, 33(1), 1-22. doi:10.18637/jss.v033.i01 https://doi.org/10.18637/jss.v033.i01.</p>
+<p>Kuhn, M. (2008). Building predictive models in R using the caret package. Journal of Statistical Software, 28(5), 1-26. doi:10.18637/jss.v028.i05 https://doi.org/10.18637/jss.v028.i05.</p>
+<p>Tay, J. K., Narasimhan, B., &amp; Hastie, T. (2023). Elastic net regularization paths for all generalized linear models. Journal of Statistical Software, 106(1), 1-31. doi:10.18637/jss.v106.i01 https://doi.org/10.18637/jss.v106.i01.</p>
+<hr>
+<p>Karatzoglou, A., Smola, A., &amp; Hornik, K. (2023). kernlab: Kernel-Based Machine Learning Lab. R package version 0.9-32, https://CRAN.R-project.org/package=kernlab.</p>
+<p>Karatzoglou, A., Smola, A., Hornik, K., &amp; Zeileis, A. (2004). kernlab - An S4 package for kernel methods in R. Journal of Statistical Software, 11(9), 1-20. doi:10.18637/jss.v011.i09 https://doi.org/10.18637/jss.v011.i09.</p>
+<p>Liland, K., Mevik, B., &amp; Wehrens, R. (2023). pls: Partial Least Squares and Principal Component Regression. R package version 2.8-3, https://CRAN.R-project.org/package=pls.</p>
+<p>Kuhn, M. (2008). The caret package. Journal of Statistical Software, 28(5), 1-26. doi:10.18637/jss.v028.i05 https://doi.org/10.18637/jss.v028.i05.</p>
+<p>Kuhn, M., Wickham, H., &amp; Hvitfeldt, E. (2024). recipes: Preprocessing and Feature Engineering Steps for Modeling. R package version 1.0.10, https://CRAN.R-project.org/package=recipes.</p>
+<p>Marchini, J. L., Heaton, C., &amp; Ripley, B. D. (2023). fastICA: FastICA Algorithms to Perform ICA and Projection Pursuit. R package version 1.2-4, https://CRAN.R-project.org/package=fastICA.</p>
+<p>Peterson, B. G., &amp; Carl, P. (2020). PerformanceAnalytics: Econometric Tools for Performance and Risk Analysis. R package version 2.0.4, https://CRAN.R-project.org/package=PerformanceAnalytics.</p>
+<p>R Core Team (2023). R: A Language and Environment for Statistical Computing. R Foundation for Statistical Computing, Vienna, Austria. https://www.R-project.org/.</p>
+
+
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,178 @@
+---
+title: "Multivariate modelling of the frequency and severity of insurance claims"
+author: "Stanley Sayianka & Precious Mumbi"
+date: "2024-03-22"
+categories: [code, analysis]
+image: "insurance1.png"
+---
+
+# Introduction
+
+Insurance companies are financial institutions that mitigates risk by providing protection against potential losses or damages. Policyholders pay regular premiums to an insurance company in exchange for coverage. In the event of a covered incident, they can file claims to receive compensation. 
+
+This article will focus on insurance claims experience data, from a portfolio of insurance claims.
+
+In trying to understand a portfolio of insurance claims, we are concerned with two variables: the claims frequency, and claims severity.
+
+**Claim frequency:** Number of expected or actual claims which occur in a given time period.
+
+**Claim severity:** This refers to the financial cost of a claim.
+
+------------------------------------------------------------------------
+
+The data is obtained with permission from a liability insurance company in Kenya, and a glimpse of the data is shown below:
+
+```{r, echo=F, warning=F, message=F}
+library(pacman)
+
+p_load(dplyr, ggplot2, tidyverse, stringr, stringi, moments, fitdistrplus, readxl, lubridate, patchwork, gridExtra, ggpubr, plotly, moments, tidyr, stringr, ggcorrplot, brms)
+
+# Loading Data ------------------------------------------------------------
+# setwd('/Users/cema/Documents/GitHub/NCWorkforce/Claims-experience')
+claimdata <- read_excel("data/claims2.xlsx")
+
+claimdata <- claimdata |>
+  dplyr::select(!c("CLAIM", "percentile")) |>
+  mutate(
+    REV_ACC_DATE = ymd("1900-01-01") + REV_ACC_DATE,
+    min_report_date = ymd("1900-01-01") + min_report_date
+  ) |>
+  setNames(c("Class", "Reporting date", "Claim amount", "Settlement date")) |>
+  filter(`Reporting date` > ymd('2005-01-01') & `Claim amount` > 1e3)
+#head(claimdata)
+knitr::kable(head(claimdata))
+
+```
+
+## Claim frequency
+
+In total, we have 23,057 claims. The reporting date ranges from January 2005 to 2020 December. The distribution of policy classes and a smoothed time series of monthly aggregated counts for the various policy types is shown below:
+
+```{r, echo=F, warning=F, message=F, fig.width=12}
+p1 = ggplot(claimdata) + 
+  geom_bar(aes(x = Class), width = .3, col = 'blue3', fill = 'blue3', alpha = .3) +
+  labs(title = 'Policy distributions', y = 'Count') +
+  theme_classic()
+
+p2 =claimdata |>
+    mutate(ym = paste0(year(`Reporting date`), '-', month(`Reporting date`)) |> ym()) |>
+    group_by(Class, ym) |>
+    summarise(count = n()) |>
+    
+    ggplot() + 
+    geom_point(aes(x = ym, y = count, col = Class)) +
+    geom_line(aes(x = ym, y = count, col = Class), lwd=.3, alpha=.5) +
+    geom_smooth(aes(x = ym, y = count, col = Class), method = 'gam') +
+    labs(title = 'Monthly aggregated claim frequency',
+         x = 'Date', y = 'Monthly counts (#)',
+         col = 'Class: ') + 
+    theme_classic() + 
+    theme(legend.position = 'top')
+
+grid.arrange(p1, p2, widths=c(1,2))
+```
+
+The liability claims take a larger share of the portfolio, followed by property, and accident takes the smallest share of the portfolio. There was a sharp spike in claims frequency during the period mid-2012 in liability claims, and the general trend post 2015 is a declining one in all policy types.
+
+## Claim severity
+
+The claim severity distribution for the three insurance classes is shown below. Due to the highly skewed nature of the data *(minimum claim: 1030, maximum claim: 21 million)*, a log transformation is appropriate for visualization clarity.
+
+```{r, echo=F, warning=F, message=F, fig.width=12}
+p1 = ggdensity(claimdata |> mutate(`Claim amount` = log(`Claim amount`)),
+          x = 'Claim amount', fill = 'Class') + 
+  labs(title = 'Distribuition of claim severity',
+       x = 'Log claim amount', y = 'Density', fill = NULL) +
+  theme_classic() +
+  theme(legend.position = 'bottom')
+
+p2 =claimdata |>
+    mutate(ym = paste0(year(`Reporting date`), '-', month(`Reporting date`)) |> ym()) |>
+    group_by(Class, ym) |>
+    summarise(total = sum(`Claim amount`) |> log()) |>
+    
+    ggplot() + 
+    geom_point(aes(x = ym, y = total, col = Class), alpha=.5) +
+    geom_line(aes(x = ym, y = total, col = Class), lwd=.3, alpha=.5) +
+    geom_smooth(aes(x = ym, y = total, col = Class), method = 'gam') +
+    labs(title = 'Monthly aggregated log-claim severity',
+         x = 'Date', y = 'Monthly total claim severity',
+         col = 'Class: ') + 
+    theme_classic() + 
+    theme(legend.position = 'bottom')
+
+grid.arrange(p1, p2, widths=c(1,2))
+
+```
+
+The accident claims have the lowest average claim amounts, while the liability claims have the highest average amounts. Overall, there is a significant overlap among the claim amounts of the three classes. The data are highly skewed and heavy tailed, with the summary statistics shown below:
+
+```{r, echo=F}
+temp = claimdata |>
+  select(sev = `Claim amount`, type = Class) |>
+  mutate(logsev = log(sev)) |>group_by(type) |>
+    summarise(across(
+      .cols = everything(),
+      .fns = list(
+        mean = ~ mean(.x, na.rm = TRUE),
+        variance = ~ var(.x, na.rm = TRUE),
+        skewness = ~ skewness(.x, na.rm = TRUE),
+        kurtosis = ~ kurtosis(.x, na.rm = TRUE)
+      ),
+      .names = "{col}_{fn}"
+    )) |>
+  pivot_longer(-type) |>
+  mutate(Data = ifelse(str_starts(name, 'sev'), 'Severity', 'Log severity'),
+         Function = str_split(name, '_') |> lapply(FUN = last) |> unlist() |> str_to_sentence(),
+         value = round(value, 0)) |>
+  select(Class = type, Value = value, Data, Function) |>
+  pivot_wider(names_from = Function,
+    values_from = Value)
+
+knitr::kable(temp)
+```
+
+The liability data has the highest skewness and kurtosis, followed by property and finally accident claims. Property claims have the highest mean and variance among the three classes. The log-transformation has effectively reduced the skewness and kurtosis of the data, making it simpler.
+
+------------------------------------------------------------------------
+
+The correlation matrix of the aggregated data are shown below:
+
+```{r, echo=F, fig.height=6}
+gdf = claimdata |>
+    mutate(ym = paste0(year(`Reporting date`), '-', month(`Reporting date`)) |> ym()) |>
+    group_by(Class, ym) |>
+    arrange(ym) |>
+    mutate(time = row_number()) |>
+    reframe(count = n(),
+              total = sum(`Claim amount`) |> log())  |>
+    group_by(Class) |>
+    arrange(ym) |>
+    mutate(time = row_number()) |>
+    ungroup()
+
+
+cor_list = gdf |> 
+  group_by(Class) |> 
+  dplyr::group_split() |>
+  lapply(FUN = \(x) 
+ggcorrplot(cor(x[, c('time', 'count', 'total')]), lab = T,            colors = c('red' ,'white', 'blue')) + 
+  ggtitle(x |> pull(Class) |> unique()))
+  
+  
+do.call(grid.arrange, c(cor_list, ncol = 2))
+  
+  
+```
+
+There is a high correlation between the claim frequency and severity in liability insurance, as compared to accident and property insurance. There is also a higher correlation between the aggregate claim frequency and time in liability insurance as compared to the rest suggesting that claim frequency in liability insurance has been increasing with time.
+
+## Modelling
+
+We aim to model the aggregated frequency at the monthly level and the aggregated claim severity at the monthly level. Typical analyses often seperate the modelling of frequency from severity, however in this analysis, we aim to use multi-variate modelling to model both simultaneously.
+
+Since the claim frequencies are count data, then an appropriate statistical distribution should have the poperty that: it is a discrete distribution, has positive skewness. Such distributions include count distributions such as the Poisson distribution and the negative binomial distribution.
+
+For claim severity modelling, the distributions appropriate for analysis are those which: have high skewness, support is the positive real line, have heavy tails. Examples of distributions for such include: Log-normal distribution, Pareto distribution and other heavy tailed distributions such as the Burr distribution.
+
+For a start, we fit a multivariate model on the data, where the claim frequency is modelled as a poisson random variable, while the log-claim severity is modelled as a normal random variable. The model fitted is an intercept only model.

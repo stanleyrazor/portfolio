@@ -1,0 +1,23 @@
+---
+title: "Stanley Sayianka"
+subtitle: "Data Scientist"
+image: profile.jpg
+about:
+  template: jolla
+  links:
+    - icon: twitter
+      text: Twitter
+      href: https://twitter.com/sir_yanka254
+    - icon: linkedin
+      text: LinkedIn
+      href: https://www.linkedin.com/in/stanley-sayianka-8a6450170/
+    - icon: github
+      text: Github
+      href: https://github.com/stanleyrazor
+execute:
+  freeze: auto
+---
+
+> The dogmas of the quiet past are inadequate to the stormy present. The occassion is piled high with difficulty, and we must rise - with the occassion. As our case is new, so we must think anew, and act anew.
+>
+> \- Abraham Lincoln's address to the Congress (1862)

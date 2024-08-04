@@ -1,0 +1,25 @@
+project:
+  type: website
+
+website:
+  title: "Stanley Sayianka"
+  navbar:
+    left:
+      - text: Home
+        href: index.qmd
+      - text: About
+        href: about.qmd
+      - text: Projects
+        href: projects.qmd
+    right:
+      - icon: github
+        href: https://github.com/
+      - icon: twitter
+        href: https://twitter.com
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+
+editor: visual
+
