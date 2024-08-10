@@ -54,7 +54,7 @@ scientific_theme <- theme(
 )
 ```
 
-Image taken from: Pietro Ravani, Patrick Parfrey, Sean Murphy, Veeresh Gadag, Brendan Barrett, Clinical research of kidney diseases IV: standard regression models, Nephrology Dialysis Transplantation, Volume 23, Issue 2, February 2008, Pages 475–482, https://doi.org/10.1093/ndt/gfm880
+Cover image taken from: Pietro Ravani, Patrick Parfrey, Sean Murphy, Veeresh Gadag, Brendan Barrett, Clinical research of kidney diseases IV: standard regression models, Nephrology Dialysis Transplantation, Volume 23, Issue 2, February 2008, Pages 475–482, https://doi.org/10.1093/ndt/gfm880
 
 # Introduction
 
