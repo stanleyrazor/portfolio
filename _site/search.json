@@ -11,7 +11,7 @@
     "href": "projects.html",
     "title": "Projects Done",
     "section": "",
-    "text": "Generalized Linear Models: from scratch\n\n\n\n\n\n\n\ncode\n\n\nstats\n\n\n\n\n\n\n\n\n\n\n\nAug 1, 2024\n\n\nStanley Sayianka\n\n\n\n\n\n\n  \n\n\n\n\nThe impact of the pilot-UHC: a differences-in-difference approach\n\n\n\n\n\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nMar 22, 2024\n\n\nStanley Sayianka\n\n\n\n\n\n\n  \n\n\n\n\nMultivariate modelling of the frequency and severity of insurance claims\n\n\n\n\n\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nMar 22, 2024\n\n\nStanley Sayianka & Precious Mumbi\n\n\n\n\n\n\n  \n\n\n\n\nPortfolio construction for a fixed return investment objective\n\n\nA comparison of different approaches\n\n\n\n\nInvestments\n\n\nQuant-finance\n\n\n\n\n\n\n\n\n\n\n\nMay 9, 2023\n\n\nStanley Sayianka\n\n\n\n\n\n\n  \n\n\n\n\nA comparison of covariance matrix estimation methods for tangency portfolios.\n\n\n\n\n\n\n\nInvestments\n\n\nQuant-finance\n\n\n\n\n\n\n\n\n\n\n\nMar 3, 2023\n\n\nStanley Sayianka\n\n\n\n\n\n\n  \n\n\n\n\nLearning representations in high-dimensional data\n\n\nRegression and Classification\n\n\n\n\nstats\n\n\nmachine-learning\n\n\n\n\n\n\n\n\n\n\n\nNov 12, 2022\n\n\nStanley Sayianka\n\n\n\n\n\n\nNo matching items"
+    "text": "Notes & practices from the GAMLSS book\n\n\nGeneralized Additive Models for Location, Scale and Shape\n\n\n\n\ncode\n\n\nstats\n\n\n\n\n\n\n\n\n\n\n\nAug 11, 2024\n\n\nStanley Sayianka\n\n\n\n\n\n\n  \n\n\n\n\nGeneralized Linear Models: from scratch\n\n\n\n\n\n\n\ncode\n\n\nstats\n\n\n\n\n\n\n\n\n\n\n\nAug 1, 2024\n\n\nStanley Sayianka\n\n\n\n\n\n\n  \n\n\n\n\nThe impact of the pilot-UHC: a differences-in-difference approach\n\n\n\n\n\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nMar 22, 2024\n\n\nStanley Sayianka\n\n\n\n\n\n\n  \n\n\n\n\nMultivariate modelling of the frequency and severity of insurance claims\n\n\n\n\n\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nMar 22, 2024\n\n\nStanley Sayianka & Precious Mumbi\n\n\n\n\n\n\n  \n\n\n\n\nPortfolio construction for a fixed return investment objective\n\n\nA comparison of different approaches\n\n\n\n\nInvestments\n\n\nQuant-finance\n\n\n\n\n\n\n\n\n\n\n\nMay 9, 2023\n\n\nStanley Sayianka\n\n\n\n\n\n\n  \n\n\n\n\nA comparison of covariance matrix estimation methods for tangency portfolios.\n\n\n\n\n\n\n\nInvestments\n\n\nQuant-finance\n\n\n\n\n\n\n\n\n\n\n\nMar 3, 2023\n\n\nStanley Sayianka\n\n\n\n\n\n\n  \n\n\n\n\nLearning representations in high-dimensional data\n\n\nRegression and Classification\n\n\n\n\nstats\n\n\nmachine-learning\n\n\n\n\n\n\n\n\n\n\n\nNov 12, 2022\n\n\nStanley Sayianka\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "posts/claims-modelling/index.html",
@@ -362,5 +362,19 @@
     "title": "Stanley Sayianka",
     "section": "",
     "text": "The dogmas of the quiet past are inadequate to the stormy present. The occassion is piled high with difficulty, and we must rise - with the occassion. As our case is new, so we must think anew, and act anew.\n- Abraham Lincoln’s address to the Congress (1862)"
+  },
+  {
+    "objectID": "posts/gamlss-blog/index.html",
+    "href": "posts/gamlss-blog/index.html",
+    "title": "Notes & practices from the GAMLSS book",
+    "section": "",
+    "text": "This loooong article will be my notes and code practices on the gems I pick up from reading the GAMLSS books1. There are three books in this series:1 https://www.gamlss.com/information/the-books/"
+  },
+  {
+    "objectID": "posts/gamlss-blog/index.html#mean-and-dispersion-models",
+    "href": "posts/gamlss-blog/index.html#mean-and-dispersion-models",
+    "title": "Notes & practices from the GAMLSS book",
+    "section": "mean and dispersion models",
+    "text": "mean and dispersion models\nThe mean and dispersion models are one of the simplest examples of GAMLSS models. Here we consider:\n\\[y ~ N(\\mu_i, \\sigma^2_i)\\] \\[g_1(\\mu_i) = X_{i1}\\beta_1\\] \\[g_2(\\sigma_i) = X_{i2}\\beta_2\\] Here the \\(g\\) functions are link functions, taken to be the identity and log link function respectively.\nThis kind of model would be useful when the OLS model suffers from heteroskedasticity. In that case, it would imply that there is heterogenity in the distribution of error terms, and a quick remedy would be to try and model the variance of the response as a function of some covariates.\n\nset.seed(832)\ndata &lt;- data.frame(\n  x = runif(1000)\n) |&gt;\n  mutate(y = rnorm(n = 1000, \n                   mean = (2 + 3*x), \n                   sd = sqrt(x)))\n\ndata |&gt;\n  ggplot() + \n  geom_point(aes(x=x, y=y)) +\n  scientific_theme\n\n\n\n\nThe OLS model fitted to this data would yield the following:\n\ndata |&gt;\n  ggplot() + \n  geom_point(aes(x=x, y=y)) +\n  geom_smooth(aes(x=x, y=y), method = 'lm', se=T)+\n  scientific_theme\n\n`geom_smooth()` using formula = 'y ~ x'"
   }
 ]
