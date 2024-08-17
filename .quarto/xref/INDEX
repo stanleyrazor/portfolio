@@ -41,5 +41,8 @@
   },
   "posts/gamlss-blog/index.qmd": {
     "index.html": "88ca1157"
+  },
+  "posts/hgam-inla/index.qmd": {
+    "index.html": "eccb42f8"
   }
 }

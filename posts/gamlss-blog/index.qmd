@@ -17,7 +17,7 @@ image: "cover-img.jpeg"
 ```{r setup}
 #| echo: false
 library(pacman)
-p_load(gamlss, dplyr, ggplot2)
+p_load(gamlss, dplyr, ggplot2, performance)
 
 # my theme
 scientific_theme <- theme(
@@ -68,7 +68,7 @@ I am currently reading book (3), as i consider it the main text introducing the 
 
 # Chapter one
 
-## mean and dispersion models
+## Mean and dispersion models
 
 The mean and dispersion models are one of the simplest examples of GAMLSS models. Here we consider:
 
@@ -85,11 +85,11 @@ This kind of model would be useful when the OLS model suffers from heteroskedast
 
 set.seed(832)
 data <- data.frame(
-  x = runif(1000)
+  x = runif(1000, min = 1, max = 5)
 ) |>
   mutate(y = rnorm(n = 1000, 
                    mean = (2 + 3*x), 
-                   sd = sqrt(x)))
+                   sd = sqrt(x/4)))
 
 data |>
   ggplot() + 
@@ -97,19 +97,38 @@ data |>
   scientific_theme
 
 # Fitting the traditional OLS model
-lm(y ~ x
 ```
 
-The OLS model fitted to this data would yield the following:
+The OLS model fitted to this data would yield the following diagnostic plots. Check the fitted model in the side margin:
 
 ```{r c2}
 #| fig-width: 5
 #| fig-height: 5
+#| column: margin
+#| fig-cap-location: margin
+#| fig-cap: "The fitted regression line "
+#| echo: false
+#| message: false
+#| warning: false
 data |>
   ggplot() + 
   geom_point(aes(x=x, y=y)) +
   geom_smooth(aes(x=x, y=y), method = 'lm', se=T)+
   scientific_theme
 ```
+
+```{r c3}
+#| fig-width: 8
+#| fig-height: 8
+#| cache: true
+lm_model <- lm(y ~ x, data = data)
+check_model(lm_model)
+```
+
+The graphs on the homogenity of the variance
+
+
+
+
 
 
