@@ -11,6 +11,9 @@ citation-location: margin
 date: "2022-11-12"
 categories: [stats, machine-learning]
 image: "high-dim.jpg"
+include-before-body:
+  text: |
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="e2626c70-2118-4fa1-bf3c-49552f9b4ccf"></script>
 ---
 
 ```{r, echo=F, warning=F, message=F}

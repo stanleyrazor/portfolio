@@ -4,6 +4,9 @@ author: "Stanley Sayianka & Precious Mumbi"
 date: "2024-03-22"
 categories: [code, analysis]
 image: "insurance1.png"
+include-before-body:
+  text: |
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="e2626c70-2118-4fa1-bf3c-49552f9b4ccf"></script>
 ---
 
 # Introduction

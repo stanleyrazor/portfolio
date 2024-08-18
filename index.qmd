@@ -16,6 +16,9 @@ about:
       href: https://github.com/stanleyrazor
 execute:
   freeze: auto
+include-before-body:
+  text: |
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="e2626c70-2118-4fa1-bf3c-49552f9b4ccf"></script>
 ---
 
 > The dogmas of the quiet past are inadequate to the stormy present. The occassion is piled high with difficulty, and we must rise - with the occassion. As our case is new, so we must think anew, and act anew.
