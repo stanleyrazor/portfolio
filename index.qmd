@@ -16,6 +16,10 @@ about:
       href: https://github.com/stanleyrazor
 execute:
   freeze: auto
+include-in-header: 
+  text: |
+        <meta name="google-site-verification" content="iW8W1KfV1KT3kD_PEwcD8CnlVhggL8SOIsaiOcol0ZA" />
+        <meta name="google-site-verification" content="6lEPmze807NtltTn3Yre7igSvDbH_j_4fv0thNCAzsU" />
 include-before-body:
   text: |
     <script defer src="https://cloud.umami.is/script.js" data-website-id="e2626c70-2118-4fa1-bf3c-49552f9b4ccf"></script>
