@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Stanley Sayianka">
+<meta name="dcterms.date" content="2024-09-06">
+
+<title>Stanley Sayianka - Access to medical treatment and care seeking probabilities for childhood illnesses in Kenya</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Stanley Sayianka</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html" rel="" target="">
+ <span class="menu-text">Projects</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">Access to medical treatment and care seeking probabilities for childhood illnesses in Kenya</h1>
+            <p class="subtitle lead">A model-based geostatistics approach</p>
+                                <div class="quarto-categories">
+                <div class="quarto-category">code</div>
+                <div class="quarto-category">stats</div>
+                <div class="quarto-category">r-spatial</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Stanley Sayianka </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">September 6, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
+<script defer="" src="https://cloud.umami.is/script.js" data-website-id="e2626c70-2118-4fa1-bf3c-49552f9b4ccf"></script>
+
+
+
+
+<section id="introduction" class="level1 page-columns page-full">
+<h1>Introduction</h1>
+<div class="page-columns page-full"><p>Childhood illnesses remain a significant contributor to under-five mortality globally, with diarrhea, malaria, and acute respiratory infections (ARI) among the leading causes of death in this age group<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. A comprehensive analysis of global, regional, and national causes of under-5 mortality from 2000-2019 revealed that lower respiratory infections accounted for approximately 10% of all under-five deaths, while diarrhea was responsible for about 8.5% of these fatalities<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>. The burden is slightly higher in low- and middle-income countries (LMICs), where diarrhea contributes to approximately 9% of child mortality, and ARIs account for about 13%. Recent data from the Institute for Health Metrics and Evaluation (2021)<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> for Kenya, indicates that diarrheal diseases have a mortality rate of 81.05 per 100,000 (95% CI: 59.97 - 106.02) for children under five years, while lower respiratory infections (LRIs) exhibit a mortality rate of 63.11 per 100,000 (95% CI: 49.08 - 80.78) in the same age group.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;UNICEF Data. (2022, March). “Under-five mortality” Retrieved from https://data.unicef.org/topic/child-survival/under-five-mortality/</p></li><li id="fn2"><p><sup>2</sup>&nbsp;Perin, J., Mulick, A., Yeung, D., Villavicencio, F., Lopez, G., Strong, K. L., … &amp; Liu, L. (2022). Global, regional, and national causes of under-5 mortality in 2000–19: an updated systematic analysis with implications for the Sustainable Development Goals. The Lancet Child &amp; Adolescent Health, 6(2), 106-115.</p></li><li id="fn3"><p><sup>3</sup>&nbsp;https://vizhub.healthdata.org/gbd-compare/</p></li></div></div>
+<div class="page-columns page-full"><p>Care-seeking for childhood illnesses in Kenya is often delayed or absent due to various interconnected factors. Caregivers’ understanding of diseases, perception of illness severity and persistence, and financial constraints (including direct: medical costs and indirect: lost work time) significantly influence their decisions<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. Education levels and cultural beliefs also play a role, often leading to the use of home remedies instead of formal medical care<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. Geographical access to healthcare facilities is another critical factor. Recent research shows that 89.4% and 80.5% of Kenya’s 2021 population could reach the nearest public and private health facilities within an hour, respectively. While 27 out of 47 counties have over 90% of their population within an hour of a public health facility, significant disparities remain, especially in rural areas<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a>. People living in urban areas or close to healthcare facilities are more likely to seek timely medical treatment for childhood illnesses compared to those in rural areas<span class="math inline">\(^4\)</span>, highlighting the importance of geographical accessibility in care-seeking behavior.</p><div class="no-row-height column-margin column-container"><li id="fn4"><p><sup>4</sup>&nbsp;Wambui, W. M., Kimani, S., &amp; Odhiambo, E. (2018). Determinants of Health Seeking Behavior among Caregivers of Infants Admitted with Acute Childhood Illnesses at Kenyatta National Hospital, Nairobi, Kenya. International journal of pediatrics, 2018, 5190287. https://doi.org/10.1155/2018/5190287</p></li><li id="fn5"><p><sup>5</sup>&nbsp;Opuba EN, Owenga JA, Onyango PO. Home-based care practices and experiences influencing health-seeking behaviour among caregivers of children diagnosed with pneumonia in Endebess Sub-County, Kenya. Journal of Global Health Reports. 2021;5:e2021098. doi:10.29392/001c.29573</p></li><li id="fn6"><p><sup>6</sup>&nbsp;Moturi AK, Suiyanka L, Mumo E, Snow RW, Okiro EA, Macharia PM. Geographic accessibility to public and private health facilities in Kenya in 2021: An updated geocoded inventory and spatial analysis. Front Public Health. 2022 Nov 3;10:1002975. doi: 10.3389/fpubh.2022.1002975. PMID: 36407994; PMCID: PMC9670107.</p></li></div></div>
+<p>The aim of this article is to:</p>
+<ol type="1">
+<li><p>Estimate the probabilities of seeking treatment for diarrhea and fever in Kenya, at a <span class="math inline">\(5 \ km^2\)</span> spatial resolution, and aggregated at the ward, sub-county, and county levels.</p></li>
+<li><p>Examine the relationship between care-seeking probabilities for childhood illnesses and access to medical care and treatment for women of reproductive age in Kenya, literacy levels, wealth disparities, and travel times and mode of travel to health facilities.</p></li>
+</ol>
+<hr>
+</section>
+<section id="data-methods" class="level1 page-columns page-full">
+<h1>Data &amp; methods</h1>
+<section id="data" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<div class="page-columns page-full"><p>The data for this analysis are drawn from the Kenya Demographic and Health Surveys 2022 (KDHS 2022)<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>.</p><div class="no-row-height column-margin column-container"><li id="fn7"><p><sup>7</sup>&nbsp;KNBS and ICF. 2023. Kenya Demographic and Health Survey 2022. Nairobi, Kenya, and Rockville, Maryland, USA: KNBS and ICF.</p></li></div></div>
+<p>The KDHS is a nationally representative household survey conducted periodically to collect data on population demographics, health, and nutrition. The primary aim of these surveys is to monitor trends in key indicators within developing countries which lack a robust vital statistics collection and monitoring system.</p>
+<p>The survey uses the most recent census national master sampling frame, which divides Kenya into 47 administrative units (counties), each further separated into 92 strata based on rural and urban specifications (Nairobi and Mombasa only have urban areas, which is why the total # of strata is 92 not 94). Samples were selected within each stratum using a two-stage process: First, clusters (enumeration areas) were selected independently from each stratum. In the second stage, 25 households are randomly selected from each cluster. This sampling design ensures representative estimates at the national, county, and rural-urban levels.</p>
+<p>For this analysis, the survey datasets provided information on treatment seeking for a total of 4,743 children under five years. A map showing diarrhea, and fever prevalence and treatment seeking for the two aggregated at the cluster level is shown below.</p>
+<div class="cell">
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/mapping-data-1.png" class="img-fluid" width="1152"></p>
+</div>
+</div>
+</section>
+<section id="methods" class="level2">
+<h2 class="anchored" data-anchor-id="methods">Methods</h2>
+<p>We utilize six covariates in modeling care-seeking behavior for diarrhea and fever in children under five. These covariates include:</p>
+<ol type="1">
+<li>Travel time (minutes to the nearest health facility)</li>
+<li>Health accessibility (1) (proportion of women experiencing challenges in accessing healthcare due to money)</li>
+<li>Health accessibility (2) (proportion of women experiencing challenges in accessing healthcare due to distance)</li>
+<li>Mode of travel (proportion of women using motorized transport to access the nearest health facility)</li>
+<li>Wealth (proportion of women from poor wealth index bracket)</li>
+<li>Illiteracy levels in women (proportion of women with primary education or less)</li>
+</ol>
+<p>These six covariates were first estimated using a two-step model-based geostatistics (MBG) approach to obtain estimates at a <span class="math inline">\(5 km^2\)</span> spatial resolution. This initial step considered the following selected environmental covariates:</p>
+<div class="cell">
+<div class="cell-output-display">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 52%">
+<col style="width: 30%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Source</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Avg-Temp</td>
+<td style="text-align: left;">The average temperature in degree celsius</td>
+<td style="text-align: left;">WorldClim version 2.1 climate data</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Diff-Temp</td>
+<td style="text-align: left;">The temperature difference between the minimum average and maximum average</td>
+<td style="text-align: left;">WorldClim version 2.1 climate data</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Precipitation</td>
+<td style="text-align: left;">Total precipitation in mm</td>
+<td style="text-align: left;">WorldClim version 2.1 climate data</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Distance to water bodies</td>
+<td style="text-align: left;">Distance to ESA-CCI-LC inland water (2012)</td>
+<td style="text-align: left;">WorldPop (www.worldpop.org)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Night-time light</td>
+<td style="text-align: left;">Resampled VIIRS night-time light</td>
+<td style="text-align: left;">WorldPop (www.worldpop.org)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Population density</td>
+<td style="text-align: left;">Unconstrained estimated population density per grid cell, UN Adjusted for 2020.</td>
+<td style="text-align: left;">WorldPop (www.worldpop.org)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Travel time to cities</td>
+<td style="text-align: left;">Travel time to cities with populations of 10k-20k people in 2015</td>
+<td style="text-align: left;">https://doi.org/10.6084/m9.figshare.7638134.v4</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p>In the first step, Multivariate Adaptive Regression Spline models (MARS) were used in modelling the 6 covariates as a function of all the environmental covariates and their first-order interaction terms. The models were built to allow for a potential 500 knots in the features, and pruning of the model was done using forward selection. The predictions from the MARS model were then used as offsets in a geostatistical model (second step) in order to obtain the smoothed effects over the entire grid.</p>
+<p>For travel time, which exhibits a skewed distribution, we employed a gamma distribution model:</p>
+<p><span class="math display">\[
+\log(\text{Travel Time}_k) = \mathbf{Z}_k + \psi(x_k)
+\]</span></p>
+<p>For the remaining covariates (health accessibility (money &amp; distance), mode of travel, wealth index, and illiteracy levels), we applied a binomial likelihood model.</p>
+<p><span class="math display">\[
+\text{logit}(p_k) = \mathbf{Z}_k + \psi(x_k)
+\]</span></p>
+<p>Where: <span class="math inline">\(\mathbf{Z}_k\)</span> is an offset term which is the linear predictor obtained from the fitted MARS model and <span class="math inline">\(\psi(x_k)\)</span> is a spatial random effect modeled as a zero-mean Gaussian process with a Matérn covariance function: <span class="math inline">\(\psi(x_k) \sim N(0, \Sigma)\)</span>.</p>
+</section>
+</section>
+<section id="results" class="level1">
+<h1>Results</h1>
+<p>These six modeled map surfaces were then used as covariates in the models for care-seeking probabilities.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/modelled_map_surfaces_for_covs.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">The modelled map surface for the six variables of interest</figcaption>
+</figure>
+</div>
+<hr>
+<p>To model the response variables related to care-seeking for diarrhea and fever, we used a generalized linear geostatistical model with a binomial response distribution. Let <span class="math inline">\(Y_k\)</span> be the number of women in location <span class="math inline">\(x_k, \ (k = 1, ..., n)\)</span> who sought treatment for their children (under five) due to diarrhea or fever. We assume:</p>
+<p><span class="math display">\[
+Y_k \ | \ \mu(x_k) \sim \text{Binomial}(N_k, \ \mu(x_k))
+\]</span> where:</p>
+<p><span class="math inline">\(N_k\)</span> is the total number of women in location <span class="math inline">\(k\)</span>. <span class="math inline">\(\mu(x_k)\)</span> is the probability parameter of the binomial distribution, with <span class="math inline">\(0 &lt; \mu(x_k) &lt; 1\)</span>.</p>
+<p>The probability <span class="math inline">\(\mu(x_k)\)</span> is linked to the covariates and spatial effects through a logit link function:</p>
+<p><span class="math display">\[
+\mathbf{log}(\frac{\mu(x_k)}{1 - \mu(x_k)}) = \mathbf{X}_k \boldsymbol{\beta} + \psi(x_k)
+\]</span></p>
+<p>where:</p>
+<p><span class="math inline">\(\mathbf{X}_k\)</span> is the vector of the six estimated covariates at location <span class="math inline">\(x_k\)</span>, and <span class="math inline">\(\boldsymbol{\beta}\)</span> is the vector of corresponding regression coefficients (including the intercept term). <span class="math inline">\(\psi(x_k)\)</span> represents a spatial random effect modeled as a zero-mean Gaussian process with Matérn covariance function: <span class="math inline">\(\psi(x_k) \sim N(0, \Sigma)\)</span>.</p>
+<p>For summarizing the care-seeking probabilities, we extracted the mean probabilities along with the interquartile range (IQR) as a measure of uncertainty in predictions. The estimates were also aggregated at the ward, sub-county and county level using population-weighting.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/pred_all_care_seeking.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">The predicted probabilities, the IQR range and exceedance probabilities for care seeking for childhood illness in Kenya</figcaption>
+</figure>
+</div>
+<p>The modelled map surface indicates that care seeking probabilities ranged from 0 to 1, with a median probability of 0.6, and an average probability of 0.51. Care seeking was high in the northern regions of Kenya such as in Turkana, and low in the central parts of Kenya such as in Nairobi. The exceedance map shows that majority of the parts in Kenya have a care seeking probability above 0.5.</p>
+<p>The aggregated map surfaces shown below indicate that at the county level, treatment seeking is high in the coutnies: Turkana, Samburu, Isiolo, Garissa, Tana-river, Taita taveta, Kwale and Murang’a. The rest of the counties have treatment seeking probabilities ranging from 40% to 60%. the sub-county level map and ward-level map further highlight this finding.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/aggregated_care_seeking.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">The aggregated care seeking probabilities sub-nationally</figcaption>
+</figure>
+</div>
+<p>The effects of the health accessibility covariates on the treatment seeking probabilities were extracted from a GLM model fitted on the survey data (aggregated at the cluster level). The conditional effect plots are shown below:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/conditional_effect_plot.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">The conditional effects plots for the health accessibility covariates on treatment seeking</figcaption>
+</figure>
+</div>
+<p>Higher levels of female illiteracy are associated with an increased probability of seeking treatment. There is a slight negative association between money-related challenges and seeking treatment, and a strong negative relationship between poverty levels and treatment seeking. Contrary to expectations, longer travel times are associated with a higher likelihood of seeking treatment. The variables: distance challenges and access to motorized transport show little to no impact on treatment-seeking behavior, as reflected in the flat prediction lines.</p>
+<hr>
+<p>This study modeled the probabilities of treatment seeking for childhood illnesses in Kenya using model-based geostatistical methods. The findings reveal an interesting trend: treatment-seeking probabilities are highest in northern counties such as Turkana, Isiolo, and Samburu, while much of the rest of Kenya exhibits moderate probabilities, ranging between 40% and 60%. Additionally, the study explored how health accessibility factors relate to treatment seeking.</p>
+<p>A key limitation of this research is the restricted sample size. The DHS data on treatment seeking was collected only from women whose children experienced illness in the two weeks preceding the survey, significantly reducing the number of observations. Similarly, data on health accessibility variables were available for only a subset of respondents. These limitations likely contributed to the low precision of the estimated relationships, as evidenced by the wide confidence intervals around the model’s predictions.</p>
+<p>Although some of the results were counterintuitive, they highlight the complexity of healthcare access and utilization. Further research is needed to better understand the relationships between health accessibility and treatment seeking for childhood illnesses.</p>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<section id="data-references" class="level2">
+<h2 class="anchored" data-anchor-id="data-references">Data references</h2>
+<p>Fick, S.E. and R.J. Hijmans, 2017. WorldClim 2: new 1km spatial resolution climate surfaces for global land areas. International Journal of Climatology 37 (12): 4302-4315.</p>
+<p>WorldPop (www.worldpop.org - School of Geography and Environmental Science, University of Southampton; Department of Geography and Geosciences, University of Louisville; Departement de Geographie, Universite de Namur) and Center for International Earth Science Information Network (CIESIN), Columbia University (2018). Global High Resolution Population Denominators Project - Funded by The Bill and Melinda Gates Foundation (OPP1134076). https://dx.doi.org/10.5258/SOTON/WP00675</p>
+<p>Nelson, Andy (2019). Travel time to cities and ports in the year 2015. figshare. Dataset. https://doi.org/10.6084/m9.figshare.7638134.v4</p>
+<p>Weiss, D., Nelson, A., Gibson, H. et al.&nbsp;A global map of travel time to cities to assess inequalities in accessibility in 2015. Nature 553, 333–336 (2018). https://doi.org/10.1038/nature25181</p>
+</section>
+<section id="package-references" class="level2">
+<h2 class="anchored" data-anchor-id="package-references">Package references</h2>
+<p>Havard Rue, Sara Martino, and Nicholas Chopin (2009), Approximate Bayesian Inference for Latent Gaussian Models Using Integrated Nested Laplace Approximations (with discussion), Journal of the Royal Statistical Society B, 71, 319-392.</p>
+<p>Thiago G. Martins, Daniel Simpson, Finn Lindgren and Havard Rue (2013), Bayesian computing with INLA: New features, Computational Statistics and Data Analysis, 67(2013) 68-83</p>
+<p>Finn Lindgren, Havard Rue (2015). Bayesian Spatial Modelling with R-INLA. Journal of Statistical Software, 63(19), 1-25. URL http://www.jstatsoft.org/v63/i19/.</p>
+<p>Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache SM, Müller K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H (2019). “Welcome to the tidyverse.” <em>Journal of Open Source Software</em>, <em>4</em>(43), 1686. doi:10.21105/joss.01686 <a href="https://doi.org/10.21105/joss.01686" class="uri">https://doi.org/10.21105/joss.01686</a>.</p>
+<p>R Core Team (2023). <em>R: A Language and Environment for Statistical Computing</em>. R Foundation for Statistical Computing, Vienna, Austria. <a href="https://www.R-project.org/" class="uri">https://www.R-project.org/</a>.</p>
+<p>Pebesma, E., &amp; Bivand, R. (2023). Spatial Data Science: With Applications in R. Chapman and Hall/CRC. https://doi.org/10.1201/9780429459016</p>
+<p>Pebesma, E., 2018. Simple Features for R: Standardized Support for Spatial Vector Data. The R Journal 10 (1), 439-446, https://doi.org/10.32614/RJ-2018-009</p>
+<p>Hijmans R (2023). <em>raster: Geographic Data Analysis and Modeling</em>. R package version 3.6-26, <a href="https://CRAN.R-project.org/package=raster" class="uri">https://CRAN.R-project.org/package=raster</a>.</p>
+<p>Kuhn M, Wickham H, Hvitfeldt E (2024). <em>recipes: Preprocessing and Feature Engineering Steps for Modeling</em>. R package version 1.0.10, <a href="https://CRAN.R-project.org/package=recipes" class="uri">https://CRAN.R-project.org/package=recipes</a>.</p>
+<p>Karatzoglou A, Smola A, Hornik K (2023). <em>kernlab: Kernel-Based Machine Learning Lab</em>. R package version 0.9-32, <a href="https://CRAN.R-project.org/package=kernlab" class="uri">https://CRAN.R-project.org/package=kernlab</a>.</p>
+<p>Wickham H, Miller E, Smith D (2023). <em>haven: Import and Export ‘SPSS’, ‘Stata’ and ‘SAS’ Files</em>. R package version 2.5.4, <a href="https://CRAN.R-project.org/package=haven" class="uri">https://CRAN.R-project.org/package=haven</a>.</p>
+<p>Alexander Jordan, Fabian Krueger, Sebastian Lerch (2019). Evaluating Probabilistic Forecasts with scoringRules. Journal of Statistical Software, 90(12), 1-37. DOI 10.18637/jss.v090.i12</p>
+<p>Mahoney M. J., Johnson, L. K., Silge, J., Frick, H., Kuhn, M., and Beier C. M. (2023). Assessing the performance of spatial cross-validation approaches for models of spatially structured data. arXiv. https://doi.org/10.48550/arXiv.2303.07334</p>
+</section>
+<section id="other-references" class="level2">
+<h2 class="anchored" data-anchor-id="other-references">Other references</h2>
+<p>UNICEF Data. (2022, March). “Under-five mortality” Retrieved from https://data.unicef.org/topic/child-survival/under-five-mortality/</p>
+<p>Perin, J., Mulick, A., Yeung, D., Villavicencio, F., Lopez, G., Strong, K. L., … &amp; Liu, L. (2022). Global, regional, and national causes of under-5 mortality in 2000–19: an updated systematic analysis with implications for the Sustainable Development Goals. The Lancet Child &amp; Adolescent Health, 6(2), 106-115.</p>
+<p>Wambui, W. M., Kimani, S., &amp; Odhiambo, E. (2018). Determinants of Health Seeking Behavior among Caregivers of Infants Admitted with Acute Childhood Illnesses at Kenyatta National Hospital, Nairobi, Kenya. International journal of pediatrics, 2018, 5190287. https://doi.org/10.1155/2018/5190287</p>
+<p>Opuba EN, Owenga JA, Onyango PO. Home-based care practices and experiences influencing health-seeking behaviour among caregivers of children diagnosed with pneumonia in Endebess Sub-County, Kenya. Journal of Global Health Reports. 2021;5:e2021098. doi:10.29392/001c.29573</p>
+<p>Moturi AK, Suiyanka L, Mumo E, Snow RW, Okiro EA, Macharia PM. Geographic accessibility to public and private health facilities in Kenya in 2021: An updated geocoded inventory and spatial analysis. Front Public Health. 2022 Nov 3;10:1002975. doi: 10.3389/fpubh.2022.1002975. PMID: 36407994; PMCID: PMC9670107.</p>
+<p>KNBS and ICF. 2023. Kenya Demographic and Health Survey 2022. Nairobi, Kenya, and Rockville, Maryland, USA: KNBS and ICF.</p>
+
+
+</section>
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Stanley Sayianka">
+<meta name="dcterms.date" content="2024-10-16">
+
+<title>Stanley Sayianka - A comparison of methods for Small-Area Estimation (SAE)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Stanley Sayianka</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../projects.html" rel="" target="">
+ <span class="menu-text">Projects</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/" rel="" target=""><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://twitter.com" rel="" target=""><i class="bi bi-twitter" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <h1 class="title">A comparison of methods for Small-Area Estimation (SAE)</h1>
+                                <div class="quarto-categories">
+                <div class="quarto-category">code</div>
+                <div class="quarto-category">stats</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Stanley Sayianka </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">October 16, 2024</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block page-columns page-full" id="quarto-document-content">
+<script defer="" src="https://cloud.umami.is/script.js" data-website-id="e2626c70-2118-4fa1-bf3c-49552f9b4ccf"></script>
+
+
+
+
+<section id="introduction" class="level1 page-columns page-full">
+<h1>Introduction</h1>
+<div class="page-columns page-full"><p>A geographical region is termed a <strong>small area</strong> when the domain-specific data for that region are insufficient to provide direct estimates of adequate precision (Rao, John NK, and Isabel Molina, 2015)<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>. Small Area Estimation (SAE) is a statistical method used to estimate characteristics of interest for small spatial domains, often at a sub-national level, such as counties in Kenya.</p><div class="no-row-height column-margin column-container"><li id="fn1"><p><sup>1</sup>&nbsp;Rao, John NK, and Isabel Molina. 2015. Small Area Estimation. John Wiley &amp; Sons.</p></li></div></div>
+<p>Small Area Estimation (SAE) has become increasingly valuable in survey data analysis, as demonstrated by its growing use in research and practice. The simplest SAE method, the design-based approach, uses sampling weights to account for complex survey designs and is used in the calculation of direct estimates (i.e., estimates derived solely from domain-specific survey data). In contrast, the model-based approach relies on statistical models that incorporate covariates to account for the sampling design. Model-based approaches offer the advantage of incorporating area-specific covariates as well as the potential for using promising model frameworks, for enhancing the precision of estimates.</p>
+<div class="page-columns page-full"><p>Given the reliance on statistical models, it is essential to evaluate and compare different model-based SAE approaches to determine their effectiveness in producing estimates with high precision. This article aims to formally compare several SAE methods for mapping variables of interest in Kenya, utilizing data from the Kenya Demographic and Health Survey (KDHS) 2022. This analysis draws inspiration from previous work on disease prevalence mapping by Wakefield, Okonek, and Pedersen (2020)<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p><div class="no-row-height column-margin column-container"><li id="fn2"><p><sup>2</sup>&nbsp;Wakefield, Jonathan, Taylor Okonek, and Jon Pedersen. 2020. “Small Area Estimation for Disease Prevalence Mapping.” International Statistical Review 88 (2): 398–418.</p></li></div></div>
+<p>The comparison will be based on the rankings produced by the models investigated, their disparities, their coefficients of variation to ascertain if the SAE models improved the precision of mean estimates.</p>
+</section>
+<section id="data-and-methods" class="level1 page-columns page-full">
+<h1>Data and Methods</h1>
+<section id="data" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<p>The data for this analysis are sourced from the Kenya Demographic and Health Survey 2022 (KDHS 2022). The survey utilizes the 2019 Kenya Population and Housing Census National Master Sampling Frame (NMSF), which divides Kenya into 47 administrative units (counties) and further categorizes them into 92 strata based on rural and urban distinctions (with Nairobi and Mombasa comprising only urban areas)</p>
+<p>A two-stage sampling process is used to select samples within each stratum. First enumeration areas/primary sampling units (PSU) are chosen independently from each stratum using a probability proportional to size (PPS) procedure. These form the survey clusters. Within each cluster, 25 households were selected using an equal probability systematic sampling procedure. This resulted in 1692 clusters (urban: 666, rural: 1,026), and a total of 42,300 households (urban: 16,650, rural: 25,650).</p>
+<p>The sampling of the KDHS 2022 design ensures representative estimates at the national, and rural-urban levels, and for some indicators, at the county level.</p>
+<div class="page-columns page-full"><p>The variables used in this analysis were extracted from the relevant DHS recode datasets using the surveyPrev package<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn3"><p><sup>3</sup>&nbsp;Dong Q, Li Z, Wu Y, Boskovic A, Wakefield J (2024). <em>surveyPrev: Mapping the Prevalence of Binary Indicators using Survey Data in Small Areas</em>. R package version 1.0.0, <a href="https://CRAN.R-project.org/package=surveyPrev" class="uri">https://CRAN.R-project.org/package=surveyPrev</a>.</p></li></div></div>
+<div id="tbl-vars" class="cell tbl-parent quarto-layout-panel anchored">
+<div class="panel-caption table-caption">
+<p><strong>?(caption)</strong></p>
+</div>
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
+<table class="table table-sm table-striped small">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 67%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Variable</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Topic</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Under five mortality</td>
+<td style="text-align: left;">Probability of dying within the first 59 months</td>
+<td style="text-align: left;">Infant &amp; child mortality</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Skilled birth attendance</td>
+<td style="text-align: left;">Assistance during delivery from a skilled provider</td>
+<td style="text-align: left;">Maternal healthcare</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Full basic vaccination</td>
+<td style="text-align: left;">Children 12-23 months with 8 basic vaccinations</td>
+<td style="text-align: left;">Child health</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Modern contraceptive use</td>
+<td style="text-align: left;">Modern contraceptive prevalence rate (Married women currently using any modern method of contraception)</td>
+<td style="text-align: left;">Family planning</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">4th ANC Coverage</td>
+<td style="text-align: left;">Antenatal visits during pregnancy: 4+ visits</td>
+<td style="text-align: left;">Maternal Healthcare</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<section id="methods" class="level2 page-columns page-full">
+<h2 class="anchored" data-anchor-id="methods">Methods</h2>
+<p>As discussed by Wakefield, Jonathan, Taylor Okonek, and Jon Pedersen (2020), this study implements five estimators for small area estimation:</p>
+<ol type="1">
+<li>Direct estimation <em>(DIRECT)</em></li>
+<li>An area-level model with independent and identically distributed (IID) random effects for counties <em>(AREA:IID)</em></li>
+<li>An area-level model with a Besag-York-Mollié 2 (BYM2) spatial smoothing effect for counties <em>(AREA:BYM2)</em></li>
+<li>A unit-level model with BYM2 spatial smoothing for counties <em>(UNIT:BYM2)</em></li>
+<li>A unit-level model incorporating continuous Gaussian process smoothing <em>(UNIT:SPDE)</em></li>
+</ol>
+<p>For the remainder of this article, we adopt the following notation: let <span class="math inline">\(w_{ijk}\)</span> represent the design weight for individual <span class="math inline">\(i\)</span> within cluster <span class="math inline">\(j\)</span> in area (county) <span class="math inline">\(k\)</span>, where the response for the selected variable is denoted by <span class="math inline">\(y_{ijk}\)</span>. The parameter of interest, <span class="math inline">\(y_k\)</span>, refers to the average prevalence of the selected indicators at the county level.</p>
+<hr>
+<p>For direct estimation, the direct estimator for the mean prevalence value of the selected indicator at county <span class="math inline">\(k\)</span> is given as:</p>
+<p><span class="math display">\[
+y_k = \frac{\sum_{j=1}^{J_k} \sum_{i=1}^{n_{jk}} w_{ijk} y_{ijk}}{\sum_{j=1}^{J_k} \sum_{i=1}^{n_{jk}} w_{ijk}}
+\]</span></p>
+<p>Where: <span class="math inline">\(J_k\)</span> is the number of clusters in county <span class="math inline">\(k\)</span>, and <span class="math inline">\(n_{jk}\)</span> is the number of individuals in cluster <span class="math inline">\(j\)</span> of county <span class="math inline">\(k\)</span>,</p>
+<p>This formula represents the Horvitz-Thompson (HT) direct estimator for the mean prevalence at the county level.</p>
+<hr>
+<p>The area level models: (AREA:IID) which assumes an IID heterogeneous effect for the counties, and the (AREA:BYM2) which assigns a BYM2 spatial effect to the counties use the weighted estimate (HT) as their response variable during modeling. Specifically: Let <span class="math inline">\(y_k\)</span> be the HT direct estimate of county <span class="math inline">\(k\)</span>, and <span class="math inline">\(n_k\)</span> be the effective sample size for county <span class="math inline">\(k\)</span>. Then:</p>
+<p><span class="math display">\[y_k \sim Binomial(n_k, p_k)\]</span></p>
+<p>For the area level model with IID random effect, the model is given as:</p>
+<p><span class="math display">\[\text{logit}(p_k) = x_k^T\beta + u_k + v_k\]</span></p>
+<p>Here:</p>
+<p><span class="math inline">\(y_k\)</span> is the observed count in county <span class="math inline">\(k\)</span></p>
+<p><span class="math inline">\(n_k\)</span> is the effective sample size for county <span class="math inline">\(k\)</span></p>
+<p><span class="math inline">\(p_k\)</span> is the true underlying prevalence in county <span class="math inline">\(k\)</span></p>
+<p><span class="math inline">\(x_k\)</span> is a matrix of covariates (including the intercept) for county <span class="math inline">\(k\)</span></p>
+<p><span class="math inline">\(\beta\)</span> is a vector of coefficients</p>
+<p><span class="math inline">\(u_k\)</span> is the unstructured random effect for county <span class="math inline">\(k\)</span> given as <span class="math inline">\(u_k \sim N(0, \sigma_u^2)\)</span>. <span class="math inline">\(\sigma_u^2\)</span> is the variance of the unstructured random effect.</p>
+<hr>
+<div class="page-columns page-full"><p>The model with the BYM2 spatial smoothing effect can be viewed as an extension of the Besag-York-Mollie model given by the sum of an unstructured random effect <span class="math inline">\(u_k\)</span>, and a structured spatial random effect <span class="math inline">\(v_k\)</span> with proper Conditional Auto-Regressive (CAR) structure<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a></p><div class="no-row-height column-margin column-container"><li id="fn4"><p><sup>4</sup>&nbsp;Moraga, P. (2019). Geospatial health data: Modeling and visualization with R-INLA and shiny. Chapman and Hall/CRC.</p></li></div></div>
+<p>The model formulation is as follows:</p>
+<p><span class="math display">\[\text{logit}(p_k) = x_k^T\beta + b_k\]</span></p>
+<p>The structured spatial random effect <span class="math inline">\(b_k\)</span> is given as:</p>
+<div class="page-columns page-full"><p><span class="math display">\[b_k = \frac{1}{\tau_b}(\sqrt{1-\phi} \ v_k^{*} + \sqrt{\phi} \ u_k^{*})\]</span> Here: <span class="math inline">\(u_k^{*}\)</span> and <span class="math inline">\(v_k^{*}\)</span> are the standardized versions of <span class="math inline">\(u_k\)</span> and <span class="math inline">\(v_k\)</span> to have variance 1<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. <span class="math inline">\(\phi \in [0,1]\)</span> is a mixing parameter quantifying the proportion of marginal variance explained by the spatial component. <span class="math inline">\(\tau_b\)</span> is the marginal precision parameter.</p><div class="no-row-height column-margin column-container"><li id="fn5"><p><sup>5</sup>&nbsp;Simpson, D., Rue, H., Riebler, A., Martins, T. G., &amp; Sørbye, S. H. (2017). Penalising model component complexity: A principled, practical approach to constructing priors.</p></li></div></div>
+<hr>
+<p>For the unit-level models (UNIT:BYM2 &amp; UNIT:SPDE), we consider the primary sampling units (PSUs) as the units of analysis. Let <span class="math inline">\(y_{jk}\)</span> denote the count of “successes” for a selected indicator, and <span class="math inline">\(n_{jk}\)</span> represent the sample size for cluster <span class="math inline">\(j\)</span> in county <span class="math inline">\(k\)</span>.</p>
+<p>The general model formulation is as follows:</p>
+<p><span class="math display">\[y_{jk} \sim \text{Beta-Binomial}(n_{jk}, p_{jk}, \lambda)\]</span> <span class="math display">\[\text{logit}(p_{jk}) = x_{jk}^T\beta + z(s_{jk})\gamma + \psi(s_{jk})\]</span></p>
+<p>Where:</p>
+<p><span class="math inline">\(p_{jk}\)</span> is the probability of success for cluster <span class="math inline">\(j\)</span> in county <span class="math inline">\(k\)</span></p>
+<p><span class="math inline">\(x_{jk}\)</span> is a vector of unit-level covariates at location <span class="math inline">\(s_{jk}\)</span></p>
+<p><span class="math inline">\(\beta\)</span> is the corresponding vector of fixed effect coefficients</p>
+<p><span class="math inline">\(z(s_{jk})\)</span> represents the stratum indicator for cluster <span class="math inline">\(j\)</span> in county <span class="math inline">\(k\)</span></p>
+<p><span class="math inline">\(\gamma\)</span> is the fixed effect coefficient for the stratum</p>
+<p><span class="math inline">\(\psi(s_{jk})\)</span> is a spatial random effect at location <span class="math inline">\(s_{jk}\)</span></p>
+<p>In the UNIT:SPDE model, the spatial random effect <span class="math inline">\(\psi(s_{jk})\)</span> is modeled as a zero-mean Gaussian process with a Matérn covariance function: <span class="math inline">\(\psi(s_{jk}) \sim \mathcal{GP}(0, \Sigma)\)</span>. Here, <span class="math inline">\(\Sigma\)</span> is the covariance matrix derived from the Matérn covariance function and is characterized by parameters controlling the range of spatial dependency and the smoothness of the spatial field. This model is then used to make predictions for the selected indicator variable at a <span class="math inline">\(5 km^2\)</span> grid across Kenya.</p>
+<p>For the unit level model (UNIT:BYM2) implementing a BYM2 spatial random effect, the term <span class="math inline">\(\psi(s_{jk})\)</span> is a spatially stuctured random effect as implemented as in the <em>AREA:BYM2</em> section above.</p>
+<hr>
+<p>For the unit-level models that required the stratification variable <span class="math inline">\(z(\cdot)\)</span> as a covariate, we first developed a model to predict urban/rural classification for Kenya using the DHS GPS dataset. This was done in two steps, and incorporated the covariates: night light, travel time to cities with populations of 10,000-20,000, and population density. Initially, we use a flexible Multivariate Adaptive Regression Splines (MARS) model allowing for up to 100 knots and all second-order interaction effects. Forward search was used to prune the model. The predictions from this MARS model served as an offset linear predictor term in a final geostatistical model, which made predictions at a <span class="math inline">\(5 \ km^2\)</span> resolution. These predictions were then used as the <span class="math inline">\(z(\cdot)\)</span> covariate in the unit-level models, representing the probability that a cluster is urban.</p>
+<p>For the unit-level models, since the primary sampling units (PSUs) are the units of analysis rather than the areas (counties), an aggregation step was required to obtain mean estimates at the county level.</p>
+<div class="page-columns page-full"><p>In the UNIT:SPDE model which includes a continuous spatial random effect (Gaussian process), the aggregation was done using population weighting. The population dataset used was the UN-adjusted 2020 gridded population data from WorldPop<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> as follows:</p><div class="no-row-height column-margin column-container"><li id="fn6"><p><sup>6</sup>&nbsp;WorldPop (www.worldpop.org - School of Geography and Environmental Science, University of Southampton; Department of Geography and Geosciences, University of Louisville; Departement de Geographie, Universite de Namur) and Center for International Earth Science Information Network (CIESIN), Columbia University (2018). Global High Resolution Population Denominators Project - Funded by The Bill and Melinda Gates Foundation (OPP1134076). https://dx.doi.org/10.5258/SOTON/WP00675</p></li></div></div>
+<p><span class="math display">\[
+p_k = \sum_{i=1}^{g_i} p(s_i) \cdot q(s_i) \cdot \mathbf{1}(s_i \in k)
+\]</span></p>
+<p>Where <span class="math inline">\(p(s_i)\)</span> represents the mean estimate at location <span class="math inline">\(s_i\)</span> (a <span class="math inline">\(5 km^2\)</span> grid), <span class="math inline">\(q(s_i)\)</span> is the population density at location <span class="math inline">\(s_i\)</span> (normalized per county <span class="math inline">\(k\)</span>), and <span class="math inline">\(g_i\)</span> is the total number of grid cells across the spatial domain (country).</p>
+<div class="page-columns page-full"><p>For the UNIT:BYM2 model, aggregation was done using a weighted averaging approach. Following (Paige, Fuglstad, Riebler, &amp; Wakefield, 2022)<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a>, <span class="math inline">\(a = 500\)</span> samples for the county crossed with stratum were drawn from the model’s posterior distribution as follows:</p><div class="no-row-height column-margin column-container"><li id="fn7"><p><sup>7</sup>&nbsp;Paige, J., Fuglstad, G. A., Riebler, A., &amp; Wakefield, J. (2022). Design-and model-based approaches to small-area estimation in a low-and middle-income country context: comparisons and recommendations. Journal of Survey Statistics and Methodology, 10(1), 50-80.</p></li></div></div>
+<p><span class="math display">\[\hat{P}_S^a = \frac{1}{J_k^s} \ \sum_{j:s[c] = S}{p_j^a}\]</span> Where: <span class="math inline">\(\hat{P}_S^a\)</span> is the a-th drawn predicted probability from the posterior of stratum <span class="math inline">\(S\)</span>, <span class="math inline">\(J_k^s\)</span> is the number of clusters (Enumeration Areas) in stratum <span class="math inline">\(S\)</span> of county <span class="math inline">\(k\)</span>, <span class="math inline">\(s[c]\)</span> is the stratum of cluster <span class="math inline">\(j\)</span> and <span class="math inline">\(p_j^a\)</span> is the predicted probability of cluster <span class="math inline">\(j\)</span>.</p>
+<p>Generating draws from the posterior distribution of the counties amounts to aggregating the stratum draws, using information about the proportion of each county that is urban/rural. This information was drawn from the 2019 Kenya Population and Housing Census (KPHC) 2019. This is illustrated below:</p>
+<p><span class="math display">\[{p_k^a} = (q_{kU} * p_{U}^a) + (q_{kR} * p_{R}^a)\]</span></p>
+<p>Here: <span class="math inline">\(q_{kU}\)</span> and <span class="math inline">\(q_{kR}\)</span> are the proportions for the target populations in the counties which are urban and rural respectively.</p>
+<hr>
+<p>To fully specify the models, we used penalized complexity (PC) priors similar to those used by Wakefield, Jonathan, Taylor Okonek, and Jon Pedersen (2020). For the BYM2 models, the PC priors were set such that the marginal standard deviation has a 0.01 probability of exceeding 0.5, while the mixing parameter <span class="math inline">\(\phi\)</span> has a 0.5 probability of being greater than 2/3. For the UNIT:SPDE model, we imposed a prior on the spatial range parameter such that there is a 0.95 probability that the range is less than 50 kilometers. Additionally, we set the prior for the marginal standard deviation of the spatial field so that there is a 50% probability that it is less than 1.</p>
+<div class="page-columns page-full"><p>All analyses were performed in R version 4.3.2<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a>, using packages including Tidyverse, R-INLA, surveyPrev, sf, raster, earth, tidyr, and patchwork.</p><div class="no-row-height column-margin column-container"><li id="fn8"><p><sup>8</sup>&nbsp;R Core Team (2023). R: A Language and Environment for Statistical Computing. R Foundation for Statistical Computing, Vienna, Austria. https://www.R-project.org/.</p></li></div></div>
+</section>
+</section>
+<section id="results" class="level1 page-columns page-full">
+<h1>Results</h1>
+<p>In this section, we present the comparative performance of the five methods described in the Methods section. The results are evaluated based on the rankings, the precision of the estimates using the coefficient of variation (CV), and the influence of spatial autocorrelation, sample size, and neighborhood structure on precision.</p>
+<p>The plot of rankings and a prevalence map are shown below:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/main-line.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">This figure shows the rankings comparison for the 5 methods across the selected variables. The values plotted on the y-axis are the mean estimates for the counties produced using the 5 methods.</figcaption>
+</figure>
+</div>
+<p>At the county level, all the methods produced almost similar rankings with an exception of Under-five mortality.</p>
+<div class="column-page-right">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/main-map.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">This figure shows the mapped prevalences for the variables and the models used. The aggregation performed is at the county level</figcaption>
+</figure>
+</div>
+</div>
+<p>From the above map, it is evident that for variables such as Modern Contraceptive Usage and Skilled Birth Attendance, there is strong visual similarity across the five methods, while for variables such as Under-five mortality, there exists some disparity in the plots produced using the different methods.</p>
+<p>The coefficients of variation plot is shown below:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/cv-line.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">This figure shows the coefficients of variation for the five different methods on the variables analyzed. The CV is given as the posterior standard deviation divided by the Mean estimate</figcaption>
+</figure>
+</div>
+<p>From the plot above, the UNIT:SPDE model seems to be having the lowest Coefficient of Variation (CV). For variables such as Modern Contraceptive Usage, the five models had relatively similar CV estimates across all counties, while for variables such as Under Five Mortality and 4th ANC Coverage, there is greater difference in the CV graphs produced.</p>
+<hr>
+<p>In this article, we compared five model-based small area estimation (SAE) approaches using data from five indicators in the 2022 Kenya Demographic and Health Survey (KDHS). The findings suggest that the five models produced similar mean estimates and had comparable rankings for most of the variables. Variables such as skilled birth attendance and modern contraceptive use showed strong agreement among the models, while under-five mortality displayed lower agreement. Overall, the UNIT:SPDE models exhibited lower coefficients of variation across counties for all variables, though the CV graphs indicated that the models produced similar results.</p>
+<p>These findings suggest that the KDHS 2022 data were sufficiently powered to generate estimates at the county level, as the model-based approaches did not significantly improve upon the direct estimates. Given that direct estimation remains the gold standard in SAE, my recommendation is to use direct estimation methods rather than model-based estimates for the counties and the five variables analyzed.</p>
+<p>Further research is needed to assess the viability of model-based approaches for generating estimates at the sub-county level and to compare these approaches in greater depth.</p>
+</section>
+<section id="references" class="level1">
+<h1>References</h1>
+<p>Paige, J., Fuglstad, G. A., Riebler, A., &amp; Wakefield, J. (2022). Design-and model-based approaches to small-area estimation in a low-and middle-income country context: comparisons and recommendations. Journal of Survey Statistics and Methodology, 10(1), 50-80.</p>
+<p>Simpson, D., Rue, H., Riebler, A., Martins, T. G., &amp; Sørbye, S. H. (2017). Penalising model component complexity: A principled, practical approach to constructing priors.</p>
+<p>Moraga, P. (2019). Geospatial health data: Modeling and visualization with R-INLA and shiny. Chapman and Hall/CRC.</p>
+<p>Wakefield, Jonathan, Taylor Okonek, and Jon Pedersen. 2020. “Small Area Estimation for Disease Prevalence Mapping.” International Statistical Review 88 (2): 398–418.</p>
+<p>Rao, John NK, and Isabel Molina. 2015. Small Area Estimation. John Wiley &amp; Sons.</p>
+<section id="package-references" class="level2">
+<h2 class="anchored" data-anchor-id="package-references">Package references</h2>
+<p>R Core Team (2023). R: A Language and Environment for Statistical Computing. R Foundation for Statistical Computing, Vienna, Austria. https://www.R-project.org/.</p>
+<p>Dong Q, Li Z, Wu Y, Boskovic A, Wakefield J (2024). surveyPrev: Mapping the Prevalence of Binary Indicators using Survey Data in Small Areas. R package version 1.0.0, https://CRAN.R-project.org/package=surveyPrev.</p>
+<p>Wickham H, Miller E, Smith D (2023). <em>haven: Import and Export ‘SPSS’, ‘Stata’ and ‘SAS’ Files</em>. R package version 2.5.4, <a href="https://CRAN.R-project.org/package=haven" class="uri">https://CRAN.R-project.org/package=haven</a>.</p>
+<p>Havard Rue, Sara Martino, and Nicholas Chopin (2009), Approximate Bayesian Inference for Latent Gaussian Models Using Integrated Nested Laplace Approximations (with discussion), Journal of the Royal Statistical Society B, 71, 319-392.</p>
+<p>Thiago G. Martins, Daniel Simpson, Finn Lindgren and Havard Rue (2013), Bayesian computing with INLA: New features, Computational Statistics and Data Analysis, 67(2013) 68-83</p>
+<p>Finn Lindgren, Havard Rue (2015). Bayesian Spatial Modelling with R-INLA. Journal of Statistical Software, 63(19), 1-25. URL http://www.jstatsoft.org/v63/i19/.</p>
+<p>Wickham H, Averick M, Bryan J, Chang W, McGowan LD, François R, Grolemund G, Hayes A, Henry L, Hester J, Kuhn M, Pedersen TL, Miller E, Bache SM, Müller K, Ooms J, Robinson D, Seidel DP, Spinu V, Takahashi K, Vaughan D, Wilke C, Woo K, Yutani H (2019). “Welcome to the tidyverse.” <em>Journal of Open Source Software</em>, <em>4</em>(43), 1686. doi:10.21105/joss.01686 <a href="https://doi.org/10.21105/joss.01686" class="uri">https://doi.org/10.21105/joss.01686</a>.</p>
+<p>Pebesma, E., &amp; Bivand, R. (2023). Spatial Data Science: With Applications in R. Chapman and Hall/CRC. https://doi.org/10.1201/9780429459016</p>
+<p>Pebesma, E., 2018. Simple Features for R: Standardized Support for Spatial Vector Data. The R Journal 10 (1), 439-446, https://doi.org/10.32614/RJ-2018-009</p>
+<p>Hijmans R (2023). <em>raster: Geographic Data Analysis and Modeling</em>. R package version 3.6-26, <a href="https://CRAN.R-project.org/package=raster" class="uri">https://CRAN.R-project.org/package=raster</a>.</p>
+<p>Kuhn M, Wickham H, Hvitfeldt E (2024). <em>recipes: Preprocessing and Feature Engineering Steps for Modeling</em>. R package version 1.0.10, <a href="https://CRAN.R-project.org/package=recipes" class="uri">https://CRAN.R-project.org/package=recipes</a>.</p>
+</section>
+<section id="data-references" class="level2">
+<h2 class="anchored" data-anchor-id="data-references">Data references</h2>
+<p>WorldPop (www.worldpop.org - School of Geography and Environmental Science, University of Southampton; Department of Geography and Geosciences, University of Louisville; Departement de Geographie, Universite de Namur) and Center for International Earth Science Information Network (CIESIN), Columbia University (2018). Global High Resolution Population Denominators Project - Funded by The Bill and Melinda Gates Foundation (OPP1134076). https://dx.doi.org/10.5258/SOTON/WP00675</p>
+<p>KNBS and ICF. 2023. Kenya Demographic and Health Survey 2022. Nairobi, Kenya, and Rockville, Maryland, USA: KNBS and ICF.</p>
+
+
+</section>
+</section>
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
