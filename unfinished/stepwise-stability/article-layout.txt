@@ -1,0 +1,58 @@
+
+---
+
+### 1. **Introduction**
+The introduction should briefly define the key concepts, outline the research question, and set up the importance of your investigation.
+
+- **Paragraph 1: Motivation and focus**
+    - Open by introducing the need for variable selection in statistical modeling, and briefly mention that stepwise selection, while common, is known for being unstable under various conditions.
+    - Explain that this article will focus on analyzing the *stability* of stepwise selection for linear models, specifically under different noise levels, multicollinearity, and sample sizes.
+  
+- **Paragraph 2: Stability in variable selection**
+    - Define what stability means in the context of variable selection: how consistently stepwise selection picks the same variables when data conditions change (e.g., noise or sample size).
+    - Introduce the *reference model approach* as a benchmark for evaluating the consistency and robustness of the variables selected by stepwise procedures.
+
+- **Paragraph 3: Study objectives**
+    - Outline the objective: to assess the stability of stepwise selection under different data settings and compare its performance to a reference model.
+    - Mention that the article will explore noise levels, multicollinearity, and sample sizes as key factors affecting stability.
+
+---
+
+### 2. **Methods & Data**
+This section should be streamlined to focus on how you will conduct the stability analysis, with minimal technical details.
+
+- **Paragraph 1: Data generation**
+    - Mention that synthetic datasets will be generated to simulate different settings: varying noise levels, degrees of multicollinearity, and sample sizes.
+    - Briefly describe how you will control these variables to create diverse datasets.
+
+- **Paragraph 2: Stability analysis**
+    - Explain that you will use the stepwise selection procedure (both forward and backward) and measure stability as the consistency in variable selection across different data samples.
+    - Introduce the stability measure you’ll use, such as the frequency of variable inclusion or a similarity index like the Jaccard index.
+
+- **Paragraph 3: Reference model approach**
+    - Briefly explain the reference model approach, where a "full" model or a pre-defined model is used as a benchmark for variable selection.
+    - Describe how this approach will be used to evaluate the performance and stability of stepwise selection across different data conditions.
+
+---
+
+### 3. **Results & Discussion**
+This section presents and interprets the results in a condensed manner.
+
+- **Paragraph 1: Impact of noise levels**
+    - Summarize the results showing how noise affects the stability of stepwise selection. Provide any key insights (e.g., increased noise reduces stability).
+  
+- **Paragraph 2: Impact of multicollinearity**
+    - Report findings on how multicollinearity affects stability. Highlight any significant observations (e.g., highly correlated predictors destabilize the selection process).
+
+- **Paragraph 3: Impact of sample size**
+    - Present the relationship between sample size and stability. Indicate whether smaller sample sizes result in more unstable variable selection.
+
+- **Paragraph 4: Reference model comparison**
+    - Compare the stability of stepwise selection to that of the reference model. Summarize whether the reference model shows more consistent and stable variable selection across different settings.
+
+- **Paragraph 5: Key takeaways**
+    - Conclude with practical recommendations based on the findings, such as when to use caution with stepwise selection (e.g., in noisy or highly collinear datasets).
+    - Suggest that the reference model approach can offer a more stable alternative for variable selection in certain contexts.
+
+---
+

@@ -44,5 +44,29 @@
   },
   "posts/hgam-inla/index.qmd": {
     "index.html": "eccb42f8"
+  },
+  "posts/care-seeking/index.qmd": {
+    "index.html": "78524391"
+  },
+  "posts/stepwise-stability/index.qmd": {
+    "index.html": "e3785347"
+  },
+  "posts/sae-methods-comparison/index.qmd": {
+    "index.html": "67bf10e6"
+  },
+  "unfinished/stepwise-stability/index.qmd": {
+    "index.html": "4f27c1e8"
+  },
+  "unfinished/DiD UHC Pilot/index.qmd": {
+    "index.html": "6ff12c4f"
+  },
+  "unfinished/care-seeking/index.qmd": {
+    "index.html": "7eead521"
+  },
+  "unfinished/benchmarking-sae/index.qmd": {
+    "index.html": "b0dd3374"
+  },
+  "posts/benchmarking-sae/index.qmd": {
+    "index.html": "42ba574d"
   }
 }

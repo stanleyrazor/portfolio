@@ -1,0 +1,101 @@
+---
+title: "Stability analysis of stepwise variable selection under different settings."
+author: "Stanley Sayianka"
+format:
+  html:
+    grid:
+      margin-width: 400px
+reference-location: margin
+citation-location: margin
+
+date: "2024-09-28"
+categories: [code, linear models, stats, variable selection, stability analysis]
+image: "glm-img.png"
+include-before-body:
+  text: |
+    <script defer src="https://cloud.umami.is/script.js" data-website-id="e2626c70-2118-4fa1-bf3c-49552f9b4ccf"></script>
+---
+
+```{r, echo=F, warning=F, message=F}
+# originally:       margin-width: 350px
+library(pacman)
+p_load(dplyr, ggplot2, sf, stringr, purrr, gridExtra, gghighlight)
+
+scientific_theme <- theme(
+  # Text elements
+  text = element_text(family = "serif", color = "black"),
+  plot.title = element_text(size = 12, face = "plain", hjust = 0.5),
+  axis.title = element_text(size = 12, face = "plain"),
+  axis.text = element_text(size = 12),
+  axis.text.x = element_text(angle = 0, hjust = 0.5),
+  axis.text.y = element_text(angle = 0, hjust = 1),
+  legend.title = element_text(size = 12),
+  legend.text = element_text(size = 12),
+  
+  # Plot background and grid
+  panel.background = element_rect(fill = "white"),
+  panel.grid = element_blank(),
+  
+  # Axis lines and ticks
+  axis.line = element_line(color = "black"),
+  axis.ticks = element_line(color = "black"),
+  
+  # Remove the right and top axis lines (bty="l" equivalent)
+  axis.line.y.right = element_blank(),
+  axis.line.x.top = element_blank(),
+  
+  # Legend
+  legend.background = element_rect(fill = "white"),
+  legend.key = element_rect(fill = "white", color = NA),
+  
+  # Plot margins (approximating mar = c(5, 5, 3, 5))
+  plot.margin = margin(t = 3, r = 5, b = 5, l = 5, unit = "pt"),
+  
+  # Expand axes to touch the data (xaxs="i", yaxs="i" equivalent)
+  panel.spacing = unit(0, "lines"),
+  plot.title.position = "plot"
+)
+```
+
+Stepwise variable selection is one of the most widely used and abused of all data analysis techniques. - Harrel (2015).
+
+# Introduction
+
+Variable selection is commonly used when an analyst is faced with a large number of variables to include in a model and does not have the subject-matter expertise to decide which should be included a priori. Increasingly also, variable selection is used when analysts encounter high dimensional datasets, and they want to build a parsimonious model. This is becoming a common trend in various fields of analysis, due to the increasing availability of high-dimensional datasets.
+
+Given a finite sample ${x_i, y_i}_{i=1}^{n}$ from a data generating distribution $D$, where the $x_i$ is a p-dimensional matrix of independent variables (IV), and $y_i$ is the target variable; The task of variable selection is to select a minimal subset of variables which contain maximum information about a target variable $y$
+
+If the samples from the data generating distribution $D$ are not stationary i.e. they vary, then the features selected in the modelling process might be different, and this is fundamentally what stability is all about.
+
+Studies into stability in feature selection have pin-pointed out a number of issues which affect stability: the level of noise in the data, data dimensionality i.e. number of IVs, the sample size and the correlation between features. Typical investigation of stability usually starts with drawing a bootstrap sample from the original sample, fitting the model and conducting feature selection. This procedure is then repeated for $B$ bootstrapped datasets.
+
+For assessing the stability of the stepwise selection procedure, we will use the novel measure of stability proposed by Nogueira et al. (2017)^[In the paper, the stability measure they proposed fulfills all the 5 propoerties of a good stability measure, and they also compare different stability measures for feature selextion which exist in literature.]
+
+---
+
+Stepwise selection is perhaps the most common variable selection procedure for generalized linear models. Much of its popularity can be attributed to its conceptual simplicity, ease of use, and availability in software for fitting linear models such as R. The stepwise selection procedure has three variants: forward, backward, and an option for combining the two into one procedure.
+
+1. Forward selection: Starts with an intercept-only model, iteratively adds the most contributive predictors, and stops when the improvement is no longer statistically significant.
+
+2. Backward selection: Starts with the full model (including all predictors), iteratively removes the least contributive predictors, and stops when the remaining predictors are all statistically significant.
+
+3. Combined forward + backward selection (the object of interest in this article): Starts with an intercept-only model (i.e., no predictors), then sequentially adds the most contributive predictors (forward selection). After adding each new variable, a backward elimination step is performed to remove variables that no longer provide an improvement in the model fit. A forward selection procedure that involves backward elimination is called *stepwise forward selection*, and a backward elimination procedure that involves forward selection steps is called *stepwise backward selection*.
+
+Improvements in model fit during the stepwise procedure are mostly quantified using the Akaike Information Criterion (AIC) or another statistic that is a function of the model's log-likelihood/deviance and effective number of parameters (such as the GAIC). An important point to note is that while the connection between Information Criteria-based selection and significance-based selection may not be immediately obvious, Harrell (2015) shows that the two are indeed connected, and XXX (YYY) provides the significance correspondence for selection using AIC and BIC.
+
+The serious dangers of using stepwise variable selection are well documented in Chapter 4.3 of Harrell (2015). Harrell (2015) offers the following remedies: the use of domain knowledge to identify a set of variables, the full model approach for making inferences (i.e., doing no variable selection), the use of dimensionality reduction methods to reduce the dimensionality of high-dimensional datasets, and most importantly, the use of methods that simultaneously conduct selection and shrinkage in modeling all predictors, such as the LASSO.
+
+---
+
+A common underlying challenge in practical variable selection is the stability of the selection process, and post-selection inference. Stability in this case is defined best in Kalousis et al. (2005) as follows:
+
+> “We define the stability of a feature selection algorithm as the robustness of the feature preferences it produces to differences in training sets drawn from the same generating distribution P(X,C). Stability quantifies how different training sets affect the feature preferences.”
+
+
+
+The objectives of this article are as follows:
+
+1. To investigate the stability of stepwise variable selection under different noise settings, and differet sample sizes.
+
+2. To investigate the effects of using the reference model approach within stepwise variable selection on its stability in different settings of noise and sample size.
+

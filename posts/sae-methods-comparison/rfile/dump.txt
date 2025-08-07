@@ -1,0 +1,22 @@
+
+A geographical region is termed **small area** to mean that the domain-specific data for that geographical/administrative region are not sufficient enough to give direct estimates of adequate precision^[Rao, John NK, and Isabel Molina. 2015. Small Area Estimation. John Wiley & Sons.] Small Area Estimation (SAE) is thus a method used for estimating characteristics of interest for small spatial domains (mostly sub-national level e.g. counties in Kenya).
+
+SAE is especially important in instances when a survey is not powered enough to provide credible estimates for small geographical domains. The use of SAE methods is also made important in instances where we need to borrow the strength of other small areas in drawing an estimate for a particular small area. This is often termed the model-based/model-dependent approach and is often contrasted with the design-based approach which uses conventional direct estimates from the survey data. Since SAE methods rely on models, then another advantage is the possibility of using covariates for the administrative areas in estimating the mean prevalences, which enhances the estimation.
+
+A standard introduction to SAE and its methods is the text^[Rao, John NK, and Isabel Molina. 2015. Small Area Estimation. John Wiley & Sons.].
+
+Due to the reliance on models, in SAE, there is need to scrutinize the available model-based approaches in order to learn about their strengths and weaknesses, and do a formal comparison of the models, to see how divergent in their estimation they can be. In this article, we aim to compare several methods present in the SAE literature for mapping variables of interest in Kenya, with data drawn from the Kenya Demographic and Health Survey (KDHS) 2022. This article is inspired by the analyses done in the paper on disease prevalence mapping^[Wakefield, Jonathan, Taylor Okonek, and Jon Pedersen. 2020. “Small Area Estimation for Disease Prevalence Mapping.” International Statistical Review 88 (2): 398–418.].
+
+--------
+
+,
+and the factors affecting the precision of the mean estimates,
+particularly: spatial autocorrelation, sample sizes, and neighbourhood
+sizes.
+
+After fitting the models, estimates of interest such as the mean,
+standard deviation, precision and coefficients of variation are obtained
+after generating 500 samples from the posterior of the fitted models. We
+then compare the coefficients of variation to assess whether the small
+area estimation methods improved the analysis.
+

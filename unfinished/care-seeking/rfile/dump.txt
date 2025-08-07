@@ -1,0 +1,13 @@
+## Methods (II)
+
+The equation 
+$$
+Y = \frac{C}{1 + e^{\frac{A - x}{B}}}
+$$
+is a logistic model that describes how the probability of attending a health facility changes with travel time. Below is a brief explanation of the parameters:
+
+- **C (limiting value):** This represents the maximum probability of attendance when the travel time is very small (close to zero). For example, if \( C = 0.9 \), the maximum probability of attending a nearby facility is 90%.
+
+- **A (inflection point):** This is the travel time at which the probability of attendance starts to decline more quickly. If \( A = 15 \), the decline in attendance probability begins at 15 minutes.
+
+- **B (decay parameter):** This controls how fast the probability decreases as travel time increases. A smaller \( B \) means a rapid decrease, while a larger \( B \) means a more gradual decrease.

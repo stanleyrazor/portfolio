@@ -1,0 +1,141 @@
+---
+  title: "Benchmarking Small Area Estimates (SAE)"
+subtitle: "Calibrating gridded surfaces to match target population aggregates."
+author: "Stanley Sayianka"
+format:
+  html:
+  grid:
+  margin-width: 400px
+reference-location: margin
+citation-location: margin
+
+date: "2024-11-30"
+categories: [small-area-estimation, geostatistics]
+image: "benchmarking.png"
+include-before-body:
+  text: |
+  <script defer src="https://cloud.umami.is/script.js" data-website-id="e2626c70-2118-4fa1-bf3c-49552f9b4ccf"></script>
+  ---
+  
+  ```{r, echo=F, warning=F, message=F}
+# originally:       margin-width: 350px
+library(pacman)
+p_load(dplyr, ggplot2, sf, stringr, purrr, gridExtra, gghighlight)
+
+scientific_theme <- theme(
+  # Text elements
+  text = element_text(family = "serif", color = "black"),
+  plot.title = element_text(size = 12, face = "plain", hjust = 0.5),
+  axis.title = element_text(size = 12, face = "plain"),
+  axis.text = element_text(size = 12),
+  axis.text.x = element_text(angle = 0, hjust = 0.5),
+  axis.text.y = element_text(angle = 0, hjust = 1),
+  legend.title = element_text(size = 12),
+  legend.text = element_text(size = 12),
+  
+  # Plot background and grid
+  panel.background = element_rect(fill = "white"),
+  panel.grid = element_blank(),
+  
+  # Axis lines and ticks
+  axis.line = element_line(color = "black"),
+  axis.ticks = element_line(color = "black"),
+  
+  # Remove the right and top axis lines (bty="l" equivalent)
+  axis.line.y.right = element_blank(),
+  axis.line.x.top = element_blank(),
+  
+  # Legend
+  legend.background = element_rect(fill = "white"),
+  legend.key = element_rect(fill = "white", color = NA),
+  
+  # Plot margins (approximating mar = c(5, 5, 3, 5))
+  plot.margin = margin(t = 3, r = 5, b = 5, l = 5, unit = "pt"),
+  
+  # Expand axes to touch the data (xaxs="i", yaxs="i" equivalent)
+  panel.spacing = unit(0, "lines"),
+  plot.title.position = "plot"
+)
+```
+
+# Introduction
+
+In small area estimation, benchmarks refer to aggregate estimates from credible sources such as populaiton data or data collected from more comprehensive sources such as census data and data from vital statistics.  Benchmarking is therefore, the process of coercing aggregated small area estimates from survey data to match (exactly or closely) the benchmarks specified.^[Pfeffermann 2013(Pfeffermann, D. 2013. “New important developments in small area estimation.” Statistical Science 28(1): 40–68. DOI: https://doi.org/10.1214/12-STS395.)]
+
+In this article, we are interested in calibrating gridded surfaces provided by institutions such as WorldPop, and the United Nations on demographic, and health variables so that they match aggregated data obtained from census, and vital statistics in Kenya. 
+
+While the aim of benchmarking is to ensure that the aggregated small area estimates are in agreement with data from other credible sources, such as much credible direct estimates (which could be possibly be using far more extensive data), the aim of benchmarking here, will be to adjust  unit level estimates, such that aggregating them leads to agreement with direct estimates from census. The aim is to have credible gridded surfaces whioch would lead to the similar estimates when aggregating. While in Kenya, health functions and decisions are devolved to the county level, we focus on estimates at a $5km^2$ spatial resolution. Such gridded surface data are important in analyses which need covariates at that level. This is common in spatial and spatio-temporal modelling of phenomena at pixel-level spatial resolution such as in unit-level SAE models, and prevalence mapping.
+
+Benchmarking is common in small area estimation studies, and is necessary since:
+  
+  1. Institutions might have requirements that estimates from several sources have to be in agreement for consistent decision making that involve allocation of resources.
+
+2. Researchers might have the need to improve the estimates by incorporating data from sources other than survey data, and this can be achieved by aggregation.
+
+Benchmarking is divided into two: internal and external benchmarking. Internal benchmarking is using small area estimates at much larger aggregation levels to calibrate small area estimates from smaller aggregation. levels, while external benchmarking refers to the use of external data sources, ideally direct estimates from more credible sources such as census, and vital statistics systems to calibrate small area estimates.
+
+In conducting benchmarking, a number of approaches exist in literature. See: [citations], and interesting work has been done in specifically in fully bayesian methods of benchmarking [citation].
+
+# Data & Methods
+
+The first dataset we will use in this exercise will be the United Nations Gridded Population Surface. The data is in $1km^2$ spatial resolution.  The UN gridded surface was developed using [methodology], and this might lead to inaccurate populaiton figures, either due to estimation errors or model mispcifications. The direct estimates of population totals from the census data are more reliable, and thus we are interested in calibrating the $1km^2$ populaiton estimates to better match the county aggregates. 
+
+## Gridded populatioon totals
+
+Here, our aim will be to calibrate this surface in order for its aggregation to the county level to match the Kenya Population and Housing Census Population count for the counties. Here, we make the assumption that the UN population gridded surfaces are proportional to the true populaitons at spatial locations $k$ linearly.
+
+To do so, we first compute normalized weights from the population density surface at each county. The weights are computed in a manner, that they sum to one for any given county.
+
+$$w_k = \frac{P_k}{\frac{1}{n}\sum_{k=1}^n{P_k}}$$
+  An error, resulting from the deviation of the aggregatyed totals and the census direct estimates is compued as:
+  
+  $$E = T - \frac{1}{n}\sum_{k=1}^n{P_k}$$
+  The resulting error is either positive (if the direct census total is higher than the aggregated total) or negative (if the direct census total is lower than the aggregated total). The deviation is then filled in one step, by distributing the $E$ among the locations $k$ using the location weights $w_k$:
+  
+  $$P^*_k = P_k + w_k \cdot E$$
+  
+  Areas with larger weights $w_k$ will adjust their estimates using larger values than areas with lower weights.
+
+
+## Urban/rural proportion estimates
+
+Another interesting feature that might be derived from the gridded surface is the urban characterization of the grid. If we make an assumption that in areas where the populaiton density is high implies that the area is more urban. Such an urban/rural surface can form an important covariate in SAE unit level models - which need the stratification covariate at every location, or continuous geospatial models, which want to incorporate residence into account when modelling other variables. 
+
+One approach to obtaining such a surface has been covered in [okonek] where the populaiton density is thresholded, and if the dendsity is above a certain threshold, then the area is assigned an urban classification, otherwise a rural classification. An error score is then computed between the aggregates and a census rural/urban score, and the threshold is adusted so that there is a close match between the thresholded aggregates and the direct census/reliable aggregates.
+
+Formally, let $P_k$ be the populaiton density at location $k$, then a threshold $t$ is arbitrarily chosen at first, and a hard classification of urban/rural is made using:
+  
+  $$I(P_k > t) = \brack{Urban if P_k > t, Rural otherwise}$$
+  
+  In this article, we favour an approach which assigns probabilities (continuous quantities) instead of hard classifications. I derive the proportion of the location that is urban by assuming frst that the probability an area is urban is proportional to a rescaled measure of population density. The equations are as follows:
+  
+  Let $P_k$ be the populaiton density at location $k$, a rescaled population density $P^r_k$ is computed region-wise, in order for the populatioon density to range from 0 to 1, as follows:
+  
+  $$P^r_k = \frac{P_k - min(P_k)}{max(P_k - min(P_k))}$$
+  The urban proportion $R_k$ is then assumed to be a sigmoid transformation^[The sigmoid transform is chosen simply because it ensures the urban proportions will lie between 0 and 1] of the rescaled density:
+  
+  $$R_k = \sigma(P^r_k) = \frac{1}{1 + exp(-P^r_k)}$$
+  
+  Since we are interested in benchmarking the aggregated estimates to match the census urban/rural proportion, a favourable loss function which captures deviations between our aggregated estimate and direct census totals is a squared error loss:
+  
+  $$E = (\mu - \frac{1}{n}\sum_{k=1}^{n}{\sigma(P^r_k)})^2 = (\mu - \frac{1}{n}\sum_{k=1}^{n}{R_k})^2$$
+  
+  Here: $\mu$ is the direct census total, and $n$ is the total number of locations in a region(county) from the gridded surface.
+
+Applying gradient descent to tune the $R_k$ vector, leads to the update equations at iterations $t+1$:
+  
+  $$R^{t+1}_k = R^t_k - \eta E'$$
+Here $E'$ is the first derivative of the error function w.r.t to the $R_k$ values. This simplifies to (in terms of the rescaled population density):
+  
+  $$P^{r \cdot t+1}_k = P^{r \cdot t}_k + 2\eta(\mu - \frac{1}{n}\sum_{k=1}^{n}{\sigma(P^r_k)}) \cdot (\frac{1}{n}\sum_{k = 1}^{n} \sigma'(P^{r \cdot t}_k))$$
+Here: $\sigma'$ is the first derivative of the sigmoid function. This leads to updating the rescaled population vector, and the urban proportion surface can be obtained by applying the sigmoid function on the resulting population density figures.
+                                                                                                       
+                                                                                                       
+                                                                                                       ---
+                                                                                                         
+                                                                                                         For the remaining indicators, data will be from the Kenya Demographic and Health Survey KDHS 2022^[]. More information on the sampling design, and other information can be obtained from the DHS website. The indicators we will use are skilled birth attendance and wealth index (poor).^[Since, the wealth index is usually computed for the quintiles: poorest, poorer, middle, richer, richest, we aggregate the poorest and poorer to form poor].
+                                                                                                       
+                                                                                                       
+                                                                                                       
+                                                                                                       
+                                                                                                       

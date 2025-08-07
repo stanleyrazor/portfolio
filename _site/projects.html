@@ -2,12 +2,12 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.5.57">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Stanley Sayianka - Projects Done</title>
+<title>Projects Done – Stanley Sayianka</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -47,7 +47,13 @@ ul.task-list li input[type="checkbox"] {
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -56,6 +62,7 @@ ul.task-list li input[type="checkbox"] {
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -91,8 +98,35 @@ ul.task-list li input[type="checkbox"] {
   })
   </script>
 
-  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
   <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
 
 <link rel="stylesheet" href="styles.css">
 </head>
@@ -100,48 +134,48 @@ ul.task-list li input[type="checkbox"] {
 <body class="nav-fixed">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">Stanley Sayianka</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link" href="./index.html" rel="" target="">
- <span class="menu-text">Home</span></a>
+    <a class="nav-link" href="./index.html"> 
+<span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html" rel="" target="">
- <span class="menu-text">About</span></a>
+    <a class="nav-link" href="./about.html"> 
+<span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link active" href="./projects.html" rel="" target="" aria-current="page">
- <span class="menu-text">Projects</span></a>
+    <a class="nav-link active" href="./projects.html" aria-current="page"> 
+<span class="menu-text">Projects</span></a>
   </li>  
 </ul>
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/" rel="" target=""><i class="bi bi-github" role="img">
+    <a class="nav-link" href="https://github.com/"> <i class="bi bi-github" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
   <li class="nav-item compact">
-    <a class="nav-link" href="https://twitter.com" rel="" target=""><i class="bi bi-twitter" role="img">
+    <a class="nav-link" href="https://twitter.com"> <i class="bi bi-twitter" role="img">
 </i> 
- <span class="menu-text"></span></a>
+<span class="menu-text"></span></a>
   </li>  
 </ul>
+          </div> <!-- /navcollapse -->
             <div class="quarto-navbar-tools">
 </div>
-          </div> <!-- /navcollapse -->
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -154,7 +188,7 @@ ul.task-list li input[type="checkbox"] {
   </div>
     
   
-  <div class="quarto-title-meta">
+  <div class="quarto-title-meta column-page-left">
 
       
     
@@ -167,7 +201,7 @@ ul.task-list li input[type="checkbox"] {
 <!-- margin-sidebar -->
     <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
         
-    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(8)</span></div><div class="category" data-category="Investments">Investments <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Quant-finance">Quant-finance <span class="quarto-category-count">(2)</span></div><div class="category" data-category="analysis">analysis <span class="quarto-category-count">(2)</span></div><div class="category" data-category="code">code <span class="quarto-category-count">(5)</span></div><div class="category" data-category="machine-learning">machine-learning <span class="quarto-category-count">(1)</span></div><div class="category" data-category="stats">stats <span class="quarto-category-count">(4)</span></div></div></div>
+    <h5 class="quarto-listing-category-title">Categories</h5><div class="quarto-listing-category category-default"><div class="category" data-category="">All <span class="quarto-category-count">(9)</span></div><div class="category" data-category="Investments">Investments <span class="quarto-category-count">(2)</span></div><div class="category" data-category="Quant-finance">Quant-finance <span class="quarto-category-count">(2)</span></div><div class="category" data-category="analysis">analysis <span class="quarto-category-count">(1)</span></div><div class="category" data-category="code">code <span class="quarto-category-count">(5)</span></div><div class="category" data-category="geostatistics">geostatistics <span class="quarto-category-count">(1)</span></div><div class="category" data-category="machine-learning">machine-learning <span class="quarto-category-count">(1)</span></div><div class="category" data-category="small-area-estimation">small-area-estimation <span class="quarto-category-count">(1)</span></div><div class="category" data-category="stats">stats <span class="quarto-category-count">(5)</span></div></div></div>
 <!-- main -->
 <main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
 
@@ -178,21 +212,58 @@ ul.task-list li input[type="checkbox"] {
 
 
 
+
 <div class="quarto-listing quarto-listing-container-default" id="listing-listing">
 <div class="list quarto-listing-default">
-<div class="quarto-post image-right" data-index="0" data-categories="code,stats" data-listing-date-sort="1723755600000" data-listing-file-modified-sort="1723983277653" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="21">
+<div class="quarto-post image-right" data-index="0" data-categories="small-area-estimation,geostatistics" data-listing-date-sort="1732914000000" data-listing-file-modified-sort="1739165935633" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="13" data-listing-word-count-sort="2586">
 <div class="thumbnail">
-<p><a href="./posts/hgam-inla/index.html"> <img src="./posts/hgam-inla/cover-img.svg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/benchmarking-sae/index.html" class="no-external"></a></p><a href="./posts/benchmarking-sae/index.html" class="no-external">
+<p><img loading="lazy" src="./posts/benchmarking-sae/benchmarking.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/benchmarking-sae/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/hgam-inla/index.html">
 <h3 class="no-anchor listing-title">
-Hierarchical Generalized Additive Models using INLA
+<a href="./posts/benchmarking-sae/index.html" class="no-external">Benchmarking Small Area Estimates (SAE)</a>
 </h3>
 <div class="listing-subtitle">
-HGAMs in INLA
+<a href="./posts/benchmarking-sae/index.html" class="no-external">Calibrating gridded surfaces by benchmarking their aggregates using direct estimates from credible sources.</a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('small-area-estimation'); return false;">
+small-area-estimation
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('geostatistics'); return false;">
+geostatistics
+</div>
+</div>
+<div class="listing-description">
+<a href="./posts/benchmarking-sae/index.html" class="no-external">Model-based small area estimation (SAE) relies on statistical models that incorporate covariate information and/or data from neighboring areas to enhance the precision of…</a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/benchmarking-sae/index.html" class="no-external">
+<div class="listing-date">
+Nov 30, 2024
+</div>
+<div class="listing-author">
+Stanley Sayianka
 </div>
 </a>
+</div>
+</div>
+<div class="quarto-post image-right" data-index="1" data-categories="code,stats" data-listing-date-sort="1729026000000" data-listing-file-modified-sort="1737023877623" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="15" data-listing-word-count-sort="2988">
+<div class="thumbnail">
+<p><a href="./posts/sae-methods-comparison/index.html" class="no-external"></a></p><a href="./posts/sae-methods-comparison/index.html" class="no-external">
+<p><img loading="lazy" src="./posts/sae-methods-comparison/img/main-line.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/sae-methods-comparison/index.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/sae-methods-comparison/index.html" class="no-external">A comparison of methods for Small-Area Estimation (SAE)</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/sae-methods-comparison/index.html" class="no-external"></a>
+</div>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
 code
@@ -201,14 +272,48 @@ code
 stats
 </div>
 </div>
-<a href="./posts/hgam-inla/index.html">
 <div class="listing-description">
-Image copyrights: https://m-clark.github.io/generalized-additive-models/introduction.html
+<a href="./posts/sae-methods-comparison/index.html" class="no-external">A geographical region is termed a <strong>small area</strong> when the domain-specific data for that region are insufficient to provide direct estimates of adequate precision (Rao, John NK…<sup></sup></a>
+</div>
+</div>
+<div class="metadata">
+<a href="./posts/sae-methods-comparison/index.html" class="no-external">
+<div class="listing-date">
+Oct 16, 2024
+</div>
+<div class="listing-author">
+Stanley Sayianka
 </div>
 </a>
 </div>
+</div>
+<div class="quarto-post image-right" data-index="2" data-categories="code,stats" data-listing-date-sort="1723755600000" data-listing-file-modified-sort="1737023856732" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="21" data-listing-word-count-sort="4181">
+<div class="thumbnail">
+<p><a href="./posts/hgam-inla/index.html" class="no-external"></a></p><a href="./posts/hgam-inla/index.html" class="no-external">
+<p><img loading="lazy" src="./posts/hgam-inla/cover-img.svg" class="thumbnail-image"></p>
+</a><p><a href="./posts/hgam-inla/index.html" class="no-external"></a></p>
+</div>
+<div class="body">
+<h3 class="no-anchor listing-title">
+<a href="./posts/hgam-inla/index.html" class="no-external">Hierarchical Generalized Additive Models using INLA</a>
+</h3>
+<div class="listing-subtitle">
+<a href="./posts/hgam-inla/index.html" class="no-external">HGAMs in INLA</a>
+</div>
+<div class="listing-categories">
+<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
+code
+</div>
+<div class="listing-category" onclick="window.quartoListingCategory('stats'); return false;">
+stats
+</div>
+</div>
+<div class="listing-description">
+<a href="./posts/hgam-inla/index.html" class="no-external">Image copyrights: https://m-clark.github.io/generalized-additive-models/introduction.html</a>
+</div>
+</div>
 <div class="metadata">
-<a href="./posts/hgam-inla/index.html">
+<a href="./posts/hgam-inla/index.html" class="no-external">
 <div class="listing-date">
 Aug 16, 2024
 </div>
@@ -218,19 +323,19 @@ Stanley Sayianka
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="1" data-categories="code,stats" data-listing-date-sort="1723323600000" data-listing-file-modified-sort="1723983251346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4">
+<div class="quarto-post image-right" data-index="3" data-categories="code,stats" data-listing-date-sort="1723323600000" data-listing-file-modified-sort="1723983251346" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="4" data-listing-word-count-sort="706">
 <div class="thumbnail">
-<p><a href="./posts/gamlss-blog/index.html"> <img src="./posts/gamlss-blog/cover-img.jpeg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/gamlss-blog/index.html" class="no-external"></a></p><a href="./posts/gamlss-blog/index.html" class="no-external">
+<p><img loading="lazy" src="./posts/gamlss-blog/cover-img.jpeg" class="thumbnail-image"></p>
+</a><p><a href="./posts/gamlss-blog/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/gamlss-blog/index.html">
 <h3 class="no-anchor listing-title">
-Notes &amp; practices from the GAMLSS book
+<a href="./posts/gamlss-blog/index.html" class="no-external">Notes &amp; practices from the GAMLSS book</a>
 </h3>
 <div class="listing-subtitle">
-Generalized Additive Models for Location, Scale and Shape
+<a href="./posts/gamlss-blog/index.html" class="no-external">Generalized Additive Models for Location, Scale and Shape</a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
 code
@@ -239,14 +344,12 @@ code
 stats
 </div>
 </div>
-<a href="./posts/gamlss-blog/index.html">
 <div class="listing-description">
-This <em>loooong</em> article will be my notes and code practices on the gems I pick up from reading the GAMLSS books<sup>1</sup>. There are three books in this series:
+<a href="./posts/gamlss-blog/index.html" class="no-external">This <em>loooong</em> article will be my notes and code practices on the gems I pick up from reading the GAMLSS books<sup>1</sup>. There are three books in this series:</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/gamlss-blog/index.html">
+<a href="./posts/gamlss-blog/index.html" class="no-external">
 <div class="listing-date">
 Aug 11, 2024
 </div>
@@ -256,19 +359,19 @@ Stanley Sayianka
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="2" data-categories="code,stats" data-listing-date-sort="1722459600000" data-listing-file-modified-sort="1723983270407" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14">
+<div class="quarto-post image-right" data-index="4" data-categories="code,stats" data-listing-date-sort="1722459600000" data-listing-file-modified-sort="1737023846384" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="14" data-listing-word-count-sort="2674">
 <div class="thumbnail">
-<p><a href="./posts/glms-scratch/index.html"> <img src="./posts/glms-scratch/glm-img.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/glms-scratch/index.html" class="no-external"></a></p><a href="./posts/glms-scratch/index.html" class="no-external">
+<p><img loading="lazy" src="./posts/glms-scratch/glm-img.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/glms-scratch/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/glms-scratch/index.html">
 <h3 class="no-anchor listing-title">
-Generalized Linear Models: from scratch
+<a href="./posts/glms-scratch/index.html" class="no-external">Generalized Linear Models: from scratch</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/glms-scratch/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
 code
@@ -277,14 +380,12 @@ code
 stats
 </div>
 </div>
-<a href="./posts/glms-scratch/index.html">
 <div class="listing-description">
-Image taken from: Pietro Ravani, Patrick Parfrey, Sean Murphy, Veeresh Gadag, Brendan Barrett, Clinical…
+<a href="./posts/glms-scratch/index.html" class="no-external">Image taken from: Pietro Ravani, Patrick Parfrey, Sean Murphy, Veeresh Gadag, Brendan Barrett, Clinical research of kidney diseases IV: standard regression models…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/glms-scratch/index.html">
+<a href="./posts/glms-scratch/index.html" class="no-external">
 <div class="listing-date">
 Aug 1, 2024
 </div>
@@ -294,19 +395,19 @@ Stanley Sayianka
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="3" data-categories="code,analysis" data-listing-date-sort="1711054800000" data-listing-file-modified-sort="1723983260251" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6">
+<div class="quarto-post image-right" data-index="5" data-categories="code,analysis" data-listing-date-sort="1711054800000" data-listing-file-modified-sort="1731430683372" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7" data-listing-word-count-sort="1328">
 <div class="thumbnail">
-<p><a href="./posts/DiD UHC Pilot/index.html"> <img src="./posts/DiD UHC Pilot/uhc.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/claims-modelling/index.html" class="no-external"></a></p><a href="./posts/claims-modelling/index.html" class="no-external">
+<p><img loading="lazy" src="./posts/claims-modelling/insurance1.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/claims-modelling/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/DiD UHC Pilot/index.html">
 <h3 class="no-anchor listing-title">
-The impact of the pilot-UHC: a differences-in-difference approach
+<a href="./posts/claims-modelling/index.html" class="no-external">Multivariate modelling of the frequency and severity of insurance claims</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/claims-modelling/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
 code
@@ -315,52 +416,12 @@ code
 analysis
 </div>
 </div>
-<a href="./posts/DiD UHC Pilot/index.html">
 <div class="listing-description">
-The author is grateful to Angela Langat<sup>1</sup> for her helpful comments in the analysis and writing of this article.
+<a href="./posts/claims-modelling/index.html" class="no-external">Insurance companies are financial institutions that mitigates risk by providing protection against potential losses or damages. Policyholders pay regular premiums to an…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/DiD UHC Pilot/index.html">
-<div class="listing-date">
-Mar 22, 2024
-</div>
-<div class="listing-author">
-Stanley Sayianka
-</div>
-</a>
-</div>
-</div>
-<div class="quarto-post image-right" data-index="4" data-categories="code,analysis" data-listing-date-sort="1711054800000" data-listing-file-modified-sort="1723983223768" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="7">
-<div class="thumbnail">
-<p><a href="./posts/claims-modelling/index.html"> <img src="./posts/claims-modelling/insurance1.png" class="thumbnail-image"> </a></p>
-</div>
-<div class="body">
-<a href="./posts/claims-modelling/index.html">
-<h3 class="no-anchor listing-title">
-Multivariate modelling of the frequency and severity of insurance claims
-</h3>
-<div class="listing-subtitle">
-
-</div>
-</a>
-<div class="listing-categories">
-<div class="listing-category" onclick="window.quartoListingCategory('code'); return false;">
-code
-</div>
-<div class="listing-category" onclick="window.quartoListingCategory('analysis'); return false;">
-analysis
-</div>
-</div>
-<a href="./posts/claims-modelling/index.html">
-<div class="listing-description">
-Insurance companies are financial institutions that mitigates risk by providing protection against potential losses or…
-</div>
-</a>
-</div>
-<div class="metadata">
-<a href="./posts/claims-modelling/index.html">
+<a href="./posts/claims-modelling/index.html" class="no-external">
 <div class="listing-date">
 Mar 22, 2024
 </div>
@@ -370,19 +431,19 @@ Stanley Sayianka &amp; Precious Mumbi
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="5" data-categories="Investments,Quant-finance" data-listing-date-sort="1683579600000" data-listing-file-modified-sort="1723983296065" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="16">
+<div class="quarto-post image-right" data-index="6" data-categories="Investments,Quant-finance" data-listing-date-sort="1683579600000" data-listing-file-modified-sort="1737023887390" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="16" data-listing-word-count-sort="3141">
 <div class="thumbnail">
-<p><a href="./posts/target-return-portfolio/index.html"> <img src="./posts/target-return-portfolio/target-return.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/target-return-portfolio/index.html" class="no-external"></a></p><a href="./posts/target-return-portfolio/index.html" class="no-external">
+<p><img loading="lazy" src="./posts/target-return-portfolio/target-return.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/target-return-portfolio/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/target-return-portfolio/index.html">
 <h3 class="no-anchor listing-title">
-Portfolio construction for a fixed return investment objective
+<a href="./posts/target-return-portfolio/index.html" class="no-external">Portfolio construction for a fixed return investment objective</a>
 </h3>
 <div class="listing-subtitle">
-A comparison of different approaches
+<a href="./posts/target-return-portfolio/index.html" class="no-external">A comparison of different approaches</a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Investments'); return false;">
 Investments
@@ -391,14 +452,12 @@ Investments
 Quant-finance
 </div>
 </div>
-<a href="./posts/target-return-portfolio/index.html">
 <div class="listing-description">
-This report presents a quantitative investment strategy that aims to construct a portfolio that closely tracks a <span class="math inline">\(15\%\)</span> p.a. return, which acts as the minimum acceptable return for an investors. The strategy uses three different approaches to achieve this objective: minimum tracking error…
+<a href="./posts/target-return-portfolio/index.html" class="no-external">This report presents a quantitative investment strategy that aims to construct a portfolio that closely tracks a <span class="math inline">\(15\%\)</span> p.a. return, which acts as the minimum acceptable…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/target-return-portfolio/index.html">
+<a href="./posts/target-return-portfolio/index.html" class="no-external">
 <div class="listing-date">
 May 9, 2023
 </div>
@@ -408,19 +467,19 @@ Stanley Sayianka
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="6" data-categories="Investments,Quant-finance" data-listing-date-sort="1677790800000" data-listing-file-modified-sort="1723983235710" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="22">
+<div class="quarto-post image-right" data-index="7" data-categories="Investments,Quant-finance" data-listing-date-sort="1677790800000" data-listing-file-modified-sort="1737023833069" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="22" data-listing-word-count-sort="4265">
 <div class="thumbnail">
-<p><a href="./posts/cov-mat-estimation-tangency-ports/index.html"> <img src="./posts/cov-mat-estimation-tangency-ports/covmat-img.png" class="thumbnail-image"> </a></p>
+<p><a href="./posts/cov-mat-estimation-tangency-ports/index.html" class="no-external"></a></p><a href="./posts/cov-mat-estimation-tangency-ports/index.html" class="no-external">
+<p><img loading="lazy" src="./posts/cov-mat-estimation-tangency-ports/covmat-img.png" class="thumbnail-image"></p>
+</a><p><a href="./posts/cov-mat-estimation-tangency-ports/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/cov-mat-estimation-tangency-ports/index.html">
 <h3 class="no-anchor listing-title">
-A comparison of covariance matrix estimation methods for tangency portfolios.
+<a href="./posts/cov-mat-estimation-tangency-ports/index.html" class="no-external">A comparison of covariance matrix estimation methods for tangency portfolios.</a>
 </h3>
 <div class="listing-subtitle">
-
+<a href="./posts/cov-mat-estimation-tangency-ports/index.html" class="no-external"></a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('Investments'); return false;">
 Investments
@@ -429,14 +488,12 @@ Investments
 Quant-finance
 </div>
 </div>
-<a href="./posts/cov-mat-estimation-tangency-ports/index.html">
 <div class="listing-description">
-This article investigates the problem of covariance matrix estimation for tangency portfolios using data from the Nairobi Securities Exchange (NSE) Specifically, I compare…
+<a href="./posts/cov-mat-estimation-tangency-ports/index.html" class="no-external">This article investigates the problem of covariance matrix estimation for tangency portfolios using data from the Nairobi Securities Exchange (NSE) Specifically, I compare…</a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/cov-mat-estimation-tangency-ports/index.html">
+<a href="./posts/cov-mat-estimation-tangency-ports/index.html" class="no-external">
 <div class="listing-date">
 Mar 3, 2023
 </div>
@@ -446,19 +503,19 @@ Stanley Sayianka
 </a>
 </div>
 </div>
-<div class="quarto-post image-right" data-index="7" data-categories="stats,machine-learning" data-listing-date-sort="1668200400000" data-listing-file-modified-sort="1723983287823" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="79">
+<div class="quarto-post image-right" data-index="8" data-categories="stats,machine-learning" data-listing-date-sort="1668200400000" data-listing-file-modified-sort="1737023866647" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="79" data-listing-word-count-sort="15672">
 <div class="thumbnail">
-<p><a href="./posts/high-dimensional-data/index.html"> <img src="./posts/high-dimensional-data/high-dim.jpg" class="thumbnail-image"> </a></p>
+<p><a href="./posts/high-dimensional-data/index.html" class="no-external"></a></p><a href="./posts/high-dimensional-data/index.html" class="no-external">
+<p><img loading="lazy" src="./posts/high-dimensional-data/high-dim.jpg" class="thumbnail-image"></p>
+</a><p><a href="./posts/high-dimensional-data/index.html" class="no-external"></a></p>
 </div>
 <div class="body">
-<a href="./posts/high-dimensional-data/index.html">
 <h3 class="no-anchor listing-title">
-Learning representations in high-dimensional data
+<a href="./posts/high-dimensional-data/index.html" class="no-external">Learning representations in high-dimensional data</a>
 </h3>
 <div class="listing-subtitle">
-Regression and Classification
+<a href="./posts/high-dimensional-data/index.html" class="no-external">Regression and Classification</a>
 </div>
-</a>
 <div class="listing-categories">
 <div class="listing-category" onclick="window.quartoListingCategory('stats'); return false;">
 stats
@@ -467,14 +524,12 @@ stats
 machine-learning
 </div>
 </div>
-<a href="./posts/high-dimensional-data/index.html">
 <div class="listing-description">
-High-dimensional data is the type of data<sup>1</sup> which is characterized by the presence of many variables<sup>2</sup>. Due to the growing nature of variables of interest and data collection over the past years in diverse domains such as health-care/medicine, marketing, finance etc., there…<sup></sup>
+<a href="./posts/high-dimensional-data/index.html" class="no-external">High-dimensional data is the type of data<sup>1</sup> which is characterized by the presence of many variables<sup>2</sup>. Due to the growing nature of variables of interest and data collection…<sup></sup></a>
 </div>
-</a>
 </div>
 <div class="metadata">
-<a href="./posts/high-dimensional-data/index.html">
+<a href="./posts/high-dimensional-data/index.html" class="no-external">
 <div class="listing-date">
 Nov 12, 2022
 </div>
@@ -524,18 +579,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -567,11 +611,50 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
-  function tippyHover(el, contentFn) {
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -581,8 +664,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -594,7 +686,130 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
-      return note.innerHTML;
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -638,6 +853,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -663,6 +879,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -723,6 +965,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 
